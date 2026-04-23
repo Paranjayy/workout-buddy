@@ -9,6 +9,8 @@ import { Progress } from './pages/Progress'
 import { Calendar } from './pages/Calendar'
 import { Music } from './pages/Music'
 import { Journal } from './pages/Journal'
+import { Achievements } from './pages/Achievements'
+import { Digest } from './pages/Digest'
 import { Settings } from './pages/Settings'
 
 export function App() {
@@ -27,6 +29,8 @@ export function App() {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/music" element={<Music />} />
             <Route path="/journal" element={<Journal />} />
+            <Route path="/achievements" element={<Achievements />} />
+            <Route path="/digest" element={<Digest />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

@@ -3,7 +3,7 @@
 Tools, linters, and quality assurance utilities for this project and general dev work.
 
 ---
-. 
+
 ## Code Quality & Cleanup
 
 | Tool | Purpose | Link |

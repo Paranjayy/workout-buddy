@@ -49,6 +49,16 @@ const NAV = [
       <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
     </svg>
   )},
+  { to: '/achievements', label: 'Achievements', icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+    </svg>
+  )},
+  { to: '/digest', label: 'Weekly Digest', icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/>
+    </svg>
+  )},
 ]
 
 export function Sidebar() {
