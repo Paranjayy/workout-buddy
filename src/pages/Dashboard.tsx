@@ -50,7 +50,7 @@ function ActivityHeatmap() {
                   x={wi * (cellSize + gap)} y={di * (cellSize + gap)}
                   width={cellSize} height={cellSize} rx="3"
                   fill={`oklch(${l}% ${c} 155)`}
-                  stroke="oklch(90% 0.01 75)" strokeWidth="0.5"
+                  stroke="var(--clr-surface-2)" strokeWidth="0.5"
                 >
                   <title>{day.key}: {day.count} activities</title>
                 </rect>
