@@ -92,3 +92,34 @@ export function getLast7Days(): { key: string; label: string }[] {
     }
   })
 }
+
+/** ISO week number (1-52/53) */
+export function weekNumber(date: Date = new Date()): number {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7))
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+}
+
+/** Total ISO weeks in a year */
+export function weeksInYear(year: number = new Date().getFullYear()): number {
+  const dec31 = new Date(year, 11, 31)
+  const wn = weekNumber(dec31)
+  return wn === 1 ? weekNumber(new Date(year, 11, 24)) : wn
+}
+
+/** Days remaining in current ISO week (Mon=1 … Sun=0) */
+export function daysLeftInWeek(): number {
+  const day = new Date().getDay()
+  return day === 0 ? 0 : 7 - day
+}
+
+/** Current day of year label e.g. "Day 113 of 365" */
+export function dayOfYearLabel(): string {
+  const now = new Date()
+  const start = new Date(now.getFullYear(), 0, 0)
+  const day = Math.floor((now.getTime() - start.getTime()) / 86400000)
+  const total = daysInYear(now.getFullYear())
+  return `Day ${day} of ${total}`
+}
+

@@ -116,6 +116,58 @@ function RestTimer({ onDismiss }: { onDismiss: () => void }) {
 }
 
 
+// ── Wger real exercise photos (CC-BY-SA, free, no key) ────────
+const wgerCache = new Map<string, string | null>()
+
+function WgerImage({ name }: { name: string }) {
+  const [url, setUrl] = useState<string | null | 'loading'>('loading')
+  const q = name.replace(/[()]/g, '').trim()
+
+  useEffect(() => {
+    if (wgerCache.has(q)) { setUrl(wgerCache.get(q) ?? null); return }
+    setUrl('loading')
+    // Step 1: search for exercise by name
+    fetch(`https://wger.de/api/v2/exercise/?format=json&language=2&name=${encodeURIComponent(q)}&limit=5`)
+      .then(r => r.json())
+      .then(async d => {
+        const results = d.results ?? []
+        if (!results.length) {
+          // Try broader base-exercise search
+          const r2 = await fetch(`https://wger.de/api/v2/exerciseinfo/?format=json&language=2&limit=3&name=${encodeURIComponent(q.split(' ')[0])}`)
+          const d2 = await r2.json()
+          const id = d2.results?.[0]?.id
+          if (!id) { wgerCache.set(q, null); setUrl(null); return }
+          const r3 = await fetch(`https://wger.de/api/v2/exerciseimage/?format=json&exercise_base_id=${id}&is_main=true&limit=1`)
+          const d3 = await r3.json()
+          const img = d3.results?.[0]?.image ?? null
+          wgerCache.set(q, img); setUrl(img)
+        } else {
+          const baseId = results[0].id
+          const r2 = await fetch(`https://wger.de/api/v2/exerciseimage/?format=json&exercise_base_id=${baseId}&is_main=true&limit=1`)
+          const d2 = await r2.json()
+          const img = d2.results?.[0]?.image ?? null
+          wgerCache.set(q, img); setUrl(img)
+        }
+      })
+      .catch(() => { wgerCache.set(q, null); setUrl(null) })
+  }, [q])
+
+  if (url === 'loading') return (
+    <div style={{ height: 120, display: 'grid', placeItems: 'center', color: 'var(--clr-text-3)', fontSize: 'var(--fs-xs)' }}>
+      Loading exercise image…
+    </div>
+  )
+  if (!url) return null
+  return (
+    <div style={{ marginBottom: 'var(--sp-3)', borderRadius: 'var(--r-md)', overflow: 'hidden', background: 'var(--clr-surface-2)' }}>
+      <img src={url} alt={name} style={{ width: '100%', maxHeight: 160, objectFit: 'contain', display: 'block' }} onError={() => setUrl(null)} />
+      <div style={{ fontSize: '10px', color: 'var(--clr-text-3)', padding: '4px var(--sp-3)', textAlign: 'right' }}>
+        Image © <a href="https://wger.de" target="_blank" rel="noreferrer" style={{ color: 'inherit' }}>wger.de</a> · CC-BY-SA
+      </div>
+    </div>
+  )
+}
+
 // Animated SVG exercise visual — CSS-animated stick figure
 function ExerciseVisual({ type, name }: { type: string; name: string }) {
   const n = name.toLowerCase()
@@ -312,6 +364,7 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
 
       {selected && (
         <div style={{ padding: 'var(--sp-5)', borderRadius: 'var(--r-lg)', border: '1px solid var(--clr-accent)', background: 'var(--clr-accent-l)', marginBottom: 'var(--sp-5)' }}>
+          <WgerImage name={selected.name} />
           <ExerciseVisual type={selected.type} name={selected.name} />
           <h3 className="section-title" style={{ textAlign: 'center' }}>{selected.name}</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--sp-4)' }}>
