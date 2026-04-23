@@ -125,6 +125,31 @@ export const FOOD_DB: FoodItem[] = [
   { name: 'Trail Mix', cal: 280, protein: 8, carbs: 22, fat: 18, region: '🍫 Snacks', serving: '1/4 cup' },
   { name: 'Makhana (Roasted)', cal: 100, protein: 3, carbs: 18, fat: 1, region: '🍫 Snacks', serving: '1 cup' },
   { name: 'Energy Bar', cal: 220, protein: 10, carbs: 28, fat: 8, region: '🍫 Snacks', serving: '1 bar' },
+  // French
+  { name: 'Croissant', cal: 230, protein: 5, carbs: 26, fat: 12, region: '🇫🇷 French', serving: '1 piece' },
+  { name: 'Crêpe (Nutella)', cal: 310, protein: 6, carbs: 42, fat: 14, region: '🇫🇷 French', serving: '1 piece' },
+  { name: 'Ratatouille', cal: 180, protein: 4, carbs: 22, fat: 8, region: '🇫🇷 French', serving: '1 cup' },
+  // German
+  { name: 'Bratwurst', cal: 330, protein: 14, carbs: 2, fat: 28, region: '🇩🇪 German', serving: '1 piece' },
+  { name: 'Pretzel', cal: 380, protein: 10, carbs: 72, fat: 4, region: '🇩🇪 German', serving: '1 large' },
+  // Filipino
+  { name: 'Adobo (Chicken)', cal: 350, protein: 28, carbs: 6, fat: 24, region: '🇵🇭 Filipino', serving: '1 cup' },
+  { name: 'Lumpia', cal: 100, protein: 4, carbs: 12, fat: 4, region: '🇵🇭 Filipino', serving: '1 piece' },
+  // Peruvian
+  { name: 'Ceviche', cal: 200, protein: 24, carbs: 12, fat: 6, region: '🇵🇪 Peruvian', serving: '1 cup' },
+  { name: 'Lomo Saltado', cal: 480, protein: 32, carbs: 38, fat: 22, region: '🇵🇪 Peruvian', serving: '1 plate' },
+  // Russian
+  { name: 'Borscht', cal: 150, protein: 6, carbs: 18, fat: 6, region: '🇷🇺 Russian', serving: '1 cup' },
+  { name: 'Pelmeni', cal: 320, protein: 16, carbs: 34, fat: 14, region: '🇷🇺 Russian', serving: '8 pieces' },
+  // Malaysian
+  { name: 'Nasi Lemak', cal: 450, protein: 14, carbs: 55, fat: 20, region: '🇲🇾 Malaysian', serving: '1 plate' },
+  { name: 'Laksa', cal: 400, protein: 18, carbs: 42, fat: 18, region: '🇲🇾 Malaysian', serving: '1 bowl' },
+  // African
+  { name: 'Jollof Rice', cal: 380, protein: 8, carbs: 58, fat: 12, region: '🇳🇬 African', serving: '1 plate' },
+  { name: 'Fufu with Soup', cal: 420, protein: 12, carbs: 65, fat: 12, region: '🇳🇬 African', serving: '1 plate' },
+  // Greek
+  { name: 'Gyro', cal: 480, protein: 24, carbs: 38, fat: 26, region: '🇬🇷 Greek', serving: '1 wrap' },
+  { name: 'Moussaka', cal: 350, protein: 18, carbs: 22, fat: 20, region: '🇬🇷 Greek', serving: '1 slice' },
 ]
 
 export function searchFoods(query: string, custom: FoodItem[] = []): FoodItem[] {

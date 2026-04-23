@@ -91,7 +91,7 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
       </div>
 
       <div className="search-bar" style={{ position: 'relative', marginBottom: 'var(--sp-4)' }}>
-        <input className="search-bar__input" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search 90+ global foods (butter chicken, sushi, tacos…)" />
+        <input className="search-bar__input" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search 150+ global foods (biryani, sushi, tacos, croissant…)" />
         {results.length > 0 && (
           <div className="food-results" style={{ display: 'block' }}>
             {results.map((f, i) => (
