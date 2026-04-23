@@ -67,32 +67,50 @@ const NAV = [
   )},
 ]
 
+// 5 tabs shown in mobile bottom bar (most important)
+const MOBILE_NAV = ['/', '/workout', '/calories', '/timer', '/progress']
+
 export function Sidebar() {
   return (
-    <aside className="sidebar">
-      <div className="sidebar__brand">
-        <svg className="sidebar__logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2.5"/>
-          <path d="M10 20 L14 12 L18 18 L22 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span className="sidebar__title">Workout Buddy</span>
-      </div>
-      <nav className="sidebar__nav" aria-label="Main navigation">
-        {NAV.map(item => (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar__brand">
+          <img src="/icon.png" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, objectFit: 'cover' }} />
+          <span className="sidebar__title">Workout Buddy</span>
+        </div>
+        <nav className="sidebar__nav" aria-label="Main navigation">
+          {NAV.map(item => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === '/'}
+              className={({ isActive }) => `nav-item${isActive ? ' nav-item--active' : ''}`}
+              id={`nav-${item.to.slice(1) || 'dashboard'}`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
+        <SidebarFooter />
+      </aside>
+
+      {/* Mobile bottom tab bar */}
+      <nav className="mobile-nav" aria-label="Mobile navigation">
+        {NAV.filter(n => MOBILE_NAV.includes(n.to)).map(item => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.to === '/'}
-            className={({ isActive }) => `nav-item${isActive ? ' nav-item--active' : ''}`}
-            id={`nav-${item.to.slice(1) || 'dashboard'}`}
+            className={({ isActive }) => `mobile-nav__item${isActive ? ' mobile-nav__item--active' : ''}`}
           >
-            {item.icon}
-            <span>{item.label}</span>
+            <span className="mobile-nav__icon">{item.icon}</span>
+            <span className="mobile-nav__label">{item.label}</span>
           </NavLink>
         ))}
       </nav>
-      <SidebarFooter />
-    </aside>
+    </>
   )
 }
 

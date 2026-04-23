@@ -37,27 +37,42 @@ function ActivityHeatmap() {
   return (
     <div style={{ marginBottom: 'var(--sp-7)' }}>
       <h2 className="section-title">Activity — Last 90 Days</h2>
-      <div style={{ overflowX: 'auto', paddingBottom: 'var(--sp-2)' }}>
-        <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} style={{ display: 'block' }}>
-          {weeks.map((week, wi) =>
-            week.map((day, di) => {
-              if (!day) return null
-              const intensity = day.count / maxCount
-              const l = 92 - intensity * 52
-              const c = (intensity * 0.18).toFixed(3)
-              return (
-                <rect key={`${wi}-${di}`}
-                  x={wi * (cellSize + gap)} y={di * (cellSize + gap)}
-                  width={cellSize} height={cellSize} rx="3"
-                  fill={`oklch(${l}% ${c} 155)`}
-                  stroke="var(--clr-surface-2)" strokeWidth="0.5"
-                >
-                  <title>{day.key}: {day.count} activities</title>
-                </rect>
-              )
-            })
-          )}
-        </svg>
+      <div style={{ overflowX: 'auto', paddingBottom: 'var(--sp-2)', WebkitOverflowScrolling: 'touch' }}>
+        <div style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'flex-start', minWidth: 'max-content' }}>
+          {/* Weekday labels column */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: gap, paddingTop: 0, marginTop: 2 }}>
+            {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
+              <div key={i} style={{
+                width: 12, height: cellSize,
+                fontSize: '9px', lineHeight: `${cellSize}px`,
+                color: 'var(--clr-text-3)', textAlign: 'right',
+                fontFamily: 'var(--ff-body)', fontWeight: 600,
+                userSelect: 'none',
+              }}>{d}</div>
+            ))}
+          </div>
+          {/* Heatmap grid */}
+          <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} style={{ display: 'block' }}>
+            {weeks.map((week, wi) =>
+              week.map((day, di) => {
+                if (!day) return null
+                const intensity = day.count / maxCount
+                const l = 92 - intensity * 52
+                const c = (intensity * 0.18).toFixed(3)
+                return (
+                  <rect key={`${wi}-${di}`}
+                    x={wi * (cellSize + gap)} y={di * (cellSize + gap)}
+                    width={cellSize} height={cellSize} rx="3"
+                    fill={`oklch(${l}% ${c} 155)`}
+                    stroke="var(--clr-surface-2)" strokeWidth="0.5"
+                  >
+                    <title>{day.key}: {day.count} activities</title>
+                  </rect>
+                )
+              })
+            )}
+          </svg>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginTop: 'var(--sp-2)', fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)' }}>
           <span>Less</span>
           {[0, 0.25, 0.5, 0.75, 1].map(i => (
@@ -69,6 +84,7 @@ function ActivityHeatmap() {
     </div>
   )
 }
+
 
 function calcStreak(): number {
   const workouts = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, [])
