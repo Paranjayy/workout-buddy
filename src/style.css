@@ -53,6 +53,35 @@
   --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+/* ── Dark mode ─────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --clr-bg:        oklch(14% 0.01 60);
+  --clr-surface:   oklch(18% 0.012 60);
+  --clr-surface-2: oklch(22% 0.012 60);
+  --clr-border:    oklch(28% 0.015 60);
+  --clr-text:      oklch(92% 0.008 75);
+  --clr-text-2:    oklch(78% 0.008 75);
+  --clr-text-3:    oklch(58% 0.01 60);
+
+  --clr-accent:    oklch(62% 0.14 155);
+  --clr-accent-d:  oklch(72% 0.14 155);
+  --clr-accent-l:  oklch(24% 0.06 155);
+
+  --clr-amber:     oklch(72% 0.16 75);
+  --clr-amber-l:   oklch(24% 0.06 75);
+  --clr-sky:       oklch(62% 0.14 240);
+  --clr-sky-l:     oklch(24% 0.05 240);
+  --clr-rose:      oklch(62% 0.16 15);
+  --clr-rose-l:    oklch(24% 0.06 15);
+
+  color-scheme: dark;
+}
+
+/* Smooth theme transition */
+body, .sidebar, .stat-block, .workout-entry, .progress-ring-card, .playlist-card, .form-input, .search-bar__input {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
 /* ── Reset ─────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
 html { font-size: 16px; -webkit-text-size-adjust: 100% }

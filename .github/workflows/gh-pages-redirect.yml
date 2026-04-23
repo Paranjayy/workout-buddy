@@ -33,8 +33,8 @@ jobs:
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Workout Buddy → Redirecting…</title>
-            <meta http-equiv="refresh" content="0; url=https://workout-buddy-paranjay.vercel.app" />
-            <link rel="canonical" href="https://workout-buddy-paranjay.vercel.app" />
+            <meta http-equiv="refresh" content="0; url=https://workout-buddy-lovat.vercel.app" />
+            <link rel="canonical" href="https://workout-buddy-lovat.vercel.app" />
             <style>
               body {
                 font-family: system-ui, sans-serif;
@@ -62,9 +62,9 @@ jobs:
             <div class="card">
               <h1>🏋️ Workout Buddy</h1>
               <p>Redirecting you to the app…</p>
-              <a href="https://workout-buddy-paranjay.vercel.app">Go to App →</a>
+              <a href="https://workout-buddy-lovat.vercel.app">Go to App →</a>
             </div>
-            <script>window.location.replace("https://workout-buddy-paranjay.vercel.app" + window.location.pathname + window.location.search)</script>
+            <script>window.location.replace("https://workout-buddy-lovat.vercel.app" + window.location.pathname + window.location.search)</script>
           </body>
           </html>
           EOF

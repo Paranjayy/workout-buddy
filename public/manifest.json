@@ -1,0 +1,17 @@
+{
+  "name": "Workout Buddy",
+  "short_name": "WB",
+  "description": "Fitness coach, nutrition tracker, and life progress dashboard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f4ef",
+  "theme_color": "#3d7a5a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

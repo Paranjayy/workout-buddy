@@ -9,6 +9,10 @@ export interface Profile {
   proteinGoal: number
   carbGoal: number
   fatGoal: number
+  targetWeight: number | null
+  gender: 'male' | 'female' | null
+  age: number | null
+  activityLevel: number  // 1.2–1.9 multiplier
 }
 
 export interface WorkoutEntry {

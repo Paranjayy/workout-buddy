@@ -3,12 +3,15 @@ import { store, KEYS } from '../utils/storage'
 import { useToast } from '../hooks/useToast'
 import type { Profile } from '../types'
 
+const defaults: Profile = {
+  name: '', dob: '', height: null, lifeExpectancy: 80,
+  calorieGoal: 2000, proteinGoal: 120, carbGoal: 250, fatGoal: 65,
+  targetWeight: null, gender: null, age: null, activityLevel: 1.55,
+}
+
 export function Settings() {
   const { showToast } = useToast()
-  const [profile, setProfile] = useState<Profile>(() => store.get<Profile>(KEYS.PROFILE, {
-    name: '', dob: '', height: null, lifeExpectancy: 80,
-    calorieGoal: 2000, proteinGoal: 120, carbGoal: 250, fatGoal: 65,
-  }))
+  const [profile, setProfile] = useState<Profile>(() => store.get<Profile>(KEYS.PROFILE, defaults))
 
   const update = (key: keyof Profile, val: string | number | null) => {
     setProfile(p => ({ ...p, [key]: val }))
@@ -69,11 +72,24 @@ export function Settings() {
           <input className="form-input" id="dob" type="date" value={profile.dob} onChange={e => update('dob', e.target.value)} />
         </Field>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--sp-4)' }}>
-          <Field label="Life Expectancy (years)" id="life-exp">
+          <Field label="Height (cm)" id="height" hint="Used for BMI & TDEE">
+            <input className="form-input" id="height" type="number" value={profile.height ?? ''} placeholder="175" onChange={e => update('height', +e.target.value || null)} />
+          </Field>
+          <Field label="Gender" id="gender">
+            <select className="form-input" id="gender" value={profile.gender ?? ''} onChange={e => update('gender', e.target.value || null)}>
+              <option value="">Select</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </Field>
+          <Field label="Age" id="age">
+            <input className="form-input" id="age" type="number" value={profile.age ?? ''} placeholder="25" onChange={e => update('age', +e.target.value || null)} />
+          </Field>
+          <Field label="Life Expectancy" id="life-exp">
             <input className="form-input" id="life-exp" type="number" min={50} max={120} value={profile.lifeExpectancy} onChange={e => update('lifeExpectancy', +e.target.value || 80)} />
           </Field>
-          <Field label="Height (cm)" id="height" hint="Used for BMI calculation">
-            <input className="form-input" id="height" type="number" value={profile.height ?? ''} placeholder="175" onChange={e => update('height', +e.target.value || null)} />
+          <Field label="Target Weight (kg)" id="target-w" hint="For weight loss/gain plan">
+            <input className="form-input" id="target-w" type="number" step="0.1" value={profile.targetWeight ?? ''} placeholder="68" onChange={e => update('targetWeight', +e.target.value || null)} />
           </Field>
         </div>
 
@@ -94,7 +110,7 @@ export function Settings() {
             📥 Import Data
             <input type="file" accept=".json" style={{ display: 'none' }} onChange={importData} />
           </label>
-          <button className="btn btn--ghost" style={{ color: 'oklch(55% 0.18 15)' }} onClick={clearData}>🗑️ Clear All Data</button>
+          <button className="btn btn--ghost" style={{ color: 'var(--clr-rose)' }} onClick={clearData}>🗑️ Clear All Data</button>
         </div>
 
         <div style={{ marginTop: 'var(--sp-6)', padding: 'var(--sp-4) var(--sp-5)', borderRadius: 'var(--r-lg)', border: '1px solid var(--clr-border)', background: 'var(--clr-surface)' }}>
