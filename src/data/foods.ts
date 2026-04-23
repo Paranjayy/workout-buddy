@@ -89,6 +89,42 @@ export const FOOD_DB: FoodItem[] = [
   { name: 'Avocado', cal: 240, protein: 3, carbs: 12, fat: 22, region: '🌍 Basic', serving: '1 whole' },
   { name: 'Protein Shake (Whey)', cal: 120, protein: 24, carbs: 3, fat: 1, region: '🌍 Basic', serving: '1 scoop' },
   { name: 'Whole Milk', cal: 150, protein: 8, carbs: 12, fat: 8, region: '🌍 Basic', serving: '1 cup' },
+  { name: 'Cottage Cheese', cal: 110, protein: 14, carbs: 3, fat: 5, region: '🌍 Basic', serving: '1/2 cup' },
+  { name: 'Peanut Butter', cal: 190, protein: 7, carbs: 7, fat: 16, region: '🌍 Basic', serving: '2 tbsp' },
+  { name: 'Apple', cal: 95, protein: 0.5, carbs: 25, fat: 0.3, region: '🌍 Basic', serving: '1 medium' },
+  { name: 'Broccoli (Steamed)', cal: 55, protein: 3.7, carbs: 11, fat: 0.6, region: '🌍 Basic', serving: '1 cup' },
+  { name: 'Salmon (Grilled)', cal: 280, protein: 36, carbs: 0, fat: 14, region: '🌍 Basic', serving: '6 oz' },
+  { name: 'Tuna (Canned)', cal: 130, protein: 28, carbs: 0, fat: 1, region: '🌍 Basic', serving: '1 can' },
+  { name: 'Pasta (Cooked)', cal: 220, protein: 8, carbs: 43, fat: 1.3, region: '🌍 Basic', serving: '1 cup' },
+  { name: 'Bread (Whole Wheat)', cal: 70, protein: 3, carbs: 12, fat: 1, region: '🌍 Basic', serving: '1 slice' },
+  { name: 'Curd / Yogurt (Plain)', cal: 100, protein: 4, carbs: 12, fat: 4, region: '🌍 Basic', serving: '1 cup' },
+  { name: 'Milk (Toned)', cal: 120, protein: 6, carbs: 10, fat: 6, region: '🌍 Basic', serving: '1 cup' },
+  { name: 'Besan Chilla', cal: 180, protein: 8, carbs: 22, fat: 7, region: '🇮🇳 Indian', serving: '1 piece' },
+  { name: 'Sprouts Salad', cal: 120, protein: 8, carbs: 16, fat: 2, region: '🇮🇳 Indian', serving: '1 cup' },
+  { name: 'Paneer Bhurji', cal: 290, protein: 18, carbs: 6, fat: 22, region: '🇮🇳 Indian', serving: '1 cup' },
+  { name: 'Buttermilk (Chaas)', cal: 40, protein: 2, carbs: 5, fat: 1, region: '🇮🇳 Indian', serving: '1 glass' },
+  // Ethiopian
+  { name: 'Injera with Wot', cal: 380, protein: 14, carbs: 58, fat: 10, region: '🇪🇹 Ethiopian', serving: '1 plate' },
+  // Indonesian
+  { name: 'Nasi Goreng', cal: 400, protein: 12, carbs: 55, fat: 14, region: '🇮🇩 Indonesian', serving: '1 plate' },
+  { name: 'Satay (Chicken)', cal: 220, protein: 18, carbs: 8, fat: 14, region: '🇮🇩 Indonesian', serving: '4 skewers' },
+  // Spanish
+  { name: 'Paella', cal: 450, protein: 20, carbs: 52, fat: 16, region: '🇪🇸 Spanish', serving: '1 plate' },
+  { name: 'Tortilla Española', cal: 220, protein: 8, carbs: 18, fat: 14, region: '🇪🇸 Spanish', serving: '1 slice' },
+  // Caribbean
+  { name: 'Jerk Chicken', cal: 350, protein: 32, carbs: 4, fat: 22, region: '🇯🇲 Caribbean', serving: '1 piece' },
+  // Drinks
+  { name: 'Black Coffee', cal: 2, protein: 0, carbs: 0, fat: 0, region: '☕ Drinks', serving: '1 cup' },
+  { name: 'Green Tea', cal: 0, protein: 0, carbs: 0, fat: 0, region: '☕ Drinks', serving: '1 cup' },
+  { name: 'Orange Juice (Fresh)', cal: 110, protein: 2, carbs: 26, fat: 0.5, region: '☕ Drinks', serving: '1 glass' },
+  { name: 'Coconut Water', cal: 45, protein: 0.5, carbs: 10, fat: 0, region: '☕ Drinks', serving: '1 cup' },
+  { name: 'Protein Smoothie', cal: 280, protein: 25, carbs: 35, fat: 5, region: '☕ Drinks', serving: '1 glass' },
+  { name: 'Lassi (Sweet)', cal: 200, protein: 5, carbs: 30, fat: 6, region: '☕ Drinks', serving: '1 glass' },
+  // Snacks
+  { name: 'Dark Chocolate (70%)', cal: 170, protein: 2, carbs: 13, fat: 12, region: '🍫 Snacks', serving: '1 oz' },
+  { name: 'Trail Mix', cal: 280, protein: 8, carbs: 22, fat: 18, region: '🍫 Snacks', serving: '1/4 cup' },
+  { name: 'Makhana (Roasted)', cal: 100, protein: 3, carbs: 18, fat: 1, region: '🍫 Snacks', serving: '1 cup' },
+  { name: 'Energy Bar', cal: 220, protein: 10, carbs: 28, fat: 8, region: '🍫 Snacks', serving: '1 bar' },
 ]
 
 export function searchFoods(query: string, custom: FoodItem[] = []): FoodItem[] {

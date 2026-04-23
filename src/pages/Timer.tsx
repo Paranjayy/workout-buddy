@@ -254,11 +254,23 @@ function ActivityTimer() {
   // Pulse animation intensity
   const pulse = running ? Math.sin(secs * 0.5) * 0.5 + 0.5 : 0
 
+  const [customInterval, setCustomInterval] = useState('')
+
   const ACTIVITIES = ['Stairs', 'Walking', 'Running', 'Cycling', 'Jump Rope', 'Other']
   const INTERVALS = [
+    { val: 1, label: '1s' }, { val: 5, label: '5s' }, { val: 10, label: '10s' },
     { val: 15, label: '15s' }, { val: 30, label: '30s' }, { val: 60, label: '1m' },
-    { val: 120, label: '2m' }, { val: 300, label: '5m' },
+    { val: 120, label: '2m' }, { val: 300, label: '5m' }, { val: 0, label: 'Custom' },
   ]
+
+  // Session stats from flag gaps
+  const flagGaps = flags.map((f, i) => i === 0 ? f.time : f.time - flags[i - 1].time)
+  const stats = flagGaps.length > 0 ? {
+    min: Math.min(...flagGaps),
+    max: Math.max(...flagGaps),
+    avg: Math.round(flagGaps.reduce((a, b) => a + b, 0) / flagGaps.length),
+    median: (() => { const s = [...flagGaps].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : Math.round((s[m - 1] + s[m]) / 2) })(),
+  } : null
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--sp-5)', paddingTop: 'var(--sp-5)' }}>
@@ -290,10 +302,13 @@ function ActivityTimer() {
 
       {/* Stats */}
       {(flags.length > 0 || secs > 0) && (
-        <div style={{ display: 'flex', gap: 'var(--sp-4)', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 'var(--sp-3)', flexWrap: 'wrap', justifyContent: 'center' }}>
           <MiniStat label="Flags" value={flags.length} />
-          <MiniStat label="Steps" value={`~${stepCount}`} />
-          {stepsPerFlag > 0 && <MiniStat label="Avg/flag" value={`${stepsPerFlag}s`} />}
+          <MiniStat label="Reps" value={`~${stepCount}`} />
+          {stats && <MiniStat label="Min" value={`${stats.min}s`} />}
+          {stats && <MiniStat label="Max" value={`${stats.max}s`} />}
+          {stats && <MiniStat label="Avg" value={`${stats.avg}s`} />}
+          {stats && flagGaps.length > 2 && <MiniStat label="Median" value={`${stats.median}s`} />}
         </div>
       )}
 
@@ -317,6 +332,12 @@ function ActivityTimer() {
                   onClick={() => setVoiceInterval(i.val)}>{i.label}</button>
               ))}
             </div>
+            {voiceInterval === 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginTop: 'var(--sp-2)' }}>
+                <input className="form-input" type="number" min={1} max={3600} value={customInterval} onChange={e => setCustomInterval(e.target.value)} placeholder="seconds" style={{ width: 100, padding: '4px 8px', fontSize: 'var(--fs-xs)' }} />
+                <button className="btn btn--primary btn--sm" onClick={() => { if (+customInterval > 0) setVoiceInterval(+customInterval) }}>Set</button>
+              </div>
+            )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)', fontSize: 'var(--fs-sm)' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', cursor: 'pointer' }}>

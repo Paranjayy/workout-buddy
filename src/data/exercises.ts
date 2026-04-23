@@ -18,6 +18,15 @@ const strength: ExerciseRaw[] = [
   { id: 's13', name: 'Romanian Deadlift', muscle: 'Hamstrings', equipment: 'Barbell' },
   { id: 's14', name: 'Cable Fly', muscle: 'Chest', equipment: 'Cable' },
   { id: 's15', name: 'Face Pull', muscle: 'Rear Delts', equipment: 'Cable' },
+  { id: 's16', name: 'Incline Bench Press', muscle: 'Upper Chest', equipment: 'Barbell' },
+  { id: 's17', name: 'Hammer Curl', muscle: 'Arms', equipment: 'Dumbbell' },
+  { id: 's18', name: 'Skull Crusher', muscle: 'Triceps', equipment: 'Barbell' },
+  { id: 's19', name: 'Calf Raises', muscle: 'Calves', equipment: 'Machine' },
+  { id: 's20', name: 'Leg Curl', muscle: 'Hamstrings', equipment: 'Machine' },
+  { id: 's21', name: 'Shrugs', muscle: 'Traps', equipment: 'Dumbbell' },
+  { id: 's22', name: 'Chest Dips', muscle: 'Chest/Triceps', equipment: 'Bodyweight' },
+  { id: 's23', name: 'Hip Thrust', muscle: 'Glutes', equipment: 'Barbell' },
+  { id: 's24', name: 'Farmer\'s Walk', muscle: 'Full Body', equipment: 'Dumbbell' },
 ]
 
 const bodyweight: ExerciseRaw[] = [
@@ -31,6 +40,16 @@ const bodyweight: ExerciseRaw[] = [
   { id: 'b8', name: 'Bodyweight Squats', muscle: 'Legs' },
   { id: 'b9', name: 'Chin-ups', muscle: 'Back/Arms' },
   { id: 'b10', name: 'Pike Push-ups', muscle: 'Shoulders' },
+  { id: 'b11', name: 'Diamond Push-ups', muscle: 'Triceps' },
+  { id: 'b12', name: 'Glute Bridge', muscle: 'Glutes' },
+  { id: 'b13', name: 'Leg Raises', muscle: 'Core' },
+  { id: 'b14', name: 'Russian Twist', muscle: 'Core' },
+  { id: 'b15', name: 'Superman Hold', muscle: 'Lower Back', isTime: true },
+  { id: 'b16', name: 'Wall Sit', muscle: 'Legs', isTime: true },
+  { id: 'b17', name: 'Side Plank', muscle: 'Obliques', isTime: true },
+  { id: 'b18', name: 'Squat Jumps', muscle: 'Legs' },
+  { id: 'b19', name: 'Jumping Jacks', muscle: 'Full Body' },
+  { id: 'b20', name: 'High Knees', muscle: 'Core/Cardio', isTime: true },
 ]
 
 const cardio: ExerciseRaw[] = [
@@ -42,6 +61,10 @@ const cardio: ExerciseRaw[] = [
   { id: 'c6', name: 'Walking', isTime: true, calPerMin: 5 },
   { id: 'c7', name: 'Stair Climber', isTime: true, calPerMin: 10 },
   { id: 'c8', name: 'HIIT', isTime: true, calPerMin: 14 },
+  { id: 'c9', name: 'Elliptical', isTime: true, calPerMin: 7 },
+  { id: 'c10', name: 'Brisk Walking', isTime: true, calPerMin: 6 },
+  { id: 'c11', name: 'Boxing / Kickboxing', isTime: true, calPerMin: 12 },
+  { id: 'c12', name: 'Dancing', isTime: true, calPerMin: 7 },
 ]
 
 const yoga: ExerciseRaw[] = [
@@ -50,6 +73,9 @@ const yoga: ExerciseRaw[] = [
   { id: 'y3', name: 'Warrior Sequence', isTime: true },
   { id: 'y4', name: 'Hip Opener Flow', isTime: true },
   { id: 'y5', name: 'Restorative Yoga', isTime: true },
+  { id: 'y6', name: 'Power Yoga', isTime: true },
+  { id: 'y7', name: 'Yin Yoga', isTime: true },
+  { id: 'y8', name: 'Balance Poses', isTime: true },
 ]
 
 export const EXERCISES = {

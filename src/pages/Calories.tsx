@@ -36,13 +36,13 @@ function MacroRing({ pct, color, label, val }: { pct: number; color: string; lab
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--sp-1)' }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="oklch(92% 0.01 75)" strokeWidth="5"/>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--clr-surface-2)" strokeWidth="5"/>
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="5"
           strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
           transform={`rotate(-90 ${size/2} ${size/2})`}
           style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.25,1,0.5,1)' }}/>
         <text x={size/2} y={size/2} textAnchor="middle" dominantBaseline="central"
-          fontFamily="var(--ff-display)" fontSize="13" fontWeight="700" fill="oklch(22% 0.02 60)">{val}</text>
+          fontFamily="var(--ff-display)" fontSize="13" fontWeight="700" fill="var(--clr-text)">{val}</text>
       </svg>
       <span style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)' }}>{label}</span>
     </div>
@@ -52,14 +52,15 @@ function MacroRing({ pct, color, label, val }: { pct: number; color: string; lab
 function LogMeal({ showToast }: { showToast: (m: string) => void }) {
   const [query, setQuery] = useState('')
   const [mealType, setMealType] = useState<MealType>('lunch')
-  const [staged, setStaged] = useState<FoodItem[]>([])
+  const [staged, setStaged] = useState<(FoodItem & { qty: number })[]>([])
   const [, forceUpdate] = useState(0)
   const profile = store.get<Profile>(KEYS.PROFILE, {} as Profile)
   const today = todayKey()
 
   const todayMeals = store.get<MealEntry[]>(KEYS.MEALS, []).filter(m => m.date === today)
   const allItems = todayMeals.flatMap(m => m.items)
-  const totals = allItems.reduce((acc, i) => ({ cal: acc.cal + i.cal, protein: acc.protein + i.protein, carbs: acc.carbs + i.carbs, fat: acc.fat + i.fat }), { cal: 0, protein: 0, carbs: 0, fat: 0 })
+  const stagedTotals = staged.reduce((a, i) => ({ cal: a.cal + Math.round(i.cal * i.qty), protein: a.protein + Math.round(i.protein * i.qty), carbs: a.carbs + Math.round(i.carbs * i.qty), fat: a.fat + Math.round(i.fat * i.qty) }), { cal: 0, protein: 0, carbs: 0, fat: 0 })
+  const totals = allItems.reduce((acc, i) => ({ cal: acc.cal + i.cal, protein: acc.protein + i.protein, carbs: acc.carbs + i.carbs, fat: acc.fat + i.fat }), stagedTotals)
 
   const results = query.length > 1 ? searchFoods(query) : []
 
@@ -67,7 +68,7 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
     if (!staged.length) return
     store.push<MealEntry>(KEYS.MEALS, {
       id: uid(), date: today, type: mealType,
-      items: staged.map(f => ({ ...f, entryId: uid() })),
+      items: staged.map(f => ({ ...f, cal: Math.round(f.cal * f.qty), protein: Math.round(f.protein * f.qty), carbs: Math.round(f.carbs * f.qty), fat: Math.round(f.fat * f.qty), serving: f.qty !== 1 ? `${f.qty}× ${f.serving ?? '1 serving'}` : (f.serving ?? '1 serving'), entryId: uid() })),
     })
     setStaged([])
     forceUpdate(n => n + 1)
@@ -90,13 +91,13 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
       </div>
 
       <div className="search-bar" style={{ position: 'relative', marginBottom: 'var(--sp-4)' }}>
-        <input className="search-bar__input" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search 80+ global foods (butter chicken, sushi, tacos…)" />
+        <input className="search-bar__input" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search 90+ global foods (butter chicken, sushi, tacos…)" />
         {results.length > 0 && (
           <div className="food-results" style={{ display: 'block' }}>
             {results.map((f, i) => (
-              <div key={i} className="food-result" onClick={() => { setStaged(p => [...p, f]); setQuery('') }}>
+              <div key={i} className="food-result" onClick={() => { setStaged(p => [...p, { ...f, qty: 1 }]); setQuery('') }}>
                 <span className="food-item__name">{f.name}</span>
-                <span className="food-item__region">{f.region}</span>
+                <span className="food-item__region">{f.region} · {f.serving}</span>
                 <span className="food-item__cal">{f.cal} kcal</span>
               </div>
             ))}
@@ -108,13 +109,15 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
         <div style={{ marginBottom: 'var(--sp-5)', padding: 'var(--sp-4)', background: 'var(--clr-accent-l)', borderRadius: 'var(--r-md)', border: '1px solid var(--clr-accent-d)' }}>
           <h4 style={{ fontWeight: 600, fontSize: 'var(--fs-sm)', marginBottom: 'var(--sp-3)' }}>Staged ({staged.length})</h4>
           {staged.map((f, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--fs-xs)', padding: 'var(--sp-1) 0' }}>
-              <span>{f.name}</span>
-              <div style={{ display: 'flex', gap: 'var(--sp-3)', color: 'var(--clr-text-3)' }}>
-                <span>{f.cal} kcal</span>
-                <span>{f.protein}g P</span>
-                <button onClick={() => setStaged(p => p.filter((_, j) => j !== i))} style={{ color: 'var(--clr-rose)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem' }}>✕</button>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)', fontSize: 'var(--fs-xs)', padding: 'var(--sp-2) 0', borderBottom: i < staged.length - 1 ? '1px solid var(--clr-border)' : 'none' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', minWidth: 70 }}>
+                <button onClick={() => setStaged(p => p.map((x, j) => j === i ? { ...x, qty: Math.max(0.25, x.qty - 0.25) } : x))} className="btn btn--ghost btn--sm" style={{ padding: '2px 6px', fontSize: '0.7rem' }}>−</button>
+                <span style={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums', minWidth: 28, textAlign: 'center' }}>{f.qty}×</span>
+                <button onClick={() => setStaged(p => p.map((x, j) => j === i ? { ...x, qty: x.qty + 0.25 } : x))} className="btn btn--ghost btn--sm" style={{ padding: '2px 6px', fontSize: '0.7rem' }}>+</button>
               </div>
+              <span style={{ flex: 1 }}>{f.name} <span style={{ color: 'var(--clr-text-3)' }}>({f.serving})</span></span>
+              <span style={{ fontWeight: 600, minWidth: 50, textAlign: 'right' }}>{Math.round(f.cal * f.qty)}</span>
+              <button onClick={() => setStaged(p => p.filter((_, j) => j !== i))} style={{ color: 'var(--clr-rose)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.75rem' }}>✕</button>
             </div>
           ))}
           <button className="btn btn--primary btn--sm" style={{ marginTop: 'var(--sp-3)' }} onClick={save}>Save {mealType.charAt(0).toUpperCase() + mealType.slice(1)}</button>
