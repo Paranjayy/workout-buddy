@@ -1,0 +1,77 @@
+// Exercise database — categorized by type
+
+export const EXERCISES = {
+  strength: [
+    { id: 's1', name: 'Bench Press', muscle: 'Chest', equipment: 'Barbell' },
+    { id: 's2', name: 'Squat', muscle: 'Legs', equipment: 'Barbell' },
+    { id: 's3', name: 'Deadlift', muscle: 'Back', equipment: 'Barbell' },
+    { id: 's4', name: 'Overhead Press', muscle: 'Shoulders', equipment: 'Barbell' },
+    { id: 's5', name: 'Barbell Row', muscle: 'Back', equipment: 'Barbell' },
+    { id: 's6', name: 'Dumbbell Curl', muscle: 'Arms', equipment: 'Dumbbell' },
+    { id: 's7', name: 'Tricep Pushdown', muscle: 'Arms', equipment: 'Cable' },
+    { id: 's8', name: 'Lat Pulldown', muscle: 'Back', equipment: 'Cable' },
+    { id: 's9', name: 'Leg Press', muscle: 'Legs', equipment: 'Machine' },
+    { id: 's10', name: 'Dumbbell Fly', muscle: 'Chest', equipment: 'Dumbbell' },
+    { id: 's11', name: 'Lateral Raise', muscle: 'Shoulders', equipment: 'Dumbbell' },
+    { id: 's12', name: 'Lunges', muscle: 'Legs', equipment: 'Dumbbell' },
+    { id: 's13', name: 'Romanian Deadlift', muscle: 'Legs', equipment: 'Barbell' },
+    { id: 's14', name: 'Cable Fly', muscle: 'Chest', equipment: 'Cable' },
+    { id: 's15', name: 'Face Pull', muscle: 'Shoulders', equipment: 'Cable' },
+  ],
+  bodyweight: [
+    { id: 'b1', name: 'Push-ups', muscle: 'Chest' },
+    { id: 'b2', name: 'Pull-ups', muscle: 'Back' },
+    { id: 'b3', name: 'Dips', muscle: 'Chest/Triceps' },
+    { id: 'b4', name: 'Plank', muscle: 'Core', isTime: true },
+    { id: 'b5', name: 'Crunches', muscle: 'Core' },
+    { id: 'b6', name: 'Burpees', muscle: 'Full Body' },
+    { id: 'b7', name: 'Mountain Climbers', muscle: 'Core', isTime: true },
+    { id: 'b8', name: 'Bodyweight Squats', muscle: 'Legs' },
+    { id: 'b9', name: 'Chin-ups', muscle: 'Back/Arms' },
+    { id: 'b10', name: 'Pike Push-ups', muscle: 'Shoulders' },
+  ],
+  cardio: [
+    { id: 'c1', name: 'Running', isTime: true, calPerMin: 11 },
+    { id: 'c2', name: 'Cycling', isTime: true, calPerMin: 8 },
+    { id: 'c3', name: 'Swimming', isTime: true, calPerMin: 10 },
+    { id: 'c4', name: 'Jump Rope', isTime: true, calPerMin: 13 },
+    { id: 'c5', name: 'Rowing', isTime: true, calPerMin: 9 },
+    { id: 'c6', name: 'Walking', isTime: true, calPerMin: 5 },
+    { id: 'c7', name: 'Stair Climber', isTime: true, calPerMin: 10 },
+    { id: 'c8', name: 'HIIT', isTime: true, calPerMin: 14 },
+    { id: 'c9', name: 'Elliptical', isTime: true, calPerMin: 7 },
+  ],
+  yoga: [
+    { id: 'y1', name: 'Sun Salutation', isTime: true },
+    { id: 'y2', name: 'Vinyasa Flow', isTime: true },
+    { id: 'y3', name: 'Warrior Sequence', isTime: true },
+    { id: 'y4', name: 'Hip Opener Flow', isTime: true },
+    { id: 'y5', name: 'Restorative Yoga', isTime: true },
+    { id: 'y6', name: 'Power Yoga', isTime: true },
+  ],
+};
+
+export function searchExercises(query) {
+  const q = query.toLowerCase().trim();
+  if (!q) return [];
+  const all = [
+    ...EXERCISES.strength.map(e => ({ ...e, type: 'strength' })),
+    ...EXERCISES.bodyweight.map(e => ({ ...e, type: 'bodyweight' })),
+    ...EXERCISES.cardio.map(e => ({ ...e, type: 'cardio' })),
+    ...EXERCISES.yoga.map(e => ({ ...e, type: 'yoga' })),
+  ];
+  return all.filter(e =>
+    e.name.toLowerCase().includes(q) ||
+    (e.muscle && e.muscle.toLowerCase().includes(q)) ||
+    e.type.includes(q)
+  ).slice(0, 10);
+}
+
+export function getAllExercises() {
+  return [
+    ...EXERCISES.strength.map(e => ({ ...e, type: 'strength' })),
+    ...EXERCISES.bodyweight.map(e => ({ ...e, type: 'bodyweight' })),
+    ...EXERCISES.cardio.map(e => ({ ...e, type: 'cardio' })),
+    ...EXERCISES.yoga.map(e => ({ ...e, type: 'yoga' })),
+  ];
+}
