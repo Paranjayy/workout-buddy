@@ -57,4 +57,6 @@ export const KEYS = {
   CUSTOM_FOODS: 'custom_foods',
   FOOD_QUEUE: 'food_queue',  // crowdsource queue
   CUSTOM_PLAYLISTS: 'custom_playlists',
+  WATER_LOG: 'water_log',
+  WEIGHT_LOG: 'weight_log',
 };

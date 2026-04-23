@@ -1,6 +1,7 @@
 // Workout tracker view
 
 import { getAllExercises, EXERCISES } from '../data/exercises.js';
+import { TEMPLATES, getTemplatesByCategory } from '../data/templates.js';
 import { store, KEYS } from '../utils/storage.js';
 import { todayKey, uid, formatDate } from '../utils/time.js';
 
@@ -18,6 +19,7 @@ export function renderWorkout() {
 
       <div class="tabs" id="workout-tabs">
         <button class="tab tab--active" data-tab="log">Log Workout</button>
+        <button class="tab" data-tab="templates">Templates</button>
         <button class="tab" data-tab="history">History</button>
         <button class="tab" data-tab="exercises">Exercise Library</button>
       </div>
@@ -32,12 +34,43 @@ export function renderWorkout() {
   function showTab(name) {
     tabs.forEach(t => t.classList.toggle('tab--active', t.dataset.tab === name));
     if (name === 'log') renderLogTab(tabContent);
+    else if (name === 'templates') renderTemplatesTab(tabContent);
     else if (name === 'history') renderHistoryTab(tabContent);
     else renderLibraryTab(tabContent);
   }
 
   tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
-  showTab('log');
+
+  // Check if a template was selected from dashboard
+  const activeTemplate = store.get('_active_template');
+  if (activeTemplate) {
+    store.remove('_active_template');
+    showTab('log');
+    // Auto-log all exercises from template after a tick
+    setTimeout(() => {
+      activeTemplate.exercises.forEach(ex => {
+        const entry = {
+          id: uid(),
+          date: todayKey(),
+          exercise: ex.name,
+          type: ex.type || 'strength',
+          sets: ex.sets,
+          reps: ex.reps,
+          weight: null,
+          duration: ex.duration || null,
+          detail: ex.isTime
+            ? `${ex.sets} rounds · ${Math.round((ex.duration || 0) / 60)} min`
+            : `${ex.sets}×${ex.reps}`,
+          time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        };
+        store.push(KEYS.WORKOUTS, entry);
+      });
+      renderTodayLog();
+      showToast(`${activeTemplate.name} loaded — ${activeTemplate.exercises.length} exercises ✓`);
+    }, 100);
+  } else {
+    showTab('log');
+  }
 }
 
 function renderLogTab(container) {
@@ -184,6 +217,60 @@ function renderTodayLog() {
       <div class="workout-entry__meta">${w.time}</div>
     </div>
   `).join('')}</div>`;
+}
+
+function renderTemplatesTab(container) {
+  const cats = getTemplatesByCategory();
+
+  container.innerHTML = Object.entries(cats).map(([cat, templates]) => `
+    <div style="margin-bottom: var(--sp-6)">
+      <h3 class="section-title">${cat}</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--sp-4)">
+        ${templates.map(t => `
+          <div style="padding: var(--sp-5); border-radius: var(--r-lg); border: 1px solid var(--clr-border); background: var(--clr-surface)">
+            <div style="display: flex; align-items: center; gap: var(--sp-3); margin-bottom: var(--sp-4)">
+              <span style="font-size: 1.5rem">${t.emoji}</span>
+              <div>
+                <div style="font-weight: 600; font-size: var(--fs-sm)">${t.name}</div>
+                <div style="font-size: var(--fs-xs); color: var(--clr-text-3)">${t.description}</div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: var(--sp-2); margin-bottom: var(--sp-4)">
+              ${t.exercises.map(e => `
+                <div style="display: flex; justify-content: space-between; font-size: var(--fs-xs); padding: var(--sp-1) 0">
+                  <span>${e.name}</span>
+                  <span style="color: var(--clr-text-3)">${e.isTime ? `${e.sets}×${Math.round((e.duration||0)/60)}min` : `${e.sets}×${e.reps}`}</span>
+                </div>
+              `).join('')}
+            </div>
+            <button class="btn btn--primary btn--sm template-start" data-id="${t.id}" style="width: 100%">Start Workout</button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.template-start').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = TEMPLATES.find(x => x.id === btn.dataset.id);
+      if (!t) return;
+      t.exercises.forEach(ex => {
+        store.push(KEYS.WORKOUTS, {
+          id: uid(),
+          date: todayKey(),
+          exercise: ex.name,
+          type: ex.type || 'strength',
+          sets: ex.sets,
+          reps: ex.reps,
+          weight: null,
+          duration: ex.duration || null,
+          detail: ex.isTime ? `${ex.sets} rounds · ${Math.round((ex.duration||0)/60)} min` : `${ex.sets}×${ex.reps}`,
+          time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        });
+      });
+      showToast(`${t.name} loaded — ${t.exercises.length} exercises ✓`);
+    });
+  });
 }
 
 function renderHistoryTab(container) {

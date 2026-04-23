@@ -8,12 +8,16 @@ import { renderCalories } from './components/calories.js';
 import { renderProgress } from './components/progress.js';
 import { renderCalendar } from './components/calendar.js';
 import { renderMusic } from './components/music.js';
+import { renderTimer } from './components/timer.js';
+import { renderBody } from './components/body.js';
 import { renderSettings } from './components/settings.js';
 
 const VIEWS = {
   dashboard: renderDashboard,
   workout: renderWorkout,
   calories: renderCalories,
+  body: renderBody,
+  timer: renderTimer,
   progress: renderProgress,
   calendar: renderCalendar,
   music: renderMusic,
