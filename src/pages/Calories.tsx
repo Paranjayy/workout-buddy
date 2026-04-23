@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { searchFoods, foodEmoji } from '../data/foods'
 import { store, KEYS } from '../utils/storage'
 import { todayKey, uid } from '../utils/time'
@@ -7,19 +7,37 @@ import type { FoodItem, MealEntry, Profile } from '../types'
 
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
 
-// Real food photo via Unsplash (free, no key needed for source API)
+// TheMealDB — free, CC-licensed food images, no API key required
+const mealImageCache = new Map<string, string | null>()
+
 function FoodImg({ name, size = 40 }: { name: string; size?: number }) {
-  const [err, setErr] = useState(false)
-  const query = encodeURIComponent(name.split('(')[0].trim())
-  return err ? (
-    <span style={{ fontSize: size > 32 ? '1.3rem' : '1rem', lineHeight: 1 }}>{foodEmoji(name)}</span>
-  ) : (
-    <img
-      src={`https://source.unsplash.com/${size}x${size}/?food,${query}`}
-      alt={name}
-      onError={() => setErr(true)}
-      style={{ width: size, height: size, borderRadius: size > 32 ? 'var(--r-sm)' : '50%', objectFit: 'cover', flexShrink: 0 }}
-    />
+  const [src, setSrc] = useState<string | null | 'loading'>('loading')
+  const query = name.split('(')[0].trim()
+
+  useEffect(() => {
+    if (mealImageCache.has(query)) {
+      setSrc(mealImageCache.get(query) ?? null); return
+    }
+    setSrc('loading')
+    fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`)
+      .then(r => r.json())
+      .then(d => {
+        const img = d.meals?.[0]?.strMealThumb ?? null
+        mealImageCache.set(query, img)
+        setSrc(img)
+      })
+      .catch(() => { mealImageCache.set(query, null); setSrc(null) })
+  }, [query])
+
+  if (src === 'loading') return (
+    <div style={{ width: size, height: size, borderRadius: size > 32 ? 'var(--r-sm)' : '50%', background: 'var(--clr-surface-2)', flexShrink: 0, display: 'grid', placeItems: 'center', fontSize: size > 32 ? '1rem' : '0.75rem' }}>
+      {foodEmoji(name)}
+    </div>
+  )
+  if (!src) return <span style={{ fontSize: size > 32 ? '1.3rem' : '1rem' }}>{foodEmoji(name)}</span>
+  return (
+    <img src={`${src}/preview`} alt={name} onError={() => setSrc(null)}
+      style={{ width: size, height: size, borderRadius: size > 32 ? 'var(--r-sm)' : '50%', objectFit: 'cover', flexShrink: 0 }} />
   )
 }
 

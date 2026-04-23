@@ -78,11 +78,41 @@ const yoga: ExerciseRaw[] = [
   { id: 'y8', name: 'Balance Poses', isTime: true },
 ]
 
+const sports: ExerciseRaw[] = [
+  // Team sports
+  { id: 'sp1', name: 'Basketball', isTime: true, calPerMin: 9, muscle: 'Full Body' },
+  { id: 'sp2', name: 'Football / Soccer', isTime: true, calPerMin: 10, muscle: 'Full Body' },
+  { id: 'sp3', name: 'Cricket', isTime: true, calPerMin: 6, muscle: 'Full Body' },
+  { id: 'sp4', name: 'Volleyball', isTime: true, calPerMin: 8, muscle: 'Full Body' },
+  { id: 'sp5', name: 'Badminton', isTime: true, calPerMin: 9, muscle: 'Full Body' },
+  { id: 'sp6', name: 'Table Tennis', isTime: true, calPerMin: 6, muscle: 'Full Body' },
+  { id: 'sp7', name: 'Tennis', isTime: true, calPerMin: 10, muscle: 'Full Body' },
+  // Outdoor / solo
+  { id: 'sp8', name: 'Hiking', isTime: true, calPerMin: 7, muscle: 'Full Body' },
+  { id: 'sp9', name: 'Rock Climbing', isTime: true, calPerMin: 10, muscle: 'Back/Arms' },
+  { id: 'sp10', name: 'Skateboarding', isTime: true, calPerMin: 6, muscle: 'Legs/Core' },
+  { id: 'sp11', name: 'Surfing', isTime: true, calPerMin: 7, muscle: 'Full Body' },
+  { id: 'sp12', name: 'Martial Arts (MMA/BJJ)', isTime: true, calPerMin: 11, muscle: 'Full Body' },
+  { id: 'sp13', name: 'Karate / Taekwondo', isTime: true, calPerMin: 10, muscle: 'Full Body' },
+  { id: 'sp14', name: 'Wrestling', isTime: true, calPerMin: 12, muscle: 'Full Body' },
+  // Home equipment
+  { id: 'sp15', name: 'Resistance Band Row', muscle: 'Back', equipment: 'Resistance Band' },
+  { id: 'sp16', name: 'Resistance Band Squat', muscle: 'Legs', equipment: 'Resistance Band' },
+  { id: 'sp17', name: 'Resistance Band Curl', muscle: 'Arms', equipment: 'Resistance Band' },
+  { id: 'sp18', name: 'Kettlebell Swing', muscle: 'Full Body', equipment: 'Kettlebell' },
+  { id: 'sp19', name: 'Kettlebell Goblet Squat', muscle: 'Legs', equipment: 'Kettlebell' },
+  { id: 'sp20', name: 'Kettlebell Clean & Press', muscle: 'Full Body', equipment: 'Kettlebell' },
+  { id: 'sp21', name: 'TRX Row', muscle: 'Back', equipment: 'TRX' },
+  { id: 'sp22', name: 'TRX Push-up', muscle: 'Chest', equipment: 'TRX' },
+  { id: 'sp23', name: 'Medicine Ball Slam', muscle: 'Core/Full Body', equipment: 'Medicine Ball' },
+]
+
 export const EXERCISES = {
   strength: strength.map(e => ({ ...e, type: 'strength' as const })),
   bodyweight: bodyweight.map(e => ({ ...e, type: 'bodyweight' as const })),
   cardio: cardio.map(e => ({ ...e, type: 'cardio' as const })),
   yoga: yoga.map(e => ({ ...e, type: 'yoga' as const })),
+  sports: sports.map(e => ({ ...e, type: 'sports' as const })),
 }
 
 export function getAllExercises(): Exercise[] {
@@ -91,6 +121,7 @@ export function getAllExercises(): Exercise[] {
     ...EXERCISES.bodyweight,
     ...EXERCISES.cardio,
     ...EXERCISES.yoga,
+    ...EXERCISES.sports,
   ]
 }
 

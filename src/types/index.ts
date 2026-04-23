@@ -19,7 +19,7 @@ export interface WorkoutEntry {
   id: string
   date: string
   exercise: string
-  type: 'strength' | 'bodyweight' | 'cardio' | 'yoga'
+  type: 'strength' | 'bodyweight' | 'cardio' | 'yoga' | 'sports'
   sets: number
   reps: number | null
   weight: number | null
@@ -52,7 +52,7 @@ export interface Exercise {
   equipment?: string
   isTime?: boolean
   calPerMin?: number
-  type: 'strength' | 'bodyweight' | 'cardio' | 'yoga'
+  type: 'strength' | 'bodyweight' | 'cardio' | 'yoga' | 'sports'
 }
 
 export interface WorkoutTemplate {
@@ -69,7 +69,7 @@ export interface TemplateExercise {
   sets: number
   reps: number | null
   duration?: number
-  type: 'strength' | 'bodyweight' | 'cardio' | 'yoga'
+  type: 'strength' | 'bodyweight' | 'cardio' | 'yoga' | 'sports'
   isTime?: boolean
 }
 

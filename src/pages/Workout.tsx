@@ -350,13 +350,13 @@ function LibraryTab() {
       {(Object.keys(EXERCISES) as (keyof typeof EXERCISES)[]).map(cat => (
         <div key={cat} style={{ marginBottom: 'var(--sp-6)' }}>
           <h3 className="section-title" style={{ textTransform: 'capitalize' }}>
-            {cat === 'bodyweight' ? '💪 Bodyweight' : cat === 'strength' ? '🏋️ Strength' : cat === 'cardio' ? '🏃 Cardio' : '🧘 Yoga'}
+            {cat === 'bodyweight' ? '💪 Bodyweight' : cat === 'strength' ? '🏋️ Strength' : cat === 'cardio' ? '🏃 Cardio' : cat === 'sports' ? '⚽ Sports & Outdoor' : '🧘 Yoga'}
           </h3>
           <div className="workout-list">
             {EXERCISES[cat].map(e => (
               <div key={e.id} className="workout-entry">
                 <div className={`workout-entry__icon workout-entry__icon--${cat}`}>
-                  {cat === 'cardio' ? '🏃' : cat === 'yoga' ? '🧘' : cat === 'bodyweight' ? '💪' : '🏋️'}
+                  {cat === 'cardio' ? '🏃' : cat === 'yoga' ? '🧘' : cat === 'bodyweight' ? '💪' : cat === 'sports' ? '⚽' : '🏋️'}
                 </div>
                 <div>
                   <div className="workout-entry__name">{e.name}</div>
@@ -371,3 +371,4 @@ function LibraryTab() {
     </div>
   )
 }
+

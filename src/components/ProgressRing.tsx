@@ -14,7 +14,8 @@ export function ProgressRing({ percent, color, size = 80, label, sublabel }: Pro
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--sp-2)' }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="oklch(90% 0.01 75)" strokeWidth="5" />
+        {/* Track — uses CSS var so it works in dark mode */}
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--clr-surface-2)" strokeWidth="5" />
         <circle
           cx={size / 2} cy={size / 2} r={r} fill="none"
           stroke={color} strokeWidth="5"
@@ -27,7 +28,7 @@ export function ProgressRing({ percent, color, size = 80, label, sublabel }: Pro
           x={size / 2} y={label ? size / 2 - 6 : size / 2}
           textAnchor="middle" dominantBaseline="central"
           fontFamily="var(--ff-display)" fontSize={size * 0.2} fontWeight="700"
-          fill="oklch(22% 0.02 60)"
+          fill="var(--clr-text)"
         >
           {Math.round(percent)}%
         </text>
@@ -36,7 +37,7 @@ export function ProgressRing({ percent, color, size = 80, label, sublabel }: Pro
             x={size / 2} y={size / 2 + 14}
             textAnchor="middle"
             fontFamily="var(--ff-body)" fontSize={size * 0.1} fontWeight="500"
-            fill="oklch(50% 0.02 60)"
+            fill="var(--clr-text-3)"
           >
             {label}
           </text>
