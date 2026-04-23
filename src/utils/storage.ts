@@ -43,4 +43,5 @@ export const KEYS = {
   WEIGHT_LOG: 'weight_log',
   JOURNAL: 'journal',
   ACHIEVEMENTS: 'achievements',
+  CUSTOM_PROGRAMS: 'custom_programs',
 } as const

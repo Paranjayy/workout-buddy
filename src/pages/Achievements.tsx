@@ -70,7 +70,7 @@ export function Achievements() {
     { key: 'nutrition', label: '🍎 Nutrition', color: 'var(--clr-amber-l)' },
     { key: 'consistency', label: '🔗 Consistency', color: 'var(--clr-sky-l)' },
     { key: 'wellness', label: '💧 Wellness', color: 'var(--clr-rose-l)' },
-    { key: 'milestone', label: '🏅 Milestones', color: 'oklch(94% 0.04 300)' },
+    { key: 'milestone', label: '🏅 Milestones', color: 'var(--clr-surface-2)' },
   ] as const
 
   return (
@@ -83,14 +83,14 @@ export function Achievements() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-5)', marginBottom: 'var(--sp-7)', padding: 'var(--sp-5)', borderRadius: 'var(--r-xl)', border: '1px solid var(--clr-border)', background: 'var(--clr-surface)' }}>
         <div style={{ position: 'relative', width: 100, height: 100, flexShrink: 0 }}>
           <svg width={100} height={100} viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="42" fill="none" stroke="oklch(90% 0.01 75)" strokeWidth="8" />
-            <circle cx="50" cy="50" r="42" fill="none" stroke="oklch(55% 0.18 155)" strokeWidth="8"
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--clr-surface-2)" strokeWidth="8" />
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--clr-accent)" strokeWidth="8"
               strokeDasharray={2 * Math.PI * 42} strokeDashoffset={2 * Math.PI * 42 - (2 * Math.PI * 42 * pct) / 100}
               strokeLinecap="round" transform="rotate(-90 50 50)"
               style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.25,1,0.5,1)' }} />
             <text x="50" y="46" textAnchor="middle" dominantBaseline="central"
-              fontFamily="var(--ff-display)" fontSize="22" fontWeight="700" fill="oklch(22% 0.02 60)">{pct}%</text>
-            <text x="50" y="64" textAnchor="middle" fontFamily="var(--ff-body)" fontSize="9" fill="oklch(50% 0.02 60)">complete</text>
+              fontFamily="var(--ff-display)" fontSize="22" fontWeight="700" fill="var(--clr-text)">{pct}%</text>
+            <text x="50" y="64" textAnchor="middle" fontFamily="var(--ff-body)" fontSize="9" fill="var(--clr-text-3)">complete</text>
           </svg>
         </div>
         <div>
@@ -131,7 +131,7 @@ export function Achievements() {
                 return (
                   <div key={a.id} style={{
                     padding: 'var(--sp-4)', borderRadius: 'var(--r-lg)',
-                    border: `1px solid ${isUnlocked ? 'oklch(70% 0.08 155)' : 'var(--clr-border)'}`,
+                    border: `1px solid ${isUnlocked ? 'var(--clr-accent)' : 'var(--clr-border)'}`,
                     background: isUnlocked ? cat.color : 'var(--clr-surface)',
                     opacity: isUnlocked ? 1 : 0.55,
                     transition: 'transform var(--dur-md) var(--ease-out)',
