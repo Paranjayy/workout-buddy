@@ -7,6 +7,22 @@ import type { FoodItem, MealEntry, Profile } from '../types'
 
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
 
+// Real food photo via Unsplash (free, no key needed for source API)
+function FoodImg({ name, size = 40 }: { name: string; size?: number }) {
+  const [err, setErr] = useState(false)
+  const query = encodeURIComponent(name.split('(')[0].trim())
+  return err ? (
+    <span style={{ fontSize: size > 32 ? '1.3rem' : '1rem', lineHeight: 1 }}>{foodEmoji(name)}</span>
+  ) : (
+    <img
+      src={`https://source.unsplash.com/${size}x${size}/?food,${query}`}
+      alt={name}
+      onError={() => setErr(true)}
+      style={{ width: size, height: size, borderRadius: size > 32 ? 'var(--r-sm)' : '50%', objectFit: 'cover', flexShrink: 0 }}
+    />
+  )
+}
+
 export function Calories() {
   const [tab, setTab] = useState<'log' | 'history' | 'custom'>('log')
   const { showToast } = useToast()
@@ -95,8 +111,9 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
         {results.length > 0 && (
           <div className="food-results" style={{ display: 'block' }}>
             {results.map((f, i) => (
-              <div key={i} className="food-result" onClick={() => { setStaged(p => [...p, { ...f, qty: 1 }]); setQuery('') }}>
-                <span style={{ fontSize: '1.1rem' }}>{foodEmoji(f.name)}</span>
+              <div key={i} className="food-result" onClick={() => { setStaged(p => [...p, { ...f, qty: 1 }]); setQuery('') }}
+                style={{ gap: 'var(--sp-3)', alignItems: 'center' }}>
+                <FoodImg name={f.name} size={36} />
                 <span className="food-item__name">{f.name}</span>
                 <span className="food-item__region">{f.region} · {f.serving}</span>
                 <span className="food-item__cal">{f.cal} kcal</span>
@@ -136,7 +153,9 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
               <div className="workout-list">
                 {meal.items.map(item => (
                   <div key={item.entryId} className="workout-entry">
-                    <div className="workout-entry__icon" style={{ background: 'var(--clr-amber-l)', fontSize: '1.1rem' }}>{foodEmoji(item.name)}</div>
+                    <div className="workout-entry__icon" style={{ background: 'var(--clr-amber-l)', overflow: 'hidden', padding: 0 }}>
+                      <FoodImg name={item.name} size={40} />
+                    </div>
                     <div>
                       <div className="workout-entry__name">{item.name}</div>
                       <div className="workout-entry__detail">{item.region} · {item.serving}</div>

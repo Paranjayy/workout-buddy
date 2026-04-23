@@ -8,6 +8,83 @@ import type { WorkoutEntry } from '../types'
 
 type Tab = 'log' | 'templates' | 'history' | 'library'
 
+// Animated SVG exercise visual — CSS-animated stick figure
+function ExerciseVisual({ type, name }: { type: string; name: string }) {
+  const n = name.toLowerCase()
+  const color = type === 'cardio' ? 'var(--clr-rose)' : type === 'yoga' ? 'var(--clr-sky)' : type === 'bodyweight' ? 'var(--clr-amber)' : 'var(--clr-accent)'
+
+  // Pick animation class based on exercise
+  const anim = n.includes('run') || n.includes('walk') ? 'ex-run'
+    : n.includes('push') || n.includes('bench') || n.includes('press') ? 'ex-push'
+    : n.includes('squat') || n.includes('lunge') || n.includes('leg press') ? 'ex-squat'
+    : n.includes('plank') || n.includes('superman') ? 'ex-plank'
+    : n.includes('curl') || n.includes('raise') || n.includes('fly') ? 'ex-curl'
+    : n.includes('pull') || n.includes('row') || n.includes('lat') ? 'ex-pull'
+    : n.includes('jump') || n.includes('burpee') ? 'ex-jump'
+    : n.includes('yoga') || n.includes('flow') || n.includes('warrior') ? 'ex-yoga'
+    : 'ex-default'
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--sp-3)' }}>
+      <svg width="80" height="80" viewBox="0 0 80 80" style={{ overflow: 'visible' }}>
+        <style>{`
+          @keyframes ex-run { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+          @keyframes ex-push { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+          @keyframes ex-squat { 0%,100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(0.85) translateY(6px); } }
+          @keyframes ex-curl { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-30deg); } }
+          @keyframes ex-pull { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+          @keyframes ex-jump { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+          @keyframes ex-yoga { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+          @keyframes ex-plank { 0%,100% { transform: scaleX(1); } 50% { transform: scaleX(1.04); } }
+          @keyframes ex-default { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+          .ex-figure { animation: ${anim} 1.2s ease-in-out infinite; transform-origin: center; }
+        `}</style>
+        <g className="ex-figure">
+          {/* Head */}
+          <circle cx="40" cy="16" r="7" fill="none" stroke={color} strokeWidth="2.5" />
+          {/* Body */}
+          <line x1="40" y1="23" x2="40" y2="48" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+          {/* Arms */}
+          {(n.includes('push') || n.includes('bench') || n.includes('press')) ? (
+            <>
+              <line x1="40" y1="30" x2="22" y2="42" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="40" y1="30" x2="58" y2="42" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+            </>
+          ) : n.includes('curl') || n.includes('raise') ? (
+            <>
+              <line x1="40" y1="30" x2="24" y2="36" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="24" y1="36" x2="20" y2="28" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="40" y1="30" x2="56" y2="36" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="56" y1="36" x2="60" y2="28" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+            </>
+          ) : (
+            <>
+              <line x1="40" y1="30" x2="24" y2="42" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="40" y1="30" x2="56" y2="42" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+            </>
+          )}
+          {/* Legs */}
+          {(n.includes('squat') || n.includes('lunge')) ? (
+            <>
+              <line x1="40" y1="48" x2="30" y2="60" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="30" y1="60" x2="24" y2="72" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="40" y1="48" x2="50" y2="60" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="50" y1="60" x2="56" y2="72" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+            </>
+          ) : (
+            <>
+              <line x1="40" y1="48" x2="32" y2="64" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="40" y1="48" x2="48" y2="64" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+            </>
+          )}
+        </g>
+        {/* Ground line */}
+        <line x1="18" y1="74" x2="62" y2="74" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+      </svg>
+    </div>
+  )
+}
+
 export function Workout() {
   const [tab, setTab] = useState<Tab>('log')
   const { showToast } = useToast()
@@ -118,7 +195,8 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
 
       {selected && (
         <div style={{ padding: 'var(--sp-5)', borderRadius: 'var(--r-lg)', border: '1px solid var(--clr-accent)', background: 'var(--clr-accent-l)', marginBottom: 'var(--sp-5)' }}>
-          <h3 className="section-title">{selected.name}</h3>
+          <ExerciseVisual type={selected.type} name={selected.name} />
+          <h3 className="section-title" style={{ textAlign: 'center' }}>{selected.name}</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--sp-4)' }}>
             <div className="form-group">
               <label className="form-label">Sets</label>
