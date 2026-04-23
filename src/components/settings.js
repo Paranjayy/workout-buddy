@@ -28,6 +28,11 @@ export function renderSettings() {
           <label class="form-label" for="setting-life-exp">Life Expectancy (years)</label>
           <input class="form-input" id="setting-life-exp" type="number" value="${profile.lifeExpectancy || 80}" min="50" max="120" />
         </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-height">Height (cm)</label>
+          <input class="form-input" id="setting-height" type="number" value="${profile.height || ''}" placeholder="175" />
+          <p style="font-size: var(--fs-xs); color: var(--clr-text-3); margin-top: var(--sp-1)">Used for BMI in Body & Water tracker</p>
+        </div>
 
         <h2 class="section-title" style="margin-top: var(--sp-7)">Nutrition Goals</h2>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4)">
@@ -77,6 +82,7 @@ export function renderSettings() {
       name: document.getElementById('setting-name').value.trim(),
       dob: document.getElementById('setting-dob').value,
       lifeExpectancy: +document.getElementById('setting-life-exp').value || 80,
+      height: +document.getElementById('setting-height').value || null,
       calorieGoal: +document.getElementById('setting-cal').value || 2000,
       proteinGoal: +document.getElementById('setting-protein').value || 120,
       carbGoal: +document.getElementById('setting-carbs').value || 250,
