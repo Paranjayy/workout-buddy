@@ -170,6 +170,35 @@ function WeightTab() {
         </div>
       )}
 
+      {/* Professional BMI Scale */}
+      {bmi !== null && (
+        <div style={{ marginTop: 'var(--sp-5)', padding: 'var(--sp-4) var(--sp-5)', borderRadius: 'var(--r-lg)', border: '1px solid var(--clr-border)', background: 'var(--clr-surface)' }}>
+          <div style={{ fontSize: 'var(--fs-xs)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--clr-text-3)', marginBottom: 'var(--sp-3)' }}>BMI Scale</div>
+          <div style={{ position: 'relative', height: 28, borderRadius: 14, overflow: 'hidden', marginBottom: 'var(--sp-2)' }}>
+            {[
+              { label: 'Under', w: '18.5%', bg: 'var(--clr-sky)' },
+              { label: 'Normal', w: '24.3%', bg: 'var(--clr-accent)' },
+              { label: 'Over', w: '18.6%', bg: 'var(--clr-amber)' },
+              { label: 'Obese', w: '38.6%', bg: 'var(--clr-rose)' },
+            ].map((z, i) => (
+              <div key={i} style={{ position: 'absolute', left: i === 0 ? 0 : i === 1 ? '18.5%' : i === 2 ? '42.8%' : '61.4%', width: z.w, height: '100%', background: z.bg, opacity: 0.3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: '0.6rem', fontWeight: 700, color: 'var(--clr-text)', opacity: 0.8 }}>{z.label}</span>
+              </div>
+            ))}
+            {/* Marker */}
+            <div style={{
+              position: 'absolute', top: 0, bottom: 0, width: 3, borderRadius: 2,
+              background: bmiCat(bmi).color, boxShadow: `0 0 6px ${bmiCat(bmi).color}`,
+              left: `${Math.min(95, Math.max(2, (bmi / 40) * 100))}%`,
+              transition: 'left 0.8s cubic-bezier(0.25,1,0.5,1)',
+            }} />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', color: 'var(--clr-text-3)' }}>
+            <span>15</span><span>18.5</span><span>25</span><span>30</span><span>40</span>
+          </div>
+        </div>
+      )}
+
       {log.length > 0 ? (
         <div style={{ marginTop: 'var(--sp-6)' }}>
           <h3 className="section-title">History</h3>

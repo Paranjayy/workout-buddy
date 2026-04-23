@@ -1,5 +1,42 @@
 import type { FoodItem } from '../types'
 
+// Maps food names to representative emojis for visual appeal
+export function foodEmoji(name: string): string {
+  const n = name.toLowerCase()
+  if (n.includes('chicken') || n.includes('adobo')) return '🍗'
+  if (n.includes('rice') || n.includes('biryani') || n.includes('nasi') || n.includes('jollof')) return '🍚'
+  if (n.includes('egg')) return '🥚'
+  if (n.includes('milk') || n.includes('lassi') || n.includes('buttermilk')) return '🥛'
+  if (n.includes('bread') || n.includes('roti') || n.includes('paratha') || n.includes('naan')) return '🍞'
+  if (n.includes('pizza')) return '🍕'
+  if (n.includes('burger')) return '🍔'
+  if (n.includes('sushi') || n.includes('fish') || n.includes('salmon') || n.includes('tuna') || n.includes('ceviche')) return '🐟'
+  if (n.includes('ramen') || n.includes('noodle') || n.includes('chow') || n.includes('pad thai') || n.includes('laksa') || n.includes('pho')) return '🍜'
+  if (n.includes('salad') || n.includes('broccoli') || n.includes('sprout')) return '🥗'
+  if (n.includes('taco') || n.includes('burrito') || n.includes('quesadilla')) return '🌮'
+  if (n.includes('curry') || n.includes('dal') || n.includes('palak') || n.includes('rajma') || n.includes('chole')) return '🍛'
+  if (n.includes('coffee')) return '☕'
+  if (n.includes('tea')) return '🍵'
+  if (n.includes('juice') || n.includes('smoothie') || n.includes('water')) return '🧃'
+  if (n.includes('chocolate') || n.includes('tiramisu') || n.includes('baklava')) return '🍫'
+  if (n.includes('cake') || n.includes('crepe') || n.includes('pancake')) return '🥞'
+  if (n.includes('croissant') || n.includes('pretzel')) return '🥐'
+  if (n.includes('banana') || n.includes('apple') || n.includes('mango') || n.includes('avocado') || n.includes('açaí')) return '🍌'
+  if (n.includes('yogurt') || n.includes('curd')) return '🥣'
+  if (n.includes('oat') || n.includes('cereal')) return '🥣'
+  if (n.includes('almond') || n.includes('nut') || n.includes('trail') || n.includes('makhana')) return '🥜'
+  if (n.includes('protein') || n.includes('whey')) return '💪'
+  if (n.includes('dosa') || n.includes('idli') || n.includes('upma') || n.includes('poha') || n.includes('besan')) return '🫓'
+  if (n.includes('samosa') || n.includes('spring roll') || n.includes('lumpia') || n.includes('dim sum') || n.includes('falafel')) return '🥟'
+  if (n.includes('soup') || n.includes('borscht')) return '🍲'
+  if (n.includes('kebab') || n.includes('shawarma') || n.includes('doner') || n.includes('gyro') || n.includes('satay')) return '🥙'
+  if (n.includes('steak') || n.includes('beef') || n.includes('lamb') || n.includes('jerk') || n.includes('bulgogi')) return '🥩'
+  if (n.includes('paneer') || n.includes('tofu') || n.includes('cottage')) return '🧀'
+  if (n.includes('sweet potato') || n.includes('potato')) return '🥔'
+  if (n.includes('bar')) return '🍫'
+  return '🍽️'
+}
+
 export const FOOD_DB: FoodItem[] = [
   // Indian
   { name: 'Butter Chicken', cal: 490, protein: 28, carbs: 14, fat: 36, region: '🇮🇳 Indian', serving: '1 cup' },

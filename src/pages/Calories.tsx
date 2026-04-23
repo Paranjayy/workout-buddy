@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { searchFoods } from '../data/foods'
+import { searchFoods, foodEmoji } from '../data/foods'
 import { store, KEYS } from '../utils/storage'
 import { todayKey, uid } from '../utils/time'
 import { useToast } from '../hooks/useToast'
@@ -96,6 +96,7 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
           <div className="food-results" style={{ display: 'block' }}>
             {results.map((f, i) => (
               <div key={i} className="food-result" onClick={() => { setStaged(p => [...p, { ...f, qty: 1 }]); setQuery('') }}>
+                <span style={{ fontSize: '1.1rem' }}>{foodEmoji(f.name)}</span>
                 <span className="food-item__name">{f.name}</span>
                 <span className="food-item__region">{f.region} · {f.serving}</span>
                 <span className="food-item__cal">{f.cal} kcal</span>
@@ -135,7 +136,7 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
               <div className="workout-list">
                 {meal.items.map(item => (
                   <div key={item.entryId} className="workout-entry">
-                    <div className="workout-entry__icon" style={{ background: 'var(--clr-amber-l)' }}>🍽️</div>
+                    <div className="workout-entry__icon" style={{ background: 'var(--clr-amber-l)', fontSize: '1.1rem' }}>{foodEmoji(item.name)}</div>
                     <div>
                       <div className="workout-entry__name">{item.name}</div>
                       <div className="workout-entry__detail">{item.region} · {item.serving}</div>
@@ -172,7 +173,7 @@ function MealHistory() {
             <div className="workout-list">
               {dayMeals.flatMap(m => m.items).map(item => (
                 <div key={item.entryId} className="workout-entry">
-                  <div className="workout-entry__icon" style={{ background: 'var(--clr-amber-l)' }}>🍽️</div>
+                  <div className="workout-entry__icon" style={{ background: 'var(--clr-amber-l)', fontSize: '1.1rem' }}>{foodEmoji(item.name)}</div>
                   <div>
                     <div className="workout-entry__name">{item.name}</div>
                     <div className="workout-entry__detail">{item.region}</div>

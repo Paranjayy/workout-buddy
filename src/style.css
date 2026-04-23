@@ -501,3 +501,41 @@ a { color: inherit; text-decoration: none }
 ::-webkit-scrollbar-track { background: transparent }
 ::-webkit-scrollbar-thumb { background: var(--clr-border); border-radius: 3px }
 ::-webkit-scrollbar-thumb:hover { background: var(--clr-text-3) }
+
+/* ── Micro-animations ──────────────────────────────────────── */
+.stat-block {
+  transition: transform var(--dur-md) var(--ease-out), box-shadow var(--dur-md);
+}
+.stat-block:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.workout-entry {
+  transition: transform var(--dur-sm) var(--ease-out), background var(--dur-sm);
+}
+.workout-entry:hover {
+  transform: translateX(4px);
+  background: var(--clr-surface-2);
+}
+
+.food-result {
+  transition: background var(--dur-sm), transform var(--dur-sm) var(--ease-out);
+}
+.food-result:hover {
+  transform: translateX(4px);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stats-row > * {
+  animation: fadeInUp 0.4s var(--ease-out) both;
+}
+.stats-row > *:nth-child(1) { animation-delay: 0s }
+.stats-row > *:nth-child(2) { animation-delay: 0.05s }
+.stats-row > *:nth-child(3) { animation-delay: 0.1s }
+.stats-row > *:nth-child(4) { animation-delay: 0.15s }
+.stats-row > *:nth-child(5) { animation-delay: 0.2s }
