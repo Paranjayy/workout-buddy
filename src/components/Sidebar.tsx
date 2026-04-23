@@ -13,6 +13,11 @@ const NAV = [
       <path d="M6.5 6.5h11M6.5 17.5h11"/><path d="M4 10v4M8 8v8M16 8v8M20 10v4"/>
     </svg>
   )},
+  { to: '/programs', label: 'Programs', icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+    </svg>
+  )},
   { to: '/calories', label: 'Nutrition', icon: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 2c-4 4-6 8-6 11a6 6 0 0 0 12 0c0-3-2-7-6-11z"/>
