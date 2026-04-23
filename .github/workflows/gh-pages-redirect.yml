@@ -1,0 +1,82 @@
+name: Deploy GitHub Pages Redirect
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy-redirect:
+    name: Deploy GH Pages Redirect
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Build redirect page
+        run: |
+          mkdir -p gh-pages
+          cat > gh-pages/index.html << 'EOF'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Workout Buddy → Redirecting…</title>
+            <meta http-equiv="refresh" content="0; url=https://workout-buddy-paranjay.vercel.app" />
+            <link rel="canonical" href="https://workout-buddy-paranjay.vercel.app" />
+            <style>
+              body {
+                font-family: system-ui, sans-serif;
+                background: #f7f4ef;
+                display: grid;
+                place-items: center;
+                min-height: 100dvh;
+                margin: 0;
+                text-align: center;
+                color: #2a2a1e;
+              }
+              .card {
+                padding: 40px 56px;
+                border-radius: 16px;
+                background: white;
+                border: 1px solid #e5e0d8;
+                box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+              }
+              h1 { font-size: 1.5rem; margin-bottom: 8px }
+              p  { color: #888; font-size: 0.9rem; margin-bottom: 24px }
+              a  { display: inline-block; padding: 10px 24px; background: #3d7a5a; color: white; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1>🏋️ Workout Buddy</h1>
+              <p>Redirecting you to the app…</p>
+              <a href="https://workout-buddy-paranjay.vercel.app">Go to App →</a>
+            </div>
+            <script>window.location.replace("https://workout-buddy-paranjay.vercel.app" + window.location.pathname + window.location.search)</script>
+          </body>
+          </html>
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: gh-pages/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

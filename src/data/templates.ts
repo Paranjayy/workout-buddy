@@ -1,10 +1,10 @@
-// Workout templates — pre-built workout plans
+import type { WorkoutTemplate } from '../types'
 
-export const TEMPLATES = [
+export const TEMPLATES: WorkoutTemplate[] = [
   {
     id: 'ppl-push',
     name: 'Push Day',
-    category: 'Push/Pull/Legs',
+    category: 'Push / Pull / Legs',
     emoji: '💥',
     description: 'Chest, shoulders, triceps',
     exercises: [
@@ -19,7 +19,7 @@ export const TEMPLATES = [
   {
     id: 'ppl-pull',
     name: 'Pull Day',
-    category: 'Push/Pull/Legs',
+    category: 'Push / Pull / Legs',
     emoji: '🔗',
     description: 'Back, biceps, rear delts',
     exercises: [
@@ -34,7 +34,7 @@ export const TEMPLATES = [
   {
     id: 'ppl-legs',
     name: 'Leg Day',
-    category: 'Push/Pull/Legs',
+    category: 'Push / Pull / Legs',
     emoji: '🦵',
     description: 'Quads, hamstrings, glutes, calves',
     exercises: [
@@ -99,24 +99,12 @@ export const TEMPLATES = [
       { name: 'Push-ups', sets: 3, reps: 15, type: 'bodyweight' },
     ],
   },
-  {
-    id: '5k-prep',
-    name: '5K Prep',
-    category: 'Running',
-    emoji: '🏃',
-    description: 'Build up to a 5K run',
-    exercises: [
-      { name: 'Walking', sets: 1, reps: null, duration: 300, type: 'cardio', isTime: true },
-      { name: 'Running', sets: 1, reps: null, duration: 1200, type: 'cardio', isTime: true },
-      { name: 'Walking', sets: 1, reps: null, duration: 300, type: 'cardio', isTime: true },
-    ],
-  },
-];
+]
 
-export function getTemplatesByCategory() {
-  const cats = {};
+export function getTemplatesByCategory(): Record<string, WorkoutTemplate[]> {
+  const cats: Record<string, WorkoutTemplate[]> = {}
   TEMPLATES.forEach(t => {
-    (cats[t.category] = cats[t.category] || []).push(t);
-  });
-  return cats;
+    ;(cats[t.category] ??= []).push(t)
+  })
+  return cats
 }

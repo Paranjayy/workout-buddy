@@ -1,6 +1,6 @@
-// Curated YouTube playlists for workouts
+import type { Playlist } from '../types'
 
-export const PLAYLISTS = [
+export const PLAYLISTS: Playlist[] = [
   {
     id: 'workout-hiphop',
     title: 'Workout Hip-Hop',
@@ -81,13 +81,8 @@ export const PLAYLISTS = [
     ytPlaylistId: 'PL4fGSI1pDJn4-UIb6RKHdHTBNcqiDCRqP',
     trackCount: 35,
   },
-];
+]
 
-export function getPlaylistsByLanguage(lang) {
-  if (!lang || lang === 'all') return PLAYLISTS;
-  return PLAYLISTS.filter(p => p.language.toLowerCase() === lang.toLowerCase());
-}
-
-export function getLanguages() {
-  return [...new Set(PLAYLISTS.map(p => p.language))];
+export function getLanguages(): string[] {
+  return [...new Set(PLAYLISTS.map(p => p.language))]
 }
