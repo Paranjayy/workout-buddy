@@ -1,5 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Sidebar } from './components/Sidebar'
+import { MobileNav } from './components/MobileNav'
+import { SearchModal } from './components/SearchModal'
+
 import { Dashboard } from './pages/Dashboard'
 import { Workout } from './pages/Workout'
 import { Calories } from './pages/Calories'
@@ -13,31 +17,48 @@ import { Achievements } from './pages/Achievements'
 import { Digest } from './pages/Digest'
 import { Programs } from './pages/Programs'
 import { Settings } from './pages/Settings'
+import { Habits } from './pages/Habits'
 
 export function App() {
+  const location = useLocation()
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsSearchOpen(prev => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   return (
-    <BrowserRouter>
-      <div className="app-shell">
-        <Sidebar />
-        <main className="main-content" id="main-content">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/workout" element={<Workout />} />
-            <Route path="/calories" element={<Calories />} />
-            <Route path="/body" element={<Body />} />
-            <Route path="/timer" element={<Timer />} />
-            <Route path="/progress" element={<Progress />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/music" element={<Music />} />
-            <Route path="/journal" element={<Journal />} />
-            <Route path="/achievements" element={<Achievements />} />
-            <Route path="/digest" element={<Digest />} />
-            <Route path="/programs" element={<Programs />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-      </div>
-    </BrowserRouter>
+    <div className="app-shell">
+      <Sidebar />
+      <main className="main-content" id="main-content">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/workout" element={<Workout />} />
+          <Route path="/calories" element={<Calories />} />
+          <Route path="/body" element={<Body />} />
+          <Route path="/timer" element={<Timer />} />
+          <Route path="/progress" element={<Progress />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/music" element={<Music />} />
+          <Route path="/journal" element={<Journal />} />
+          <Route path="/achievements" element={<Achievements />} />
+          <Route path="/digest" element={<Digest />} />
+          <Route path="/programs" element={<Programs />} />
+          <Route path="/habits" element={<Habits />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+      
+      <MobileNav activeView={location.pathname} />
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+    </div>
   )
 }

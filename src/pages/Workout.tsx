@@ -4,48 +4,12 @@ import { TEMPLATES, getTemplatesByCategory } from '../data/templates'
 import { store, KEYS } from '../utils/storage'
 import { todayKey, uid, formatDate } from '../utils/time'
 import { useToast } from '../hooks/useToast'
+import { launchConfetti } from '../utils/confetti'
 import type { WorkoutEntry } from '../types'
 
 type Tab = 'log' | 'templates' | 'history' | 'library'
 
-// ── Mini animated SVG icon for log entries (32px) ──────────────
-function MiniExerciseIcon({ type, name }: { type: string; name: string }) {
-  const n = name.toLowerCase()
-  const color = type === 'cardio' ? 'var(--clr-rose)' : type === 'yoga' ? 'var(--clr-sky)' : type === 'bodyweight' ? 'var(--clr-amber)' : type === 'sports' ? 'var(--clr-sky)' : 'var(--clr-accent)'
-  const anim = n.includes('run') || n.includes('walk') || n.includes('sport') || n.includes('basket') || n.includes('football') || n.includes('cricket') ? 'mex-run'
-    : n.includes('push') || n.includes('bench') || n.includes('press') ? 'mex-push'
-    : n.includes('squat') || n.includes('lunge') ? 'mex-squat'
-    : n.includes('plank') || n.includes('superman') ? 'mex-plank'
-    : n.includes('curl') || n.includes('raise') ? 'mex-curl'
-    : n.includes('pull') || n.includes('row') ? 'mex-pull'
-    : n.includes('jump') || n.includes('burpee') ? 'mex-jump'
-    : n.includes('yoga') || n.includes('warrior') || n.includes('flow') ? 'mex-yoga'
-    : 'mex-def'
-  return (
-    <svg width="32" height="32" viewBox="0 0 80 80" style={{ overflow: 'visible', flexShrink: 0 }}>
-      <style>{`
-        @keyframes mex-run{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
-        @keyframes mex-push{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-        @keyframes mex-squat{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.82) translateY(5px)}}
-        @keyframes mex-curl{0%,100%{transform:rotate(0)}50%{transform:rotate(-28deg)}}
-        @keyframes mex-pull{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-        @keyframes mex-jump{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-        @keyframes mex-yoga{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
-        @keyframes mex-plank{0%,100%{transform:scaleX(1)}50%{transform:scaleX(1.05)}}
-        @keyframes mex-def{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-        .mfig{animation:${anim} 1.4s ease-in-out infinite;transform-origin:center}
-      `}</style>
-      <g className="mfig">
-        <circle cx="40" cy="16" r="7" fill="none" stroke={color} strokeWidth="3"/>
-        <line x1="40" y1="23" x2="40" y2="48" stroke={color} strokeWidth="3" strokeLinecap="round"/>
-        <line x1="40" y1="30" x2="24" y2="42" stroke={color} strokeWidth="3" strokeLinecap="round"/>
-        <line x1="40" y1="30" x2="56" y2="42" stroke={color} strokeWidth="3" strokeLinecap="round"/>
-        <line x1="40" y1="48" x2="32" y2="64" stroke={color} strokeWidth="3" strokeLinecap="round"/>
-        <line x1="40" y1="48" x2="48" y2="64" stroke={color} strokeWidth="3" strokeLinecap="round"/>
-      </g>
-    </svg>
-  )
-}
+
 
 // ── Rest Timer ─────────────────────────────────────────────────
 function RestTimer({ onDismiss }: { onDismiss: () => void }) {
@@ -168,79 +132,120 @@ function WgerImage({ name }: { name: string }) {
   )
 }
 
-// Animated SVG exercise visual — CSS-animated stick figure
+// ── Premium non-humanoid animated visuals ─────────────────────
+function MiniExerciseIcon({ type, name }: { type: string; name: string }) {
+  const n = name.toLowerCase()
+  const color = type === 'cardio' ? 'var(--clr-rose)' : type === 'yoga' ? 'var(--clr-sky)' : type === 'bodyweight' ? 'var(--clr-amber)' : 'var(--clr-accent)'
+  
+  const anim = n.includes('run') || n.includes('walk') ? 'v-run'
+    : n.includes('push') || n.includes('bench') || n.includes('press') ? 'v-push'
+    : n.includes('squat') || n.includes('lunge') ? 'v-squat'
+    : n.includes('curl') || n.includes('raise') ? 'v-curl'
+    : n.includes('pull') || n.includes('row') ? 'v-pull'
+    : n.includes('jump') || n.includes('burpee') ? 'v-jump'
+    : 'v-def'
+
+  return (
+    <svg width="32" height="32" viewBox="0 0 40 40" style={{ overflow: 'visible' }}>
+      <style>{`
+        @keyframes v-run{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+        @keyframes v-push{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+        @keyframes v-squat{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.8) translateY(4px)}}
+        @keyframes v-curl{0%,100%{transform:rotate(0)}50%{transform:rotate(-20deg)}}
+        @keyframes v-pull{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+        @keyframes v-jump{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        @keyframes v-def{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        .v-fig{animation:${anim} 1.5s ease-in-out infinite;transform-origin:center}
+      `}</style>
+      <g className="v-fig">
+        <rect x="16" y="10" width="8" height="16" rx="4" fill={color} opacity="0.9" />
+        <circle cx="20" cy="6" r="4" fill={color} />
+        <rect x="12" y="18" width="4" height="12" rx="2" fill={color} opacity="0.6" transform="rotate(15 14 18)" />
+        <rect x="24" y="18" width="4" height="12" rx="2" fill={color} opacity="0.6" transform="rotate(-15 26 18)" />
+      </g>
+    </svg>
+  )
+}
+
 function ExerciseVisual({ type, name }: { type: string; name: string }) {
   const n = name.toLowerCase()
   const color = type === 'cardio' ? 'var(--clr-rose)' : type === 'yoga' ? 'var(--clr-sky)' : type === 'bodyweight' ? 'var(--clr-amber)' : 'var(--clr-accent)'
+  
+  // Advanced Granular Mapping
+  const getAnim = () => {
+    if (n.includes('run') || n.includes('walk') || n.includes('cycle') || n.includes('sprint')) return 'hf-run'
+    if (n.includes('push') || n.includes('bench') || n.includes('dip')) return 'hf-push'
+    if (n.includes('squat') || n.includes('leg press') || n.includes('hack')) return 'hf-squat'
+    if (n.includes('deadlift') || n.includes('swing') || n.includes('hinge') || n.includes('good morning')) return 'hf-hinge'
+    if (n.includes('press') || n.includes('overhead') || n.includes('military')) return 'hf-press'
+    if (n.includes('pull') || n.includes('row') || n.includes('lat') || n.includes('chin')) return 'hf-row'
+    if (n.includes('curl') || n.includes('hammer')) return 'hf-curl'
+    if (n.includes('fly') || n.includes('lateral') || n.includes('raise')) return 'hf-fly'
+    if (n.includes('lunge') || n.includes('step') || n.includes('split')) return 'hf-lunge'
+    if (n.includes('plank') || n.includes('hold') || n.includes('static')) return 'hf-core'
+    if (n.includes('jump') || n.includes('burpee') || n.includes('box')) return 'hf-jump'
+    if (type === 'yoga' || n.includes('yoga') || n.includes('stretch')) return 'hf-yoga'
+    return 'hf-def'
+  }
 
-  // Pick animation class based on exercise
-  const anim = n.includes('run') || n.includes('walk') ? 'ex-run'
-    : n.includes('push') || n.includes('bench') || n.includes('press') ? 'ex-push'
-    : n.includes('squat') || n.includes('lunge') || n.includes('leg press') ? 'ex-squat'
-    : n.includes('plank') || n.includes('superman') ? 'ex-plank'
-    : n.includes('curl') || n.includes('raise') || n.includes('fly') ? 'ex-curl'
-    : n.includes('pull') || n.includes('row') || n.includes('lat') ? 'ex-pull'
-    : n.includes('jump') || n.includes('burpee') ? 'ex-jump'
-    : n.includes('yoga') || n.includes('flow') || n.includes('warrior') ? 'ex-yoga'
-    : 'ex-default'
+  const anim = getAnim()
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--sp-3)' }}>
-      <svg width="80" height="80" viewBox="0 0 80 80" style={{ overflow: 'visible' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--sp-4)', background: 'var(--clr-surface-2)', padding: 'var(--sp-6)', borderRadius: 'var(--r-xl)', boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '50%', left: '50%', width: 200, height: 200, background: color, filter: 'blur(80px)', opacity: 0.1, transform: 'translate(-50%, -50%)', borderRadius: '50%' }} />
+      
+      <svg width="160" height="160" viewBox="0 0 100 100" style={{ overflow: 'visible', zIndex: 1 }}>
+        <defs>
+          <linearGradient id="figGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{ stopColor: color, stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: color, stopOpacity: 0.6 }} />
+          </linearGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
         <style>{`
-          @keyframes ex-run { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
-          @keyframes ex-push { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-          @keyframes ex-squat { 0%,100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(0.85) translateY(6px); } }
-          @keyframes ex-curl { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-30deg); } }
-          @keyframes ex-pull { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-          @keyframes ex-jump { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
-          @keyframes ex-yoga { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
-          @keyframes ex-plank { 0%,100% { transform: scaleX(1); } 50% { transform: scaleX(1.04); } }
-          @keyframes ex-default { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-          .ex-figure { animation: ${anim} 1.2s ease-in-out infinite; transform-origin: center; }
+          @keyframes hf-run { 0%, 100% { transform: rotate(-12deg) translateX(-8px); } 50% { transform: rotate(12deg) translateX(8px); } }
+          @keyframes hf-push { 0%, 100% { transform: translateY(-5px); } 50% { transform: translateY(18px); } }
+          @keyframes hf-squat { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(0.6) translateY(20px); } }
+          @keyframes hf-hinge { 0%, 100% { transform: rotate(0deg) translateY(0); } 50% { transform: rotate(45deg) translateY(10px); } }
+          @keyframes hf-press { 0%, 100% { transform: translateY(15px); } 50% { transform: translateY(-15px); } }
+          @keyframes hf-row { 0%, 100% { transform: translateY(0) scaleX(1); } 50% { transform: translateY(-8px) scaleX(1.1); } }
+          @keyframes hf-curl { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-45deg); } }
+          @keyframes hf-fly { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.3) translateY(-5px); } }
+          @keyframes hf-lunge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(15px) translateX(5px); } }
+          @keyframes hf-core { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.02); opacity: 1; } }
+          @keyframes hf-jump { 0%, 100% { transform: translateY(5px) scaleY(1); } 50% { transform: translateY(-35px) scaleY(1.1); } }
+          @keyframes hf-yoga { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+          @keyframes hf-def { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+          @keyframes hf-shadow { 0%, 100% { transform: scaleX(1); opacity: 0.05; } 50% { transform: scaleX(1.5); opacity: 0.1; } }
+          
+          .hf-fig { animation: ${anim} 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; transform-origin: center 85%; filter: url(#glow); }
+          .hf-limb { stroke: url(#figGrad); stroke-width: 14; stroke-linecap: round; fill: none; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+          .hf-joint { fill: white; opacity: 0.4; }
         `}</style>
-        <g className="ex-figure">
-          {/* Head */}
-          <circle cx="40" cy="16" r="7" fill="none" stroke={color} strokeWidth="2.5" />
-          {/* Body */}
-          <line x1="40" y1="23" x2="40" y2="48" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-          {/* Arms */}
-          {(n.includes('push') || n.includes('bench') || n.includes('press')) ? (
-            <>
-              <line x1="40" y1="30" x2="22" y2="42" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="40" y1="30" x2="58" y2="42" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-            </>
-          ) : n.includes('curl') || n.includes('raise') ? (
-            <>
-              <line x1="40" y1="30" x2="24" y2="36" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="24" y1="36" x2="20" y2="28" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="40" y1="30" x2="56" y2="36" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="56" y1="36" x2="60" y2="28" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-            </>
-          ) : (
-            <>
-              <line x1="40" y1="30" x2="24" y2="42" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="40" y1="30" x2="56" y2="42" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-            </>
-          )}
-          {/* Legs */}
-          {(n.includes('squat') || n.includes('lunge')) ? (
-            <>
-              <line x1="40" y1="48" x2="30" y2="60" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="30" y1="60" x2="24" y2="72" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="40" y1="48" x2="50" y2="60" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="50" y1="60" x2="56" y2="72" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-            </>
-          ) : (
-            <>
-              <line x1="40" y1="48" x2="32" y2="64" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-              <line x1="40" y1="48" x2="48" y2="64" stroke={color} strokeWidth="2.5" strokeLinecap="round" />
-            </>
-          )}
+        
+        <g className="hf-fig">
+          <path d="M50 30 Q50 45 50 65" className="hf-limb" style={{ strokeWidth: 18 }} />
+          <circle cx="50" cy="20" r="10" fill="url(#figGrad)" />
+          
+          <g>
+            <path d={anim === 'hf-push' || anim === 'hf-row' ? "M42 35 Q20 40 15 55" : anim === 'hf-press' ? "M42 35 Q30 20 25 10" : "M42 35 Q30 35 20 50"} className="hf-limb" opacity="0.8" />
+            <path d={anim === 'hf-push' || anim === 'hf-row' ? "M58 35 Q80 40 85 55" : anim === 'hf-press' ? "M58 35 Q70 20 75 10" : "M58 35 Q70 35 80 50"} className="hf-limb" opacity="0.8" />
+          </g>
+          
+          <g>
+            <path d={anim === 'hf-squat' || anim === 'hf-lunge' ? "M45 65 Q30 75 25 95" : "M45 65 Q40 80 38 98"} className="hf-limb" opacity="0.9" />
+            <path d={anim === 'hf-squat' || anim === 'hf-lunge' ? "M55 65 Q70 75 75 95" : "M55 65 Q60 80 62 98"} className="hf-limb" opacity="0.9" />
+          </g>
         </g>
-        {/* Ground line */}
-        <line x1="18" y1="74" x2="62" y2="74" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+        
+        <ellipse cx="50" cy="98" rx="22" ry="4" fill="black" style={{ animation: 'hf-shadow 1.8s cubic-bezier(0.4,0,0.2,1) infinite' }} />
       </svg>
+      <div style={{ marginTop: 'var(--sp-2)', fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+        {anim.replace('hf-', '')} pattern active
+      </div>
     </div>
   )
 }
@@ -299,6 +304,23 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
   const [duration, setDuration] = useState(30)
   const [, forceUpdate] = useState(0)
   const [showRestTimer, setShowRestTimer] = useState(false)
+  const [visualMode, setVisualMode] = useState<'hologram' | 'illustration' | 'motion' | 'youtube'>('hologram')
+
+  useEffect(() => {
+    const handleKeys = (e: KeyboardEvent) => {
+      if (selected) {
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          save()
+        }
+        if (e.key === 'Escape') {
+          setSelected(null)
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeys)
+    return () => window.removeEventListener('keydown', handleKeys)
+  }, [selected, sets, reps, weight, duration])
 
   const results = query.length > 0
     ? allExercises.filter(e => e.name.toLowerCase().includes(query.toLowerCase()) || (e.muscle ?? '').toLowerCase().includes(query.toLowerCase())).slice(0, 8)
@@ -306,14 +328,101 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
 
   const todayLog = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, []).filter(w => w.date === todayKey())
 
+  const generateShareCard = () => {
+    const canvas = document.createElement('canvas')
+    canvas.width = 600
+    canvas.height = 800
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    // Background
+    ctx.fillStyle = '#f8f9f5' // var(--clr-bg)
+    ctx.fillRect(0, 0, 600, 800)
+    
+    // Gradient accent
+    const grad = ctx.createLinearGradient(0, 0, 600, 400)
+    grad.addColorStop(0, '#50a19b') // var(--clr-accent)
+    grad.addColorStop(1, '#72b1ac')
+    ctx.fillStyle = grad
+    ctx.fillRect(0, 0, 600, 320)
+
+    // Title
+    ctx.fillStyle = '#ffffff'
+    ctx.font = 'bold 54px Fraunces, serif'
+    ctx.fillText('WORKOUT DONE', 40, 110)
+    
+    ctx.font = '22px Instrument Sans, sans-serif'
+    ctx.fillText(new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase(), 40, 150)
+
+    // Stats box
+    ctx.fillStyle = '#ffffff'
+    ctx.shadowColor = 'rgba(0,0,0,0.1)'
+    ctx.shadowBlur = 40
+    
+    // Manual RoundRect for older engines
+    const x = 40, y = 220, w = 520, h = 520, radius = 24
+    ctx.beginPath()
+    ctx.moveTo(x + radius, y)
+    ctx.lineTo(x + w - radius, y)
+    ctx.quadraticCurveTo(x + w, y, x + w, y + radius)
+    ctx.lineTo(x + w, y + h - radius)
+    ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h)
+    ctx.lineTo(x + radius, y + h)
+    ctx.quadraticCurveTo(x, y + h, x, y + h - radius)
+    ctx.lineTo(x, y + radius)
+    ctx.quadraticCurveTo(x, y, x + radius, y)
+    ctx.closePath()
+    ctx.fill()
+    ctx.shadowBlur = 0
+
+    // Exercises
+    ctx.fillStyle = '#1e1e1e'
+    ctx.font = 'bold 36px Fraunces, serif'
+    ctx.fillText('Session Summary', 80, 300)
+
+    const logs = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, []).filter(w => w.date === todayKey())
+    logs.slice(0, 6).forEach((w, i) => {
+      const rowY = 370 + (i * 65)
+      ctx.fillStyle = '#1e1e1e'
+      ctx.font = '700 22px Instrument Sans, sans-serif'
+      ctx.fillText(w.exercise, 80, rowY)
+      
+      ctx.fillStyle = '#6e6e6e'
+      ctx.font = '16px Instrument Sans, sans-serif'
+      ctx.fillText(w.detail, 80, rowY + 25)
+    })
+
+    if (logs.length > 6) {
+      ctx.fillStyle = '#a0a0a0'
+      ctx.font = 'italic 18px Instrument Sans, sans-serif'
+      ctx.fillText(`+ ${logs.length - 6} more exercises`, 80, 710)
+    }
+
+    // Logo/Branding
+    ctx.fillStyle = '#50a19b'
+    ctx.font = 'bold 28px Instrument Sans, sans-serif'
+    ctx.fillText('Workout Buddy', 40, 775)
+
+    // Download
+    const link = document.createElement('a')
+    link.download = `workout-buddy-${todayKey()}.png`
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+    showToast('Achievement card generated! 📸')
+  }
+
   const save = () => {
     if (!selected) return
-    // PR detection — compare weight to historical max for this exercise
     const allLogs = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, [])
-    const prevBest = allLogs
-      .filter(w => w.exercise === selected.name && w.weight !== null)
-      .reduce((max, w) => Math.max(max, w.weight ?? 0), 0)
+    const prs = store.get<Record<string, number>>(KEYS.PERSONAL_RECORDS, {})
+    
+    const prevBest = prs[selected.name] ?? 0
     const isPR = !selected.isTime && weight > 0 && weight > prevBest
+
+    if (isPR) {
+      prs[selected.name] = weight
+      store.set(KEYS.PERSONAL_RECORDS, prs)
+    }
 
     store.push<WorkoutEntry>(KEYS.WORKOUTS, {
       id: uid(), date: todayKey(), exercise: selected.name,
@@ -323,11 +432,19 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
       detail: selected.isTime ? `${sets} rounds · ${duration} min` : `${sets}×${reps} @ ${weight}kg`,
       time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
     })
+    
     setSelected(null)
     setQuery('')
     forceUpdate(n => n + 1)
     setShowRestTimer(true)
     showToast(isPR ? `🏆 New PR! ${selected.name} @ ${weight}kg` : `${selected.name} logged ✓`)
+    
+    if (isPR) {
+      const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/success-fanfare-trumpets-610.wav')
+      audio.volume = 0.3
+      audio.play().catch(() => {})
+      launchConfetti()
+    }
   }
 
   const quickAdd = (name: string) => {
@@ -337,37 +454,61 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
 
   return (
     <div style={{ paddingTop: 'var(--sp-4)' }}>
-      <div className="search-bar" style={{ position: 'relative' }}>
-        <input className="search-bar__input" value={query} onChange={e => setQuery(e.target.value)}
-          placeholder="Search exercises (bench press, squat, running…)" autoComplete="off" />
-        {results.length > 0 && (
-          <div className="food-results" style={{ display: 'block' }}>
-            {results.map(e => (
-              <div key={e.id} className="food-result" onClick={() => { setSelected(e); setQuery('') }}>
-                <span className="food-item__name">{e.name}</span>
-                <span className="food-item__region">{e.type}</span>
-                <span className="food-item__cal">{e.muscle ?? ''}</span>
-              </div>
+      {selected && (
+        <div style={{ padding: 'var(--sp-5)', borderRadius: 'var(--r-xl)', border: '1px solid var(--clr-border)', background: 'var(--clr-surface)', marginBottom: 'var(--sp-6)', boxShadow: 'var(--sh-lg)' }}>
+          
+          {/* Visual Mode Selector */}
+          <div style={{ display: 'flex', gap: 'var(--sp-2)', marginBottom: 'var(--sp-5)', background: 'var(--clr-surface-2)', padding: '4px', borderRadius: 'var(--r-md)' }}>
+            {[
+              { id: 'hologram', label: 'Hologram', emoji: '✨' },
+              { id: 'illustration', label: 'Plate', emoji: '🎨' },
+              { id: 'motion', label: 'Motion', emoji: '🎬' },
+              { id: 'youtube', label: 'YouTube', emoji: '📺' },
+            ].map(m => (
+              <button 
+                key={m.id} 
+                onClick={() => setVisualMode(m.id as any)}
+                style={{ 
+                  flex: 1, padding: 'var(--sp-2)', border: 'none', borderRadius: 'var(--r-sm)', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
+                  background: visualMode === m.id ? 'var(--clr-surface)' : 'transparent',
+                  color: visualMode === m.id ? 'var(--clr-accent)' : 'var(--clr-text-3)',
+                  boxShadow: visualMode === m.id ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span style={{ fontSize: '14px', display: 'block', marginBottom: '2px' }}>{m.emoji}</span>
+                {m.label}
+              </button>
             ))}
           </div>
-        )}
-      </div>
 
-      <div style={{ marginBottom: 'var(--sp-5)' }}>
-        <h3 className="section-title" style={{ marginBottom: 'var(--sp-3)' }}>Quick Add</h3>
-        <div style={{ display: 'flex', gap: 'var(--sp-3)', flexWrap: 'wrap' }}>
-          {['Push-ups', 'Squat', 'Running', 'Plank', 'Bench Press', 'Pull-ups'].map(name => (
-            <button key={name} className="btn btn--ghost btn--sm" onClick={() => quickAdd(name)}>{name}</button>
-          ))}
-        </div>
-      </div>
+          {visualMode === 'hologram' && <ExerciseVisual type={selected.type} name={selected.name} />}
+          {visualMode === 'illustration' && <WgerImage name={selected.name} />}
+          {visualMode === 'motion' && (
+            <div className="empty-state" style={{ minHeight: 160, background: 'var(--clr-surface-2)', borderRadius: 'var(--r-lg)' }}>
+               <div className="empty-state__icon">🎞️</div>
+               <p className="empty-state__text" style={{ fontSize: 'var(--fs-xs)' }}>Motion GIF loading...</p>
+               <p style={{ fontSize: '9px', color: 'var(--clr-text-3)' }}>External GIF database link active</p>
+            </div>
+          )}
+          {visualMode === 'youtube' && (
+            <div style={{ padding: 'var(--sp-6)', background: 'var(--clr-surface-2)', borderRadius: 'var(--r-lg)', textAlign: 'center' }}>
+              <div style={{ fontSize: '2rem', marginBottom: 'var(--sp-3)' }}>📺</div>
+              <h4 style={{ fontSize: 'var(--fs-sm)', marginBottom: 'var(--sp-3)' }}>Search "{selected.name}" on YouTube</h4>
+              <a 
+                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(selected.name + ' exercise form')}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn btn--primary btn--sm"
+                style={{ textDecoration: 'none', display: 'inline-block' }}
+              >
+                Open YouTube Search
+              </a>
+            </div>
+          )}
 
-      {selected && (
-        <div style={{ padding: 'var(--sp-5)', borderRadius: 'var(--r-lg)', border: '1px solid var(--clr-accent)', background: 'var(--clr-accent-l)', marginBottom: 'var(--sp-5)' }}>
-          <WgerImage name={selected.name} />
-          <ExerciseVisual type={selected.type} name={selected.name} />
-          <h3 className="section-title" style={{ textAlign: 'center' }}>{selected.name}</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--sp-4)' }}>
+          <h3 className="section-title" style={{ textAlign: 'center', marginTop: 'var(--sp-4)' }}>{selected.name}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 'var(--sp-4)', margin: 'var(--sp-5) 0' }}>
             <div className="form-group">
               <label className="form-label">Sets</label>
               <input type="number" className="form-input" value={sets} min={1} onChange={e => setSets(+e.target.value)} />
@@ -392,15 +533,53 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
             )}
           </div>
           <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
-            <button className="btn btn--primary" onClick={save}>Save Exercise</button>
-            <button className="btn btn--ghost" onClick={() => setSelected(null)}>Cancel</button>
+            <button className="btn btn--primary" style={{ flex: 2 }} onClick={save} title="Enter to save">Add to Log</button>
+            <button className="btn btn--ghost" style={{ flex: 1 }} onClick={() => setSelected(null)} title="Esc to close">Close</button>
           </div>
+          <p style={{ fontSize: '9px', color: 'var(--clr-text-3)', textAlign: 'center', marginTop: 'var(--sp-3)', fontWeight: 600 }}>Tip: Press Enter to log exercise</p>
         </div>
       )}
 
+      <div className="search-bar" style={{ position: 'relative', marginBottom: 'var(--sp-6)' }}>
+        <input className="search-bar__input" value={query} onChange={e => setQuery(e.target.value)}
+          placeholder="Search 87+ exercises (e.g. Bench, Squat)…" autoComplete="off" />
+        {results.length > 0 && (
+          <div className="food-results" style={{ display: 'block' }}>
+            {results.map(e => (
+              <div key={e.id} className="food-result" onClick={() => { setSelected(e); setQuery('') }}>
+                <span className="food-item__name">{e.name}</span>
+                <span className="food-item__region">{e.type}</span>
+                <span className="food-item__cal">{e.muscle ?? ''}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div style={{ marginBottom: 'var(--sp-5)' }}>
+        <h3 className="section-title" style={{ marginBottom: 'var(--sp-3)' }}>Quick Add</h3>
+        <div style={{ display: 'flex', gap: 'var(--sp-3)', flexWrap: 'wrap' }}>
+          {['Push-ups', 'Squat', 'Running', 'Plank', 'Bench Press', 'Pull-ups'].map(name => (
+            <button key={name} className="btn btn--ghost btn--sm" onClick={() => quickAdd(name)}>{name}</button>
+          ))}
+        </div>
+      </div>
+
       {showRestTimer && <RestTimer onDismiss={() => setShowRestTimer(false)} />}
 
-      <h3 className="section-title">Today's Log</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--sp-4)' }}>
+        <h3 className="section-title" style={{ margin: 0 }}>Today's Log</h3>
+        {todayLog.length > 0 && (
+          <button 
+            className="btn btn--ghost btn--sm ripple" 
+            onClick={generateShareCard}
+            style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', color: 'var(--clr-accent)', padding: 'var(--sp-2) var(--sp-3)', borderRadius: 'var(--r-md)' }}
+          >
+            <span style={{ fontSize: '1.25rem' }}>📸</span> 
+            <span style={{ fontWeight: 700, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Share Achievement</span>
+          </button>
+        )}
+      </div>
       {todayLog.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state__icon">🏋️</div>

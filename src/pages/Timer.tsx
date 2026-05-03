@@ -411,6 +411,75 @@ function MiniStat({ label, value }: { label: string; value: string | number }) {
   )
 }
 
+function Emom() {
+  const [totalMins, setTotalMins] = useState(10)
+  const [currentMin, setCurrentMin] = useState(0)
+  const [secs, setSecs] = useState(60)
+  const [running, setRunning] = useState(false)
+  const [done, setDone] = useState(false)
+  const intRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const stop = () => { clearInterval(intRef.current!); setRunning(false) }
+  const reset = () => { stop(); setCurrentMin(0); setSecs(60); setDone(false) }
+
+  const start = () => {
+    setDone(false); setCurrentMin(1); setSecs(60); setRunning(true)
+    speak(`Starting ${totalMins} minute E M O M. Let's go!`)
+    
+    let curMin = 1, curSecs = 60
+    intRef.current = setInterval(() => {
+      curSecs--
+      setSecs(curSecs)
+      
+      if (curSecs === 10) {
+        speak('10 seconds')
+      }
+      
+      if (curSecs <= 0) {
+        playBeep()
+        curMin++
+        if (curMin > totalMins) {
+          clearInterval(intRef.current!)
+          setRunning(false)
+          setDone(true)
+          setCurrentMin(0)
+          speak('Workout complete. Great job!')
+          return
+        }
+        curSecs = 60
+        setSecs(60)
+        setCurrentMin(curMin)
+        speak(`Minute ${curMin}`)
+      }
+    }, 1000)
+  }
+
+  useEffect(() => () => clearInterval(intRef.current!), [])
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--sp-6)', paddingTop: 'var(--sp-7)' }}>
+      <div className="timer-display" style={{ color: done ? 'var(--clr-accent)' : 'var(--clr-text)' }}>{formatTime(secs)}</div>
+      <div style={{ fontSize: 'var(--fs-lg)', fontWeight: 700, color: 'var(--clr-accent)' }}>
+        {done ? 'FINISHED! 🎉' : `MINUTE ${currentMin} / ${totalMins}`}
+      </div>
+      
+      <div className="form-group" style={{ width: '100%', maxWidth: 200 }}>
+        <label className="form-label">Total Minutes</label>
+        <input className="form-input" type="number" value={totalMins} min={1} max={60} onChange={e => { setTotalMins(+e.target.value); if (!running) reset() }} disabled={running} />
+      </div>
+
+      <div style={{ display: 'flex', gap: 'var(--sp-4)' }}>
+        <button className="btn btn--primary" style={{ minWidth: 120 }} onClick={running ? stop : start}>{running ? 'Pause' : 'Start'}</button>
+        <button className="btn btn--ghost" onClick={reset}>Reset</button>
+      </div>
+      
+      <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)', textAlign: 'center', maxWidth: 300 }}>
+        💡 Every Minute on the Minute. Finish your reps, then rest for the remainder of the minute.
+      </div>
+    </div>
+  )
+}
+
 /* ── Main Timer Page ────────────────────────────────────────── */
 export function Timer() {
   const [tab, setTab] = useState<TimerTab>('rest')
@@ -422,17 +491,19 @@ export function Timer() {
       </div>
       <div className="tabs">
         {([
-          ['rest', 'Rest Timer'],
-          ['stopwatch', 'Stopwatch'],
+          ['rest', 'Rest'],
+          ['stopwatch', 'Stop'],
           ['tabata', 'Tabata'],
+          ['emom', 'EMOM'],
           ['activity', '🔊 Activity'],
-        ] as [TimerTab, string][]).map(([t, label]) => (
-          <button key={t} className={`tab${tab === t ? ' tab--active' : ''}`} onClick={() => setTab(t)}>{label}</button>
+        ] as [TimerTab | 'emom', string][]).map(([t, label]) => (
+          <button key={t} className={`tab${tab === t ? ' tab--active' : ''}`} onClick={() => setTab(t as any)}>{label}</button>
         ))}
       </div>
       {tab === 'rest' && <RestTimer />}
       {tab === 'stopwatch' && <Stopwatch />}
       {tab === 'tabata' && <Tabata />}
+      {(tab as string) === 'emom' && <Emom />}
       {tab === 'activity' && <ActivityTimer />}
     </div>
   )

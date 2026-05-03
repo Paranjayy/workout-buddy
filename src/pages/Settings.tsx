@@ -6,7 +6,8 @@ import type { Profile } from '../types'
 const defaults: Profile = {
   name: '', dob: '', height: null, lifeExpectancy: 80,
   calorieGoal: 2000, proteinGoal: 120, carbGoal: 250, fatGoal: 65,
-  targetWeight: null, gender: null, age: null, activityLevel: 1.55,
+  targetWeight: null, muscleGoal: null, gender: null, age: null, activityLevel: 1.55,
+  waist: null, neck: null, hip: null,
 }
 
 export function Settings() {
@@ -90,6 +91,23 @@ export function Settings() {
           </Field>
           <Field label="Target Weight (kg)" id="target-w" hint="For weight loss/gain plan">
             <input className="form-input" id="target-w" type="number" step="0.1" value={profile.targetWeight ?? ''} placeholder="68" onChange={e => update('targetWeight', +e.target.value || null)} />
+          </Field>
+          <Field label="Muscle Goal (%)" id="muscle-g" hint="Target body fat / muscle">
+            <input className="form-input" id="muscle-g" type="number" value={profile.muscleGoal ?? ''} placeholder="15" onChange={e => update('muscleGoal', +e.target.value || null)} />
+          </Field>
+        </div>
+
+        <h2 className="section-title" style={{ marginTop: 'var(--sp-7)' }}>Measurements (cm)</h2>
+        <p style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)', marginBottom: 'var(--sp-4)' }}>Used for Body Fat & Lean Mass estimation.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--sp-4)' }}>
+          <Field label="Waist" id="waist">
+            <input className="form-input" id="waist" type="number" value={profile.waist ?? ''} placeholder="80" onChange={e => update('waist', +e.target.value || null)} />
+          </Field>
+          <Field label="Neck" id="neck">
+            <input className="form-input" id="neck" type="number" value={profile.neck ?? ''} placeholder="38" onChange={e => update('neck', +e.target.value || null)} />
+          </Field>
+          <Field label="Hip" id="hip" hint="Mainly for females">
+            <input className="form-input" id="hip" type="number" value={profile.hip ?? ''} placeholder="90" onChange={e => update('hip', +e.target.value || null)} />
           </Field>
         </div>
 

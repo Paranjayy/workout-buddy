@@ -1,0 +1,3 @@
+- wger.de has cool things maybe later we move to creating our animated things with muscle and many things visualisation or thing if feasible lol fun idea just for testing how far we can go adding human would feel weird out of place on random website & so maybe explore animated or gif or iamge visuals for visual aids for workout and things and images sort for food calorie too
+- export/import and cloud sync later ig with db/auth optin ig idk else 100% local or without auth or thing 
+- add icecream/cones/sweets and better organised life to be exuberant 

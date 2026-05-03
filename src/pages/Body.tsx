@@ -199,6 +199,42 @@ function WeightTab() {
         </div>
       )}
 
+      {/* Body Composition section */}
+      {latest && profile.waist && profile.neck && (
+        <div style={{ marginTop: 'var(--sp-6)', padding: 'var(--sp-5)', borderRadius: 'var(--r-xl)', border: '1px solid var(--clr-border)', background: 'var(--clr-surface)' }}>
+          <h3 className="section-title" style={{ marginBottom: 'var(--sp-4)' }}>Body Composition</h3>
+          <div className="stats-row">
+            {(() => {
+              const h = profile.height || 175
+              const w = profile.waist || 0
+              const n = profile.neck || 0
+              const hip = profile.hip || 0
+              let bf = 0
+              if (profile.gender === 'male') {
+                bf = 495 / (1.0324 - 0.19077 * Math.log10(w - n) + 0.15456 * Math.log10(h)) - 450
+              } else {
+                bf = 495 / (1.29579 - 0.35004 * Math.log10(w + hip - n) + 0.22100 * Math.log10(h)) - 450
+              }
+              const leanMass = latest.weight * (1 - bf/100)
+              return (
+                <>
+                  <div className="stat-block stat-block--accent">
+                    <div className="stat-block__label">Body Fat</div>
+                    <div className="stat-block__value">{bf.toFixed(1)}%</div>
+                    <div className="stat-block__sub">est. (US Navy)</div>
+                  </div>
+                  <div className="stat-block stat-block--sky">
+                    <div className="stat-block__label">Lean Mass</div>
+                    <div className="stat-block__value">{leanMass.toFixed(1)} kg</div>
+                    <div className="stat-block__sub">muscle + bone</div>
+                  </div>
+                </>
+              )
+            })()}
+          </div>
+        </div>
+      )}
+
       {log.length > 0 ? (
         <div style={{ marginTop: 'var(--sp-6)' }}>
           <h3 className="section-title">History</h3>

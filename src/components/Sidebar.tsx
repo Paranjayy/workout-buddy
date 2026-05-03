@@ -65,19 +65,27 @@ const NAV = [
       <path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/>
     </svg>
   )},
+  { to: '/habits', label: 'Habits', icon: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+    </svg>
+  )},
 ]
 
 // 5 tabs shown in mobile bottom bar (most important)
-const MOBILE_NAV = ['/', '/workout', '/calories', '/timer', '/progress']
+const MOBILE_NAV = ['/', '/workout', '/calories', '/timer', '/habits']
 
 export function Sidebar() {
   return (
     <>
       {/* Desktop sidebar */}
       <aside className="sidebar">
-        <div className="sidebar__brand">
-          <img src="/icon.png" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, objectFit: 'cover' }} />
-          <span className="sidebar__title">Workout Buddy</span>
+        <div className="sidebar__brand" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+            <img src="/icon.png" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, objectFit: 'cover' }} />
+            <span className="sidebar__title">Workout Buddy</span>
+          </div>
+          <div style={{ fontSize: '9px', fontWeight: 800, padding: '2px 4px', border: '1px solid var(--clr-border)', borderRadius: '4px', color: 'var(--clr-text-3)', background: 'var(--clr-surface-2)' }}>⌘K</div>
         </div>
         <nav className="sidebar__nav" aria-label="Main navigation">
           {NAV.map(item => (

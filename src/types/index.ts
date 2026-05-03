@@ -10,9 +10,13 @@ export interface Profile {
   carbGoal: number
   fatGoal: number
   targetWeight: number | null
+  muscleGoal: number | null
   gender: 'male' | 'female' | null
   age: number | null
   activityLevel: number  // 1.2–1.9 multiplier
+  waist: number | null
+  neck: number | null
+  hip: number | null
 }
 
 export interface WorkoutEntry {
@@ -98,6 +102,13 @@ export interface LifeProgress {
   weeksRemaining: number
 }
 
+export interface PersonalRecord {
+  exercise: string
+  weight: number
+  reps: number
+  date: string
+}
+
 export type NavView =
   | 'dashboard'
   | 'workout'
@@ -107,4 +118,20 @@ export type NavView =
   | 'progress'
   | 'calendar'
   | 'music'
+  | 'journal'
+  | 'achievements'
+  | 'digest'
   | 'settings'
+
+export interface HabitLog {
+  date: string
+  completed: boolean
+}
+
+export interface Habit {
+  id: string
+  name: string
+  emoji: string
+  color: string
+  logs: Record<string, boolean> // date: true
+}

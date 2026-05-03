@@ -21,9 +21,9 @@ export function Calendar() {
   const now = new Date()
   const [viewMonth, setViewMonth] = useState(now.getMonth())
   const [viewYear, setViewYear] = useState(now.getFullYear())
+  const [selectedDate, setSelectedDate] = useState<string | null>(todayKey())
   const [icsEvents, setIcsEvents] = useState<CalendarEvent[]>([])
   const workouts = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, [])
-  const workoutDates = new Set(workouts.map(w => w.date))
 
   const nav = (dir: number) => {
     setViewMonth(m => {
@@ -39,6 +39,11 @@ export function Calendar() {
   const monthName = new Date(viewYear, viewMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
   const today = todayKey()
 
+  const workoutByDate = workouts.reduce((acc, w) => {
+    (acc[w.date] ??= []).push(w)
+    return acc
+  }, {} as Record<string, WorkoutEntry[]>)
+
   const monthWorkouts = workouts.filter(w => w.date.startsWith(`${viewYear}-${String(viewMonth + 1).padStart(2, '0')}`))
   const activeDays = new Set(monthWorkouts.map(w => w.date)).size
 
@@ -50,6 +55,8 @@ export function Calendar() {
     reader.readAsText(file)
   }
 
+  const selectedWorkouts = selectedDate ? workoutByDate[selectedDate] ?? [] : []
+
   return (
     <div className="view-enter">
       <div className="page-header">
@@ -57,70 +64,98 @@ export function Calendar() {
         <h1 className="page-header__title">Calendar</h1>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--sp-5)' }}>
-        <button className="btn btn--ghost btn--sm" onClick={() => nav(-1)}>← Prev</button>
-        <h2 style={{ fontFamily: 'var(--ff-display)', fontSize: 'var(--fs-lg)', fontWeight: 600 }}>{monthName}</h2>
-        <button className="btn btn--ghost btn--sm" onClick={() => nav(1)}>Next →</button>
-      </div>
+      <div className="cal-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 'var(--sp-8)', alignItems: 'start' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--sp-5)' }}>
+            <button className="btn btn--ghost btn--sm" onClick={() => nav(-1)}>← Prev</button>
+            <h2 style={{ fontFamily: 'var(--ff-display)', fontSize: 'var(--fs-lg)', fontWeight: 600 }}>{monthName}</h2>
+            <button className="btn btn--ghost btn--sm" onClick={() => nav(1)}>Next →</button>
+          </div>
 
-      <div className="cal-grid" style={{ marginBottom: 'var(--sp-5)' }}>
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-          <div key={d} className="cal-day-header">{d}</div>
-        ))}
-        {Array.from({ length: firstDay }, (_, i) => <div key={`pad-${i}`} className="cal-day" />)}
-        {Array.from({ length: daysInMonth }, (_, i) => {
-          const d = i + 1
-          const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
-          return (
-            <div key={d} className={`cal-day${dateStr === today ? ' cal-day--today' : ''}${workoutDates.has(dateStr) ? ' cal-day--has-workout' : ''}`}>
-              {d}
+          <div className="cal-grid" style={{ marginBottom: 'var(--sp-6)' }}>
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
+              <div key={d} className="cal-day-header">{d}</div>
+            ))}
+            {Array.from({ length: firstDay }, (_, i) => <div key={`pad-${i}`} className="cal-day" />)}
+            {Array.from({ length: daysInMonth }, (_, i) => {
+              const d = i + 1
+              const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+              const dayWorkouts = workoutByDate[dateStr] ?? []
+              const hasWorkout = dayWorkouts.length > 0
+              const isSelected = selectedDate === dateStr
+              
+              return (
+                <div 
+                  key={d} 
+                  onClick={() => setSelectedDate(dateStr)}
+                  className={`cal-day${dateStr === today ? ' cal-day--today' : ''}${hasWorkout ? ' cal-day--has-workout' : ''}${isSelected ? ' cal-day--selected' : ''}`}
+                  style={{ position: 'relative', cursor: 'pointer' }}
+                >
+                  <span style={{ position: 'relative', zIndex: 2 }}>{d}</span>
+                  {hasWorkout && (
+                    <div style={{ position: 'absolute', bottom: '4px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '2px' }}>
+                      {Array.from(new Set(dayWorkouts.map(w => w.type))).slice(0, 3).map((t, idx) => (
+                        <div key={idx} style={{ width: '4px', height: '4px', borderRadius: '50%', background: t === 'cardio' ? 'var(--clr-rose)' : t === 'yoga' ? 'var(--clr-sky)' : 'var(--clr-accent)' }} />
+                      ))}
+                    </div>
+                  )}
+                  {isSelected && <div style={{ position: 'absolute', inset: '4px', border: '2px solid var(--clr-accent)', borderRadius: 'var(--r-sm)', zIndex: 1 }} />}
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="stats-row">
+            <div className="stat-block stat-block--accent">
+              <div className="stat-block__label">Monthly Sessions</div>
+              <div className="stat-block__value">{monthWorkouts.length}</div>
             </div>
-          )
-        })}
-      </div>
+            <div className="stat-block stat-block--sky">
+              <div className="stat-block__label">Active Days</div>
+              <div className="stat-block__value">{activeDays}</div>
+            </div>
+            <div className="stat-block stat-block--amber">
+              <div className="stat-block__label">Consistency</div>
+              <div className="stat-block__value">{daysInMonth > 0 ? Math.round((activeDays / daysInMonth) * 100) : 0}%</div>
+            </div>
+          </div>
+        </div>
 
-      <div className="stats-row" style={{ marginBottom: 'var(--sp-7)' }}>
-        <div className="stat-block stat-block--accent">
-          <div className="stat-block__label">Workouts This Month</div>
-          <div className="stat-block__value">{monthWorkouts.length}</div>
-        </div>
-        <div className="stat-block stat-block--sky">
-          <div className="stat-block__label">Active Days</div>
-          <div className="stat-block__value">{activeDays}</div>
-        </div>
-        <div className="stat-block stat-block--amber">
-          <div className="stat-block__label">Consistency</div>
-          <div className="stat-block__value">{daysInMonth > 0 ? Math.round((activeDays / daysInMonth) * 100) : 0}%</div>
-        </div>
-      </div>
+        {/* Day Detail Sidebar */}
+        <div className="cal-sidebar" style={{ background: 'var(--clr-surface)', border: '1px solid var(--clr-border)', borderRadius: 'var(--r-xl)', padding: 'var(--sp-6)', minHeight: '400px' }}>
+          <h3 style={{ fontFamily: 'var(--ff-display)', fontSize: 'var(--fs-base)', fontWeight: 700, marginBottom: 'var(--sp-4)', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+            <span>📅</span> {selectedDate ? new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' }) : 'Select a date'}
+          </h3>
 
-      <div>
-        <h3 className="section-title">Calendar Import</h3>
-        <p style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text-3)', marginBottom: 'var(--sp-4)' }}>
-          Import your calendar (.ics) to see events alongside your workout schedule.
-        </p>
-        <label className="btn btn--ghost btn--sm" style={{ cursor: 'pointer', display: 'inline-block' }}>
-          📁 Import .ics File
-          <input type="file" accept=".ics" style={{ display: 'none' }} onChange={handleICS} />
-        </label>
-        {icsEvents.length > 0 && (
-          <div style={{ marginTop: 'var(--sp-4)' }}>
-            <h4 style={{ fontSize: 'var(--fs-sm)', fontWeight: 600, marginBottom: 'var(--sp-3)' }}>
-              {icsEvents.length} imported events
-            </h4>
-            <div className="workout-list">
-              {icsEvents.slice(0, 10).map((ev, i) => (
-                <div key={i} className="workout-entry">
-                  <div className="workout-entry__icon" style={{ background: 'var(--clr-sky-l)' }}>📅</div>
-                  <div>
-                    <div className="workout-entry__name">{ev.summary}</div>
-                    <div className="workout-entry__detail">{ev.dtstart}</div>
+          {selectedWorkouts.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: 'var(--sp-8) 0', color: 'var(--clr-text-3)' }}>
+              <div style={{ fontSize: '2rem', marginBottom: 'var(--sp-3)' }}>🌿</div>
+              <p style={{ fontSize: 'var(--fs-sm)' }}>No activity recorded for this day.</p>
+              <button className="btn btn--ghost btn--sm" style={{ marginTop: 'var(--sp-4)' }} onClick={() => window.location.href='/workout'}>Log Workout</button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
+              {selectedWorkouts.map(w => (
+                <div key={w.id} style={{ padding: 'var(--sp-3) var(--sp-4)', borderRadius: 'var(--r-lg)', background: 'var(--clr-surface-2)', border: '1px solid var(--clr-border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                    <span style={{ fontWeight: 700, fontSize: 'var(--fs-sm)' }}>{w.exercise}</span>
+                    <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--clr-text-3)' }}>{w.time}</span>
                   </div>
+                  <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)' }}>{w.detail}</div>
                 </div>
               ))}
             </div>
+          )}
+
+          <div style={{ marginTop: 'var(--sp-8)', paddingTop: 'var(--sp-6)', borderTop: '1px dashed var(--clr-border)' }}>
+            <h4 style={{ fontSize: 'var(--fs-xs)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--clr-text-3)', marginBottom: 'var(--sp-3)' }}>Import Calendar</h4>
+            <label className="btn btn--ghost btn--sm" style={{ cursor: 'pointer', display: 'block', textAlign: 'center' }}>
+              📁 Import .ics
+              <input type="file" accept=".ics" style={{ display: 'none' }} onChange={handleICS} />
+            </label>
+            {icsEvents.length > 0 && <p style={{ fontSize: '10px', color: 'var(--clr-accent)', marginTop: 'var(--sp-2)', textAlign: 'center' }}>{icsEvents.length} events loaded ✓</p>}
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

@@ -136,6 +136,18 @@ function DashMiniIcon({ type, name }: { type: string; name: string }) {
   )
 }
 
+function Recommendation({ icon, title, text, color }: { icon: string; title: string; text: string; color: string }) {
+  return (
+    <div style={{ display: 'flex', gap: 'var(--sp-4)', padding: 'var(--sp-4)', borderRadius: 'var(--r-lg)', background: 'var(--clr-surface)', border: '1px solid var(--clr-border)', borderLeft: `4px solid ${color}` }}>
+      <div style={{ fontSize: '1.5rem', flexShrink: 0 }}>{icon}</div>
+      <div>
+        <div style={{ fontWeight: 700, fontSize: 'var(--fs-sm)', marginBottom: '2px' }}>{title}</div>
+        <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)', lineHeight: 1.4 }}>{text}</div>
+      </div>
+    </div>
+  )
+}
+
 export function Dashboard() {
   const navigate = useNavigate()
   const profile = store.get<Profile>(KEYS.PROFILE, {} as Profile)
@@ -193,7 +205,16 @@ export function Dashboard() {
     <div className="view-enter">
       <div className="page-header">
         <p className="page-header__greeting">{getGreeting()}</p>
-        <h1 className="page-header__title">Hey {profile.name || 'there'} 👋</h1>
+        <h1 className="page-header__title" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+          Hey {profile.name || 'there'} 👋
+          {allWorkouts.length > 50 && (
+            <span style={{ fontSize: '10px', background: 'var(--clr-accent)', color: 'white', padding: '2px 8px', borderRadius: '100px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Elite Status</span>
+          )}
+        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', fontSize: '10px', color: 'var(--clr-text-3)', fontWeight: 600, marginTop: 'var(--sp-1)' }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--clr-success)' }}></span>
+          OFFLINE ENCRYPTED STORAGE · 0% CLOUD LEAKAGE
+        </div>
       </div>
 
       <div className="stats-row">
@@ -261,6 +282,81 @@ export function Dashboard() {
       </div>
 
       <ActivityHeatmap />
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--sp-6)', marginBottom: 'var(--sp-7)' }}>
+        {/* Personal Records Board */}
+        <div>
+          <h2 className="section-title">🏆 Personal Records</h2>
+          {Object.entries(store.get<Record<string, number>>(KEYS.PERSONAL_RECORDS, {})).length === 0 ? (
+            <div style={{ padding: 'var(--sp-5)', borderRadius: 'var(--r-lg)', border: '1px dashed var(--clr-border)', textAlign: 'center', color: 'var(--clr-text-3)', fontSize: 'var(--fs-sm)' }}>
+              No PRs yet. Lift heavy to set some!
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+              {Object.entries(store.get<Record<string, number>>(KEYS.PERSONAL_RECORDS, {}))
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([name, weight]) => (
+                  <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)', padding: 'var(--sp-3) var(--sp-4)', borderRadius: 'var(--r-md)', background: 'var(--clr-surface)', border: '1px solid var(--clr-border)' }}>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--clr-amber-l)', display: 'grid', placeItems: 'center', fontSize: 'var(--fs-sm)' }}>🥇</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 600, fontSize: 'var(--fs-sm)' }}>{name}</div>
+                      <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)' }}>All-time best</div>
+                    </div>
+                    <div style={{ fontFamily: 'var(--ff-display)', fontWeight: 800, fontSize: 'var(--fs-lg)', color: 'var(--clr-accent)' }}>{weight}kg</div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+
+        {/* Smart Recommendations */}
+        <div>
+          <h2 className="section-title">✨ Smart Coach</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
+            {((): React.ReactNode[] => {
+              const recs: React.ReactNode[] = []
+              const now = new Date()
+              
+              // 1. Leg day check
+              const lastLegDay = allWorkouts.find(w => w.exercise.toLowerCase().includes('squat') || w.exercise.toLowerCase().includes('leg'))
+              const daysSinceLegs = lastLegDay ? Math.floor((now.getTime() - new Date(lastLegDay.date).getTime()) / 86400000) : 99
+              if (daysSinceLegs > 4) {
+                recs.push(<Recommendation key="legs" icon="🦵" title="Leg Day Overdue" text={`It's been ${daysSinceLegs > 90 ? 'a while' : daysSinceLegs + ' days'} since your last leg session.`} color="var(--clr-rose)" />)
+              }
+
+              // 2. Hydration check
+              if (waterToday < 4 && now.getHours() > 14) {
+                recs.push(<Recommendation key="water" icon="💧" title="Hydration Alert" text="You're below 50% of your water goal for this time of day." color="var(--clr-sky)" />)
+              }
+
+              // 3. Consistency check
+              if (streak < 3) {
+                recs.push(<Recommendation key="streak" icon="🔥" title="Ignite the Streak" text="Train today to build momentum. Consistency is king." color="var(--clr-amber)" />)
+              }
+
+              // 4. Calorie check
+              if (totalCal < (profile.calorieGoal ?? 2000) * 0.4 && now.getHours() > 17) {
+                recs.push(<Recommendation key="cals" icon="🍱" title="Fuel Up" text="Your calorie intake is quite low for the evening. Don't skip meals!" color="var(--clr-accent)" />)
+              }
+
+              // 5. Habit check
+              const habits = store.get<any[]>(KEYS.HABITS, [])
+              const tKey = todayKey()
+              const unloggedHabit = habits.find(h => !h.logs[tKey])
+              if (unloggedHabit) {
+                recs.push(<Recommendation key="habit" icon={unloggedHabit.emoji || '✨'} title="Habit Pending" text={`Don't forget to log your "${unloggedHabit.name}" today.`} color="var(--clr-accent)" />)
+              }
+
+              if (recs.length === 0) {
+                recs.push(<div key="perfect" style={{ padding: 'var(--sp-5)', borderRadius: 'var(--r-lg)', border: '1px solid var(--clr-accent)', background: 'var(--clr-accent-l)', textAlign: 'center', color: 'var(--clr-accent-d)', fontSize: 'var(--fs-sm)', fontWeight: 600 }}>🌟 You're killing it! All systems optimal.</div>)
+              }
+
+              return recs
+            })()}
+          </div>
+        </div>
+      </div>
 
       <div style={{ marginBottom: 'var(--sp-7)' }}>
         <h2 className="section-title">Quick Start a Workout</h2>

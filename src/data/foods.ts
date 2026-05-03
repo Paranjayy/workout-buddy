@@ -187,6 +187,19 @@ export const FOOD_DB: FoodItem[] = [
   // Greek
   { name: 'Gyro', cal: 480, protein: 24, carbs: 38, fat: 26, region: '🇬🇷 Greek', serving: '1 wrap' },
   { name: 'Moussaka', cal: 350, protein: 18, carbs: 22, fat: 20, region: '🇬🇷 Greek', serving: '1 slice' },
+  // Desserts & Sweets
+  { name: 'Vanilla Ice Cream', cal: 137, protein: 2, carbs: 15, fat: 7, region: '🍦 Desserts', serving: '1 scoop' },
+  { name: 'Chocolate Cone', cal: 310, protein: 4, carbs: 42, fat: 14, region: '🍦 Desserts', serving: '1 cone' },
+  { name: 'Gulab Jamun', cal: 150, protein: 2, carbs: 25, fat: 5, region: '🍦 Desserts', serving: '1 piece' },
+  { name: 'Cheesecake', cal: 400, protein: 6, carbs: 32, fat: 28, region: '🍦 Desserts', serving: '1 slice' },
+  { name: 'Brownie', cal: 240, protein: 2, carbs: 30, fat: 12, region: '🍦 Desserts', serving: '1 square' },
+  { name: 'Gelato (Pistachio)', cal: 180, protein: 4, carbs: 22, fat: 9, region: '🍦 Desserts', serving: '1 scoop' },
+  { name: 'Donut (Glazed)', cal: 190, protein: 2, carbs: 22, fat: 11, region: '🍦 Desserts', serving: '1 piece' },
+  { name: 'Macaron', cal: 80, protein: 1, carbs: 12, fat: 3.5, region: '🍦 Desserts', serving: '1 piece' },
+  { name: 'Rasmalai', cal: 180, protein: 5, carbs: 20, fat: 10, region: '🍦 Desserts', serving: '1 piece' },
+  { name: 'Churro with Chocolate', cal: 220, protein: 2, carbs: 28, fat: 11, region: '🍦 Desserts', serving: '1 piece' },
+  { name: 'Mango Sorbet', cal: 120, protein: 0, carbs: 30, fat: 0, region: '🍦 Desserts', serving: '1 scoop' },
+  { name: 'Jalebi', cal: 150, protein: 0.5, carbs: 30, fat: 3, region: '🍦 Desserts', serving: '1 piece' },
 ]
 
 export function searchFoods(query: string, custom: FoodItem[] = []): FoodItem[] {

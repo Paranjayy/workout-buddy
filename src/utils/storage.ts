@@ -44,4 +44,7 @@ export const KEYS = {
   JOURNAL: 'journal',
   ACHIEVEMENTS: 'achievements',
   CUSTOM_PROGRAMS: 'custom_programs',
+  PERSONAL_RECORDS: 'personal_records',
+  BODY_LOG: 'body_log',
+  HABITS: 'habits',
 } as const
