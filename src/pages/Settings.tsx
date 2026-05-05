@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { store, KEYS } from '../utils/storage'
 import { useToast } from '../hooks/useToast'
+import { GooeyButton } from '../components/GooeyButton'
 import type { Profile } from '../types'
 
 const defaults: Profile = {
@@ -52,6 +53,13 @@ export function Settings() {
     if (!confirm('Delete ALL your data? This cannot be undone.')) return
     Object.values(KEYS).forEach(k => store.remove(k))
     showToast('All data cleared')
+    window.location.reload()
+  }
+
+  const clearKey = (key: keyof typeof KEYS, label: string) => {
+    if (!confirm(`Clear all ${label}? This cannot be undone.`)) return
+    store.remove(KEYS[key])
+    showToast(`${label} cleared`)
     window.location.reload()
   }
 
@@ -119,16 +127,20 @@ export function Settings() {
           <Field label="Fat (g)" id="fat"><input className="form-input" id="fat" type="number" value={profile.fatGoal} onChange={e => update('fatGoal', +e.target.value || 65)} /></Field>
         </div>
 
-        <button className="btn btn--primary" style={{ marginTop: 'var(--sp-4)' }} onClick={save}>Save Settings</button>
+        <GooeyButton style={{ marginTop: 'var(--sp-4)', width: '100%', maxWidth: 200 }} onClick={save}>Save Settings</GooeyButton>
 
         <h2 className="section-title" style={{ marginTop: 'var(--sp-7)' }}>Data Management</h2>
-        <div style={{ display: 'flex', gap: 'var(--sp-3)', flexWrap: 'wrap' }}>
-          <button className="btn btn--ghost" onClick={exportData}>📤 Export All Data</button>
-          <label className="btn btn--ghost" style={{ cursor: 'pointer' }}>
+        <div style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap' }}>
+          <button className="btn btn--ghost btn--sm" onClick={exportData}>📤 Export All Data</button>
+          <label className="btn btn--ghost btn--sm" style={{ cursor: 'pointer' }}>
             📥 Import Data
             <input type="file" accept=".json" style={{ display: 'none' }} onChange={importData} />
           </label>
-          <button className="btn btn--ghost" style={{ color: 'var(--clr-rose)' }} onClick={clearData}>🗑️ Clear All Data</button>
+          <button className="btn btn--ghost btn--sm" onClick={() => clearKey('WORKOUTS', 'Workout History')}>🧹 Clear Workouts</button>
+          <button className="btn btn--ghost btn--sm" onClick={() => clearKey('MEALS', 'Meal History')}>🧹 Clear Meals</button>
+          <button className="btn btn--ghost btn--sm" onClick={() => clearKey('TIMER_HISTORY', 'Timer History')}>🧹 Clear Timers</button>
+          <button className="btn btn--ghost btn--sm" onClick={() => clearKey('HABITS', 'Habit Logs')}>🧹 Clear Habits</button>
+          <button className="btn btn--ghost btn--sm" style={{ color: 'var(--clr-rose)', border: '1px solid var(--clr-rose)' }} onClick={clearData}>🗑️ Nuke All Data</button>
         </div>
 
         <div style={{ marginTop: 'var(--sp-6)', padding: 'var(--sp-4) var(--sp-5)', borderRadius: 'var(--r-lg)', border: '1px solid var(--clr-border)', background: 'var(--clr-surface)' }}>
@@ -141,7 +153,7 @@ export function Settings() {
         <div style={{ marginTop: 'var(--sp-6)', padding: 'var(--sp-4) var(--sp-5)', borderRadius: 'var(--r-lg)', border: '1px solid var(--clr-border)', background: 'var(--clr-surface)' }}>
           <div style={{ fontSize: 'var(--fs-sm)', fontWeight: 600, marginBottom: 'var(--sp-2)' }}>About</div>
           <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)', lineHeight: 1.6 }}>
-            Workout Buddy v2.0 · React + TypeScript + Vite<br />
+            Workout Buddy v2.3.0 · React 19 + TypeScript + Vite<br />
             All data stored locally in your browser. No account needed.<br />
             <a href="https://github.com/Paranjayy/workout-buddy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--clr-accent)' }}>View on GitHub</a>
           </div>
