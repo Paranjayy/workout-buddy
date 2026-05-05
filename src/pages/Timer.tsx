@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { store, KEYS } from '../utils/storage'
+import { uid, todayKey, formatDate } from '../utils/time'
 
-type TimerTab = 'rest' | 'stopwatch' | 'tabata' | 'activity'
+type TimerTab = 'rest' | 'stopwatch' | 'tabata' | 'activity' | 'history'
 
 function playBeep() {
   try {
@@ -95,6 +97,16 @@ function Stopwatch() {
   const stop = () => { clearInterval(intRef.current!); setRunning(false) }
   const reset = () => { stop(); setSecs(0); setLaps([]) }
   const lap = () => setLaps(p => [...p, secs])
+  const finish = () => {
+    stop()
+    if (secs > 5) {
+      store.push(KEYS.TIMER_HISTORY, {
+        id: uid(), date: todayKey(), time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        type: 'Stopwatch', detail: `${formatTimeLong(secs)}${laps.length ? ` · ${laps.length} laps` : ''}`
+      })
+    }
+    reset()
+  }
   useEffect(() => () => clearInterval(intRef.current!), [])
 
   return (
@@ -103,6 +115,7 @@ function Stopwatch() {
       <div style={{ display: 'flex', gap: 'var(--sp-4)' }}>
         <button className="btn btn--primary" style={{ minWidth: 120 }} onClick={running ? stop : start}>{running ? 'Pause' : 'Start'}</button>
         <button className="btn btn--ghost" onClick={lap}>Lap</button>
+        {secs > 0 && !running && <button className="btn btn--primary" style={{ background: 'var(--clr-accent)' }} onClick={finish}>✓ Finish</button>}
         <button className="btn btn--ghost" onClick={reset}>Reset</button>
       </div>
       {laps.length > 0 && (
@@ -144,7 +157,17 @@ function Tabata() {
         if (curIsWork) { curIsWork = false; curSecs = rest; setIsWork(false); setSecs(rest) }
         else {
           curRound++
-          if (curRound > rounds) { clearInterval(intRef.current!); setRunning(false); setDone(true); setCurrent(0); return }
+          if (curRound > rounds) {
+            clearInterval(intRef.current!)
+            setRunning(false)
+            setDone(true)
+            setCurrent(0)
+            store.push(KEYS.TIMER_HISTORY, {
+              id: uid(), date: todayKey(), time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+              type: 'Tabata', detail: `${rounds} rounds · ${work}s work / ${rest}s rest`
+            })
+            return
+          }
           curIsWork = true; curSecs = work; setIsWork(true); setSecs(work); setCurrent(curRound)
         }
       }
@@ -244,10 +267,16 @@ function ActivityTimer() {
     clearInterval(intRef.current!)
     setRunning(false)
     if (voiceEnabled) {
-      const summary = `Activity complete. Total time: ${formatTimeLong(secsRef.current)}. ${flags.length + 1} flags. Great job!`
+      const summary = `Activity complete. Total time: ${formatTimeLong(secsRef.current)}. ${flags.length} flags. Great job!`
       speak(summary)
     }
-  }, [flags, voiceEnabled])
+    if (secsRef.current > 5) {
+      store.push(KEYS.TIMER_HISTORY, {
+        id: uid(), date: todayKey(), time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        type: `Activity: ${activityName}`, detail: `${formatTimeLong(secsRef.current)}${flags.length ? ` · ${flags.length} flags` : ''}`
+      })
+    }
+  }, [flags, voiceEnabled, activityName])
 
   useEffect(() => () => { clearInterval(intRef.current!); window.speechSynthesis?.cancel() }, [])
 
@@ -444,6 +473,10 @@ function Emom() {
           setDone(true)
           setCurrentMin(0)
           speak('Workout complete. Great job!')
+          store.push(KEYS.TIMER_HISTORY, {
+            id: uid(), date: todayKey(), time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            type: 'EMOM', detail: `${totalMins} minutes`
+          })
           return
         }
         curSecs = 60
@@ -489,15 +522,16 @@ export function Timer() {
         <p className="page-header__greeting">FOCUS</p>
         <h1 className="page-header__title">Workout Timer</h1>
       </div>
-      <div className="tabs">
+      <div className="tabs" style={{ display: 'flex', overflowX: 'auto', paddingBottom: 'var(--sp-2)' }}>
         {([
           ['rest', 'Rest'],
           ['stopwatch', 'Stop'],
           ['tabata', 'Tabata'],
           ['emom', 'EMOM'],
           ['activity', '🔊 Activity'],
+          ['history', 'History'],
         ] as [TimerTab | 'emom', string][]).map(([t, label]) => (
-          <button key={t} className={`tab${tab === t ? ' tab--active' : ''}`} onClick={() => setTab(t as any)}>{label}</button>
+          <button key={t} className={`tab${tab === t ? ' tab--active' : ''}`} onClick={() => setTab(t as any)} style={{ whiteSpace: 'nowrap' }}>{label}</button>
         ))}
       </div>
       {tab === 'rest' && <RestTimer />}
@@ -505,6 +539,53 @@ export function Timer() {
       {tab === 'tabata' && <Tabata />}
       {(tab as string) === 'emom' && <Emom />}
       {tab === 'activity' && <ActivityTimer />}
+      {tab === 'history' && <TimerHistory />}
+    </div>
+  )
+}
+
+function TimerHistory() {
+  const [key, setKey] = useState(0)
+  const all = store.get<any[]>(KEYS.TIMER_HISTORY, [])
+  const byDate: Record<string, any[]> = {}
+  all.forEach(w => { (byDate[w.date] ??= []).push(w) })
+  const dates = Object.keys(byDate).sort().reverse().slice(0, 14)
+
+  if (!dates.length) return (
+    <div className="empty-state"><div className="empty-state__icon">📋</div><p className="empty-state__text">No timer history yet. Complete a timed session to log it!</p></div>
+  )
+
+  const deleteEntry = (id: string) => {
+    if (!confirm('Delete this entry?')) return
+    const allLogs = store.get<any[]>(KEYS.TIMER_HISTORY, [])
+    store.set(KEYS.TIMER_HISTORY, allLogs.filter(x => x.id !== id))
+    setKey(k => k + 1)
+  }
+
+  return (
+    <div key={key} style={{ paddingTop: 'var(--sp-5)' }}>
+      {dates.map(d => (
+        <div key={d} style={{ marginBottom: 'var(--sp-6)' }}>
+          <h3 className="section-title">{formatDate(d)}</h3>
+          <div className="workout-list">
+            {byDate[d].map(w => (
+              <div key={w.id} className="workout-entry">
+                <div className={`workout-entry__icon workout-entry__icon--cardio`}>
+                  {w.type.includes('Activity') ? '🔊' : '⏱️'}
+                </div>
+                <div>
+                  <div className="workout-entry__name">{w.type}</div>
+                  <div className="workout-entry__detail">{w.detail}</div>
+                </div>
+                <div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                  <span>{w.time}</span>
+                  <button onClick={() => deleteEntry(w.id)} style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}>×</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

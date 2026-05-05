@@ -47,4 +47,5 @@ export const KEYS = {
   PERSONAL_RECORDS: 'personal_records',
   BODY_LOG: 'body_log',
   HABITS: 'habits',
+  TIMER_HISTORY: 'timer_history',
 } as const

@@ -5,6 +5,7 @@ import { store, KEYS } from '../utils/storage'
 import { todayKey, uid, formatDate } from '../utils/time'
 import { useToast } from '../hooks/useToast'
 import { launchConfetti } from '../utils/confetti'
+import { MuscleMap } from '../components/MuscleMap'
 import type { WorkoutEntry } from '../types'
 
 type Tab = 'log' | 'templates' | 'history' | 'library'
@@ -485,10 +486,9 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
           {visualMode === 'hologram' && <ExerciseVisual type={selected.type} name={selected.name} />}
           {visualMode === 'illustration' && <WgerImage name={selected.name} />}
           {visualMode === 'motion' && (
-            <div className="empty-state" style={{ minHeight: 160, background: 'var(--clr-surface-2)', borderRadius: 'var(--r-lg)' }}>
-               <div className="empty-state__icon">🎞️</div>
-               <p className="empty-state__text" style={{ fontSize: 'var(--fs-xs)' }}>Motion GIF loading...</p>
-               <p style={{ fontSize: '9px', color: 'var(--clr-text-3)' }}>External GIF database link active</p>
+            <div style={{ background: 'var(--clr-surface-2)', padding: 'var(--sp-4)', borderRadius: 'var(--r-lg)', textAlign: 'center' }}>
+              <div style={{ fontSize: 'var(--fs-xs)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--clr-text-3)', marginBottom: 'var(--sp-4)' }}>Target Muscle Map</div>
+              <MuscleMap targetMuscle={selected.muscle || selected.type} />
             </div>
           )}
           {visualMode === 'youtube' && (
@@ -596,7 +596,20 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
                 <div className="workout-entry__name">{w.exercise}</div>
                 <div className="workout-entry__detail">{w.detail}</div>
               </div>
-              <div className="workout-entry__meta">{w.time}</div>
+              <div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                <span>{w.time}</span>
+                <button 
+                  onClick={() => {
+                    if (!confirm('Delete this entry?')) return
+                    const allLogs = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, [])
+                    store.set(KEYS.WORKOUTS, allLogs.filter(x => x.id !== w.id))
+                    forceUpdate(n => n + 1)
+                  }}
+                  style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}
+                >
+                  ×
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -661,6 +674,7 @@ function TemplatesTab({ showToast }: { showToast: (m: string) => void }) {
 }
 
 function HistoryTab() {
+  const [key, setKey] = useState(0)
   const all = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, [])
   const byDate: Record<string, WorkoutEntry[]> = {}
   all.forEach(w => { (byDate[w.date] ??= []).push(w) })
@@ -670,8 +684,15 @@ function HistoryTab() {
     <div className="empty-state"><div className="empty-state__icon">📋</div><p className="empty-state__text">No workout history yet. Start logging!</p></div>
   )
 
+  const deleteEntry = (id: string) => {
+    if (!confirm('Delete this entry?')) return
+    const allLogs = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, [])
+    store.set(KEYS.WORKOUTS, allLogs.filter(x => x.id !== id))
+    setKey(k => k + 1)
+  }
+
   return (
-    <div style={{ paddingTop: 'var(--sp-5)' }}>
+    <div key={key} style={{ paddingTop: 'var(--sp-5)' }}>
       {dates.map(d => (
         <div key={d} style={{ marginBottom: 'var(--sp-6)' }}>
           <h3 className="section-title">{formatDate(d)}</h3>
@@ -685,7 +706,10 @@ function HistoryTab() {
                   <div className="workout-entry__name">{w.exercise}</div>
                   <div className="workout-entry__detail">{w.detail}</div>
                 </div>
-                <div className="workout-entry__meta">{w.time}</div>
+                <div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                  <span>{w.time}</span>
+                  <button onClick={() => deleteEntry(w.id)} style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}>×</button>
+                </div>
               </div>
             ))}
           </div>

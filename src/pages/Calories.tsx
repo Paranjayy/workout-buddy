@@ -178,7 +178,26 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
                       <div className="workout-entry__name">{item.name}</div>
                       <div className="workout-entry__detail">{item.region} · {item.serving}</div>
                     </div>
-                    <div className="workout-entry__meta">{item.cal} kcal</div>
+                    <div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                      <span>{item.cal} kcal</span>
+                      <button 
+                        onClick={() => {
+                          if (!confirm('Delete this food?')) return
+                          const meals = store.get<MealEntry[]>(KEYS.MEALS, [])
+                          const updated = meals.map(m => {
+                            if (m.id === meal.id) {
+                              return { ...m, items: m.items.filter(x => x.entryId !== item.entryId) }
+                            }
+                            return m
+                          }).filter(m => m.items.length > 0)
+                          store.set(KEYS.MEALS, updated)
+                          forceUpdate(n => n + 1)
+                        }}
+                        style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -191,13 +210,14 @@ function LogMeal({ showToast }: { showToast: (m: string) => void }) {
 }
 
 function MealHistory() {
+  const [key, setKey] = useState(0)
   const all = store.get<MealEntry[]>(KEYS.MEALS, [])
   const byDate: Record<string, MealEntry[]> = {}
   all.forEach(m => { (byDate[m.date] ??= []).push(m) })
   const dates = Object.keys(byDate).sort().reverse().slice(0, 7)
 
   return (
-    <div style={{ paddingTop: 'var(--sp-5)' }}>
+    <div key={key} style={{ paddingTop: 'var(--sp-5)' }}>
       {dates.map(d => {
         const dayMeals = byDate[d]
         const cal = dayMeals.flatMap(m => m.items).reduce((s, i) => s + i.cal, 0)
@@ -215,7 +235,21 @@ function MealHistory() {
                     <div className="workout-entry__name">{item.name}</div>
                     <div className="workout-entry__detail">{item.region}</div>
                   </div>
-                  <div className="workout-entry__meta">{item.cal} kcal</div>
+                  <div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                    <span>{item.cal} kcal</span>
+                    <button 
+                      onClick={() => {
+                        if (!confirm('Delete this food?')) return
+                        const meals = store.get<MealEntry[]>(KEYS.MEALS, [])
+                        const updated = meals.map(m => ({ ...m, items: m.items.filter(x => x.entryId !== item.entryId) })).filter(m => m.items.length > 0)
+                        store.set(KEYS.MEALS, updated)
+                        setKey(k => k + 1)
+                      }}
+                      style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}
+                    >
+                      ×
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
