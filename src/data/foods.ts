@@ -18,9 +18,14 @@ export function foodEmoji(name: string): string {
   if (n.includes('coffee')) return '☕'
   if (n.includes('tea')) return '🍵'
   if (n.includes('juice') || n.includes('smoothie') || n.includes('water')) return '🧃'
-  if (n.includes('chocolate') || n.includes('tiramisu') || n.includes('baklava')) return '🍫'
-  if (n.includes('cake') || n.includes('crepe') || n.includes('pancake')) return '🥞'
-  if (n.includes('croissant') || n.includes('pretzel')) return '🥐'
+  if (n.includes('chocolate') || n.includes('tiramisu') || n.includes('baklava') || n.includes('brownie') || n.includes('fudge')) return '🍫'
+  if (n.includes('cake') || n.includes('crepe') || n.includes('pancake') || n.includes('cupcake') || n.includes('muffin')) return '🥞'
+  if (n.includes('ice cream') || n.includes('gelato') || n.includes('sorbet') || n.includes('soft serve') || n.includes('kulfi')) return '🍦'
+  if (n.includes('cone')) return '🍦'
+  if (n.includes('cookie') || n.includes('biscuit')) return '🍪'
+  if (n.includes('donut') || n.includes('doughnut')) return '🍩'
+  if (n.includes('candy') || n.includes('gummy') || n.includes('sweet') || n.includes('sugar')) return '🍭'
+  if (n.includes('croissant') || n.includes('pretzel') || n.includes('pastry')) return '🥐'
   if (n.includes('banana') || n.includes('apple') || n.includes('mango') || n.includes('avocado') || n.includes('açaí')) return '🍌'
   if (n.includes('yogurt') || n.includes('curd')) return '🥣'
   if (n.includes('oat') || n.includes('cereal')) return '🥣'
@@ -187,19 +192,33 @@ export const FOOD_DB: FoodItem[] = [
   // Greek
   { name: 'Gyro', cal: 480, protein: 24, carbs: 38, fat: 26, region: '🇬🇷 Greek', serving: '1 wrap' },
   { name: 'Moussaka', cal: 350, protein: 18, carbs: 22, fat: 20, region: '🇬🇷 Greek', serving: '1 slice' },
-  // Desserts & Sweets
+  // Desserts & Sweets (Exuberant Life)
   { name: 'Vanilla Ice Cream', cal: 137, protein: 2, carbs: 15, fat: 7, region: '🍦 Desserts', serving: '1 scoop' },
-  { name: 'Chocolate Cone', cal: 310, protein: 4, carbs: 42, fat: 14, region: '🍦 Desserts', serving: '1 cone' },
+  { name: 'Chocolate Ice Cream', cal: 143, protein: 2.5, carbs: 16, fat: 8, region: '🍦 Desserts', serving: '1 scoop' },
+  { name: 'Strawberry Ice Cream', cal: 127, protein: 2, carbs: 15, fat: 6, region: '🍦 Desserts', serving: '1 scoop' },
+  { name: 'Mint Choc Chip Ice Cream', cal: 160, protein: 3, carbs: 18, fat: 9, region: '🍦 Desserts', serving: '1 scoop' },
+  { name: 'Chocolate Dipped Cone', cal: 350, protein: 5, carbs: 45, fat: 16, region: '🍦 Desserts', serving: '1 cone' },
+  { name: 'Waffle Cone (Plain)', cal: 160, protein: 3, carbs: 32, fat: 2, region: '🍦 Desserts', serving: '1 cone' },
+  { name: 'Sugar Cone', cal: 50, protein: 1, carbs: 11, fat: 0.5, region: '🍦 Desserts', serving: '1 cone' },
+  { name: 'Soft Serve (Vanilla)', cal: 190, protein: 4, carbs: 24, fat: 9, region: '🍦 Desserts', serving: '1 cone' },
   { name: 'Gulab Jamun', cal: 150, protein: 2, carbs: 25, fat: 5, region: '🍦 Desserts', serving: '1 piece' },
-  { name: 'Cheesecake', cal: 400, protein: 6, carbs: 32, fat: 28, region: '🍦 Desserts', serving: '1 slice' },
-  { name: 'Brownie', cal: 240, protein: 2, carbs: 30, fat: 12, region: '🍦 Desserts', serving: '1 square' },
+  { name: 'Rasgulla', cal: 120, protein: 4, carbs: 25, fat: 1, region: '🍦 Desserts', serving: '1 piece' },
+  { name: 'Kulfi', cal: 220, protein: 6, carbs: 24, fat: 12, region: '🍦 Desserts', serving: '1 bar' },
+  { name: 'Cheesecake (New York)', cal: 400, protein: 6, carbs: 32, fat: 28, region: '🍦 Desserts', serving: '1 slice' },
+  { name: 'Chocolate Brownie', cal: 240, protein: 2, carbs: 30, fat: 12, region: '🍦 Desserts', serving: '1 square' },
   { name: 'Gelato (Pistachio)', cal: 180, protein: 4, carbs: 22, fat: 9, region: '🍦 Desserts', serving: '1 scoop' },
   { name: 'Donut (Glazed)', cal: 190, protein: 2, carbs: 22, fat: 11, region: '🍦 Desserts', serving: '1 piece' },
+  { name: 'Donut (Chocolate Filled)', cal: 280, protein: 4, carbs: 32, fat: 15, region: '🍦 Desserts', serving: '1 piece' },
   { name: 'Macaron', cal: 80, protein: 1, carbs: 12, fat: 3.5, region: '🍦 Desserts', serving: '1 piece' },
   { name: 'Rasmalai', cal: 180, protein: 5, carbs: 20, fat: 10, region: '🍦 Desserts', serving: '1 piece' },
   { name: 'Churro with Chocolate', cal: 220, protein: 2, carbs: 28, fat: 11, region: '🍦 Desserts', serving: '1 piece' },
   { name: 'Mango Sorbet', cal: 120, protein: 0, carbs: 30, fat: 0, region: '🍦 Desserts', serving: '1 scoop' },
   { name: 'Jalebi', cal: 150, protein: 0.5, carbs: 30, fat: 3, region: '🍦 Desserts', serving: '1 piece' },
+  { name: 'Apple Pie', cal: 300, protein: 2, carbs: 45, fat: 14, region: '🍦 Desserts', serving: '1 slice' },
+  { name: 'Red Velvet Cupcake', cal: 250, protein: 3, carbs: 35, fat: 11, region: '🍦 Desserts', serving: '1 piece' },
+  { name: 'Chocolate Chip Cookie', cal: 150, protein: 2, carbs: 20, fat: 8, region: '🍦 Desserts', serving: '1 cookie' },
+  { name: 'Candy Floss (Cotton Candy)', cal: 110, protein: 0, carbs: 28, fat: 0, region: '🍦 Desserts', serving: '1 bag' },
+  { name: 'Gummy Bears', cal: 140, protein: 3, carbs: 32, fat: 0, region: '🍦 Desserts', serving: '17 pieces' },
 ]
 
 export function searchFoods(query: string, custom: FoodItem[] = []): FoodItem[] {
@@ -207,5 +226,5 @@ export function searchFoods(query: string, custom: FoodItem[] = []): FoodItem[] 
   if (!q) return []
   return [...FOOD_DB, ...custom]
     .filter(f => f.name.toLowerCase().includes(q) || f.region.toLowerCase().includes(q))
-    .slice(0, 15)
+    .slice(0, 20)
 }

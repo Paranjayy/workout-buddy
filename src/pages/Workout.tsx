@@ -155,46 +155,51 @@ function ExerciseVisual({ type, name }: { type: string; name: string }) {
   }
   const anim = getAnim()
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--sp-4)', background: 'var(--clr-surface-2)', padding: 'var(--sp-6)', borderRadius: 'var(--r-xl)', boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.05)', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: '50%', left: '50%', width: 200, height: 200, background: color, filter: 'blur(80px)', opacity: 0.1, transform: 'translate(-50%, -50%)', borderRadius: '50%' }} />
-      <svg width="160" height="160" viewBox="0 0 100 100" style={{ overflow: 'visible', zIndex: 1 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--sp-4)', background: 'var(--clr-surface-2)', padding: 'var(--sp-8)', borderRadius: 'var(--r-xl)', boxShadow: 'inset 0 2px 12px rgba(0,0,0,0.06)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '50%', left: '50%', width: 220, height: 220, background: color, filter: 'blur(90px)', opacity: 0.12, transform: 'translate(-50%, -50%)', borderRadius: '50%', animation: 'hf-pulse 2s ease-in-out infinite' }} />
+      <svg width="180" height="180" viewBox="0 0 100 100" style={{ overflow: 'visible', zIndex: 1 }}>
         <defs>
-          <linearGradient id="figGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style={{ stopColor: color, stopOpacity: 1 }} /><stop offset="100%" style={{ stopColor: color, stopOpacity: 0.6 }} /></linearGradient>
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+          <linearGradient id="figGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style={{ stopColor: color, stopOpacity: 1 }} /><stop offset="100%" style={{ stopColor: color, stopOpacity: 0.7 }} /></linearGradient>
+          <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
         </defs>
         <style>{`
-          @keyframes hf-run { 0%, 100% { transform: rotate(-12deg) translateX(-8px); } 50% { transform: rotate(12deg) translateX(8px); } }
-          @keyframes hf-push { 0%, 100% { transform: translateY(-5px); } 50% { transform: translateY(18px); } }
-          @keyframes hf-squat { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(0.6) translateY(20px); } }
-          @keyframes hf-hinge { 0%, 100% { transform: rotate(0deg) translateY(0); } 50% { transform: rotate(45deg) translateY(10px); } }
-          @keyframes hf-press { 0%, 100% { transform: translateY(15px); } 50% { transform: translateY(-15px); } }
-          @keyframes hf-row { 0%, 100% { transform: translateY(0) scaleX(1); } 50% { transform: translateY(-8px) scaleX(1.1); } }
-          @keyframes hf-curl { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-45deg); } }
-          @keyframes hf-fly { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.3) translateY(-5px); } }
-          @keyframes hf-lunge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(15px) translateX(5px); } }
-          @keyframes hf-core { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.02); opacity: 1; } }
-          @keyframes hf-jump { 0%, 100% { transform: translateY(5px) scaleY(1); } 50% { transform: translateY(-35px) scaleY(1.1); } }
-          @keyframes hf-yoga { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
-          @keyframes hf-def { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-          @keyframes hf-shadow { 0%, 100% { transform: scaleX(1); opacity: 0.05; } 50% { transform: scaleX(1.5); opacity: 0.1; } }
-          .hf-fig { animation: ${anim} 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; transform-origin: center 85%; filter: url(#glow); }
-          .hf-limb { stroke: url(#figGrad); stroke-width: 14; stroke-linecap: round; fill: none; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+          @keyframes hf-pulse { 0%, 100% { opacity: 0.1; transform: translate(-50%, -50%) scale(0.9); } 50% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); } }
+          @keyframes hf-run { 0%, 100% { transform: rotate(-15deg) translateX(-10px); } 50% { transform: rotate(15deg) translateX(10px); } }
+          @keyframes hf-push { 0%, 100% { transform: translateY(-8px); } 50% { transform: translateY(22px); } }
+          @keyframes hf-squat { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(0.55) translateY(24px); } }
+          @keyframes hf-hinge { 0%, 100% { transform: rotate(0deg) translateY(0); } 50% { transform: rotate(50deg) translateY(12px); } }
+          @keyframes hf-press { 0%, 100% { transform: translateY(18px); } 50% { transform: translateY(-18px); } }
+          @keyframes hf-row { 0%, 100% { transform: translateY(0) scaleX(1); } 50% { transform: translateY(-10px) scaleX(1.15); } }
+          @keyframes hf-curl { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-55deg); } }
+          @keyframes hf-fly { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.4) translateY(-8px); } }
+          @keyframes hf-lunge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(18px) translateX(6px); } }
+          @keyframes hf-core { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.04); opacity: 1; } }
+          @keyframes hf-jump { 0%, 100% { transform: translateY(8px) scaleY(1); } 50% { transform: translateY(-45px) scaleY(1.15); } }
+          @keyframes hf-yoga { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+          @keyframes hf-def { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+          @keyframes hf-shadow { 0%, 100% { transform: scaleX(1); opacity: 0.05; } 50% { transform: scaleX(1.6); opacity: 0.12; } }
+          .hf-fig { animation: ${anim} 2s cubic-bezier(0.45, 0, 0.55, 1) infinite; transform-origin: center 85%; filter: url(#glow); }
+          .hf-limb { stroke: url(#figGrad); stroke-width: 15; stroke-linecap: round; fill: none; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+          .hf-core-pulse { animation: hf-pulse 1s ease-in-out infinite; }
         `}</style>
         <g className="hf-fig">
-          <path d="M50 30 Q50 45 50 65" className="hf-limb" style={{ strokeWidth: 18 }} />
-          <circle cx="50" cy="20" r="10" fill="url(#figGrad)" />
+          <path d="M50 30 Q50 45 50 65" className="hf-limb" style={{ strokeWidth: 19 }} />
+          <circle cx="50" cy="20" r="11" fill="url(#figGrad)" />
           <g>
-            <path d={anim === 'hf-push' || anim === 'hf-row' ? "M42 35 Q20 40 15 55" : anim === 'hf-press' ? "M42 35 Q30 20 25 10" : "M42 35 Q30 35 20 50"} className="hf-limb" opacity="0.8" />
-            <path d={anim === 'hf-push' || anim === 'hf-row' ? "M58 35 Q80 40 85 55" : anim === 'hf-press' ? "M58 35 Q70 20 75 10" : "M58 35 Q70 35 80 50"} className="hf-limb" opacity="0.8" />
+            <path d={anim === 'hf-push' || anim === 'hf-row' ? "M40 35 Q20 40 12 58" : anim === 'hf-press' ? "M42 35 Q28 18 22 8" : "M42 35 Q28 35 18 52"} className="hf-limb" opacity="0.85" />
+            <path d={anim === 'hf-push' || anim === 'hf-row' ? "M60 35 Q80 40 88 58" : anim === 'hf-press' ? "M58 35 Q72 18 78 8" : "M58 35 Q72 35 82 52"} className="hf-limb" opacity="0.85" />
           </g>
           <g>
-            <path d={anim === 'hf-squat' || anim === 'hf-lunge' ? "M45 65 Q30 75 25 95" : "M45 65 Q40 80 38 98"} className="hf-limb" opacity="0.9" />
-            <path d={anim === 'hf-squat' || anim === 'hf-lunge' ? "M55 65 Q70 75 75 95" : "M55 65 Q60 80 62 98"} className="hf-limb" opacity="0.9" />
+            <path d={anim === 'hf-squat' || anim === 'hf-lunge' ? "M45 65 Q28 78 22 96" : "M45 65 Q38 82 36 98"} className="hf-limb" opacity="0.95" />
+            <path d={anim === 'hf-squat' || anim === 'hf-lunge' ? "M55 65 Q72 78 78 96" : "M55 65 Q62 82 64 98"} className="hf-limb" opacity="0.95" />
           </g>
         </g>
-        <ellipse cx="50" cy="98" rx="22" ry="4" fill="black" style={{ animation: 'hf-shadow 1.8s cubic-bezier(0.4,0,0.2,1) infinite' }} />
+        <ellipse cx="50" cy="98" rx="24" ry="5" fill="black" style={{ animation: 'hf-shadow 2s cubic-bezier(0.45,0,0.55,1) infinite' }} />
       </svg>
-      <div style={{ marginTop: 'var(--sp-2)', fontSize: 'var(--fs-xs)', color: 'var(--clr-text-3)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em' }}>{anim.replace('hf-', '')} pattern active</div>
+      <div style={{ marginTop: 'var(--sp-4)', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+        <div style={{ width: 6, height: 6, borderRadius: '50%', background: color, animation: 'hf-pulse 0.8s ease-in-out infinite' }} />
+        <div style={{ fontSize: '10px', color: 'var(--clr-text-3)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.2em' }}>{anim.replace('hf-', '')} engine engaged</div>
+      </div>
     </div>
   )
 }
