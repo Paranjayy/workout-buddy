@@ -218,18 +218,18 @@ function AnalyticsTab({ logs }: { logs: WorkoutEntry[] }) {
       </div>
       
       <div style={{ padding: 'var(--sp-6)', borderRadius: 'var(--r-lg)', background: 'var(--clr-surface)', border: '1px solid var(--clr-border)', boxShadow: 'var(--sh-sm)' }}>
-        <h3 className="section-title">Recent Intensity</h3>
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 'var(--sp-1)', height: 100, paddingTop: 'var(--sp-4)' }}>
-          {logs.slice(-20).map((l, i) => {
-            const h = (l.sets ?? 1) * 10 + 20
+        <h3 className="section-title">Volume Tracker</h3>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 'var(--sp-2)', height: 140, paddingTop: 'var(--sp-4)' }}>
+          {logs.slice(-14).map((l, i) => {
+            const h = Math.min(100, (l.sets ?? 1) * (l.reps ?? 10) / 2)
             return (
-              <div key={i} style={{ flex: 1, height: `${h}%`, background: 'var(--clr-accent-soft)', border: '1px solid var(--clr-accent)', borderRadius: '2px 2px 0 0', minWidth: 4 }} title={l.exercise} />
+              <div key={i} style={{ flex: 1, height: `${h}%`, background: 'var(--clr-accent)', borderRadius: 'var(--r-sm)', opacity: 0.6 + (i / 20), transition: 'height 1s ease' }} title={`${l.exercise}: ${l.detail}`} />
             )
           })}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--sp-2)', fontSize: '10px', color: 'var(--clr-text-3)', fontWeight: 700 }}>
-          <span>PAST SESSIONS</span>
-          <span>CURRENT</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--sp-3)', fontSize: '9px', color: 'var(--clr-text-3)', fontWeight: 800, textTransform: 'uppercase' }}>
+          <span>Previous Sessions</span>
+          <span>Recent Activity</span>
         </div>
       </div>
     </div>
