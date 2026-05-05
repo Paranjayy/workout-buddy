@@ -4,6 +4,22 @@ All notable changes to the Workout Buddy project will be documented in this file
 
 ---
 
+## [2.3.0] - 2026-05-05
+### Added
+- **🩻 MuscleMap Visualizer**: Dynamic SVG human diagram highlighting target muscles (Front/Back) based on exercise selection.
+- **⏱️ Timer Session Logging**: Automatic history tracking for all timer modes (Stopwatch, Tabata, EMOM, Activity).
+- **🗑️ Advanced Data Control**: Granular delete functionality for individual food items, meal entries, and workout logs.
+- **🛡️ Z-Index Layering**: System-wide audit and fix for UI stacking issues, ensuring Search Modals and Toasts always stay on top.
+
+## [2.2.0] - 2026-05-04
+### Added
+- **🌐 Offline-First Capability**: Service worker integration for full gym functionality without internet.
+- **🔒 Privacy Orchestration**: Dashboard indicator for offline encrypted storage and zero-cloud leakage status.
+- **⌨️ Keyboard Mastery**: Enhanced `ArrowUp/Down` + `Enter` navigation for Universal Search (⌘K).
+- **🎖️ Elite Status**: New high-tier achievement badge for 50+ workouts logged.
+
+---
+
 ## [2.1.0] - 2026-05-03
 ### Added
 - **🏆 Personal Records (PR) Tracking**:

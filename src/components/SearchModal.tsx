@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { store, KEYS } from '../utils/storage'
-import { EXERCISES } from '../data/exercises'
+import { EXERCISES, getAllExercises } from '../data/exercises'
 import { TEMPLATES } from '../data/templates'
 import { FOOD_DB } from '../data/foods'
 
@@ -60,13 +60,13 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
     })
 
     // Exercises
-    EXERCISES.forEach(e => {
+    getAllExercises().forEach(e => {
       if (e.name.toLowerCase().includes(q)) {
         results.push({
           id: e.id,
           type: 'exercise',
           title: e.name,
-          subtitle: `${e.category} · ${e.equipment}`,
+          subtitle: `${e.type.charAt(0).toUpperCase() + e.type.slice(1)} · ${e.equipment || 'Bodyweight'}`,
           icon: '💪',
           action: () => { navigate('/workout'); onClose() }
         })

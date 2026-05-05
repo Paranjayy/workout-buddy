@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { store, KEYS } from '../utils/storage'
 import { uid, todayKey, formatDate } from '../utils/time'
+import { GooeyButton } from '../components/GooeyButton'
 
 type TimerTab = 'rest' | 'stopwatch' | 'tabata' | 'activity' | 'history'
 
@@ -74,7 +75,7 @@ function RestTimer() {
         ))}
       </div>
       <div style={{ display: 'flex', gap: 'var(--sp-4)' }}>
-        <button className="btn btn--primary" style={{ minWidth: 120 }} onClick={running ? stop : start}>{running ? 'Pause' : 'Start'}</button>
+        <GooeyButton style={{ minWidth: 120 }} onClick={running ? stop : start}>{running ? 'Pause' : 'Start'}</GooeyButton>
         <button className="btn btn--ghost" onClick={reset}>Reset</button>
       </div>
       {done && (
@@ -112,10 +113,10 @@ function Stopwatch() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--sp-6)', paddingTop: 'var(--sp-7)' }}>
       <div className="timer-display">{formatTime(secs)}</div>
-      <div style={{ display: 'flex', gap: 'var(--sp-4)' }}>
-        <button className="btn btn--primary" style={{ minWidth: 120 }} onClick={running ? stop : start}>{running ? 'Pause' : 'Start'}</button>
+      <div style={{ display: 'flex', gap: 'var(--sp-4)', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <GooeyButton style={{ minWidth: 120 }} onClick={running ? stop : start}>{running ? 'Pause' : 'Start'}</GooeyButton>
         <button className="btn btn--ghost" onClick={lap}>Lap</button>
-        {secs > 0 && !running && <button className="btn btn--primary" style={{ background: 'var(--clr-accent)' }} onClick={finish}>✓ Finish</button>}
+        {secs > 0 && !running && <GooeyButton variant="accent" onClick={finish}>✓ Finish</GooeyButton>}
         <button className="btn btn--ghost" onClick={reset}>Reset</button>
       </div>
       {laps.length > 0 && (

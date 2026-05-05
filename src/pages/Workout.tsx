@@ -6,6 +6,7 @@ import { todayKey, uid, formatDate } from '../utils/time'
 import { useToast } from '../hooks/useToast'
 import { launchConfetti } from '../utils/confetti'
 import { MuscleMap } from '../components/MuscleMap'
+import { GooeyButton } from '../components/GooeyButton'
 import type { WorkoutEntry } from '../types'
 
 type Tab = 'log' | 'templates' | 'history' | 'library'
@@ -532,8 +533,8 @@ function LogTab({ showToast }: { showToast: (m: string) => void }) {
               </div>
             )}
           </div>
-          <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
-            <button className="btn btn--primary" style={{ flex: 2 }} onClick={save} title="Enter to save">Add to Log</button>
+          <div style={{ display: 'flex', gap: 'var(--sp-3)', width: '100%' }}>
+            <GooeyButton style={{ flex: 2 }} onClick={save} title="Enter to save">Add to Log</GooeyButton>
             <button className="btn btn--ghost" style={{ flex: 1 }} onClick={() => setSelected(null)} title="Esc to close">Close</button>
           </div>
           <p style={{ fontSize: '9px', color: 'var(--clr-text-3)', textAlign: 'center', marginTop: 'var(--sp-3)', fontWeight: 600 }}>Tip: Press Enter to log exercise</p>
