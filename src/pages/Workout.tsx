@@ -9,7 +9,7 @@ import { MuscleMap } from '../components/MuscleMap'
 import { GooeyButton } from '../components/GooeyButton'
 import type { WorkoutEntry } from '../types'
 
-type Tab = 'log' | 'templates' | 'history' | 'library'
+type Tab = 'log' | 'templates' | 'history' | 'library' | 'analytics'
 
 function RestTimer({ onDismiss }: { onDismiss: () => void }) {
   const PRESETS = [30, 60, 90, 120]
@@ -105,7 +105,6 @@ function WgerImage({ name }: { name: string }) {
   return (
     <div style={{ marginBottom: 'var(--sp-3)', borderRadius: 'var(--r-md)', overflow: 'hidden', background: 'var(--clr-surface-2)' }}>
       <img src={url} alt={name} style={{ width: '100%', maxHeight: 160, objectFit: 'contain', display: 'block' }} onError={() => setUrl(null)} />
-      <div style={{ fontSize: '10px', color: 'var(--clr-text-3)', padding: '4px var(--sp-3)', textAlign: 'right' }}>Image © <a href="https://wger.de" target="_blank" rel="noreferrer" style={{ color: 'inherit' }}>wger.de</a> · CC-BY-SA</div>
     </div>
   )
 }
@@ -115,7 +114,7 @@ function MiniExerciseIcon({ type, name }: { type: string; name: string }) {
   const color = type === 'cardio' ? 'var(--clr-rose)' : type === 'yoga' ? 'var(--clr-sky)' : type === 'bodyweight' ? 'var(--clr-amber)' : 'var(--clr-accent)'
   const anim = n.includes('run') || n.includes('walk') ? 'v-run' : n.includes('push') || n.includes('bench') || n.includes('press') ? 'v-push' : n.includes('squat') || n.includes('lunge') ? 'v-squat' : n.includes('curl') || n.includes('raise') ? 'v-curl' : n.includes('pull') || n.includes('row') ? 'v-pull' : n.includes('jump') || n.includes('burpee') ? 'v-jump' : 'v-def'
   return (
-    <svg width="32" height="32" viewBox="0 0 40 40" style={{ overflow: 'visible' }}>
+    <svg width="32" height="32" viewBox="0 0 40 40" style={{ overflow: 'hidden' }}>
       <style>{`
         @keyframes v-run{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
         @keyframes v-push{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
@@ -155,50 +154,54 @@ function ExerciseVisual({ type, name }: { type: string; name: string }) {
   }
   const anim = getAnim()
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--sp-4)', background: 'var(--clr-surface-2)', padding: 'var(--sp-8)', borderRadius: 'var(--r-xl)', boxShadow: 'inset 0 2px 12px rgba(0,0,0,0.06)', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: '50%', left: '50%', width: 220, height: 220, background: color, filter: 'blur(90px)', opacity: 0.12, transform: 'translate(-50%, -50%)', borderRadius: '50%', animation: 'hf-pulse 2s ease-in-out infinite' }} />
-      <svg width="180" height="180" viewBox="0 0 100 100" style={{ overflow: 'visible', zIndex: 1 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--sp-4)', background: 'var(--clr-bg)', padding: 'var(--sp-8)', borderRadius: 'var(--r-xl)', boxShadow: 'inset 0 2px 20px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden', border: '1px solid var(--clr-border)' }}>
+      <div style={{ position: 'absolute', top: '50%', left: '50%', width: 280, height: 280, background: color, filter: 'blur(100px)', opacity: 0.15, transform: 'translate(-50%, -50%)', borderRadius: '50%', animation: 'hf-pulse 3s ease-in-out infinite' }} />
+      <div style={{ position: 'absolute', inset: 0, opacity: 0.05, backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+      <svg width="200" height="200" viewBox="0 0 100 100" style={{ overflow: 'visible', zIndex: 1 }}>
         <defs>
-          <linearGradient id="figGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style={{ stopColor: color, stopOpacity: 1 }} /><stop offset="100%" style={{ stopColor: color, stopOpacity: 0.7 }} /></linearGradient>
-          <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
+          <linearGradient id="figGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style={{ stopColor: color, stopOpacity: 1 }} /><stop offset="100%" style={{ stopColor: color, stopOpacity: 0.6 }} /></linearGradient>
+          <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
         </defs>
         <style>{`
-          @keyframes hf-pulse { 0%, 100% { opacity: 0.1; transform: translate(-50%, -50%) scale(0.9); } 50% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); } }
+          @keyframes hf-pulse { 0%, 100% { opacity: 0.1; transform: translate(-50%, -50%) scale(0.9); } 50% { opacity: 0.25; transform: translate(-50%, -50%) scale(1.15); } }
           @keyframes hf-run { 0%, 100% { transform: rotate(-15deg) translateX(-10px); } 50% { transform: rotate(15deg) translateX(10px); } }
-          @keyframes hf-push { 0%, 100% { transform: translateY(-8px); } 50% { transform: translateY(22px); } }
-          @keyframes hf-squat { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(0.55) translateY(24px); } }
-          @keyframes hf-hinge { 0%, 100% { transform: rotate(0deg) translateY(0); } 50% { transform: rotate(50deg) translateY(12px); } }
-          @keyframes hf-press { 0%, 100% { transform: translateY(18px); } 50% { transform: translateY(-18px); } }
-          @keyframes hf-row { 0%, 100% { transform: translateY(0) scaleX(1); } 50% { transform: translateY(-10px) scaleX(1.15); } }
-          @keyframes hf-curl { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-55deg); } }
-          @keyframes hf-fly { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.4) translateY(-8px); } }
-          @keyframes hf-lunge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(18px) translateX(6px); } }
-          @keyframes hf-core { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.04); opacity: 1; } }
-          @keyframes hf-jump { 0%, 100% { transform: translateY(8px) scaleY(1); } 50% { transform: translateY(-45px) scaleY(1.15); } }
-          @keyframes hf-yoga { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
-          @keyframes hf-def { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-          @keyframes hf-shadow { 0%, 100% { transform: scaleX(1); opacity: 0.05; } 50% { transform: scaleX(1.6); opacity: 0.12; } }
-          .hf-fig { animation: ${anim} 2s cubic-bezier(0.45, 0, 0.55, 1) infinite; transform-origin: center 85%; filter: url(#glow); }
-          .hf-limb { stroke: url(#figGrad); stroke-width: 15; stroke-linecap: round; fill: none; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-          .hf-core-pulse { animation: hf-pulse 1s ease-in-out infinite; }
+          @keyframes hf-push { 0%, 100% { transform: translateY(-10px) scaleY(1); } 50% { transform: translateY(25px) scaleY(0.9); } }
+          @keyframes hf-squat { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(0.5) translateY(30px); } }
+          @keyframes hf-hinge { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(45deg); } }
+          @keyframes hf-press { 0%, 100% { transform: translateY(20px); } 50% { transform: translateY(-20px); } }
+          @keyframes hf-row { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(15px); } }
+          @keyframes hf-curl { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-60deg); } }
+          @keyframes hf-fly { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.4); } }
+          @keyframes hf-lunge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(20px) translateX(8px); } }
+          @keyframes hf-core { 0%, 100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } }
+          @keyframes hf-jump { 0%, 100% { transform: translateY(10px) scaleY(1); } 50% { transform: translateY(-50px) scaleY(1.1); } }
+          @keyframes hf-yoga { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+          @keyframes hf-def { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+          @keyframes hf-scan { 0% { top: -100% } 100% { top: 200% } }
+          .hf-fig { animation: ${anim} 2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; transform-origin: center 85%; filter: url(#glow); }
+          .hf-limb { stroke: url(#figGrad); stroke-width: 14; stroke-linecap: round; fill: none; transition: all 0.5s ease; }
         `}</style>
         <g className="hf-fig">
-          <path d="M50 30 Q50 45 50 65" className="hf-limb" style={{ strokeWidth: 19 }} />
-          <circle cx="50" cy="20" r="11" fill="url(#figGrad)" />
+          {/* Main Body Skeleton */}
+          <path d="M50 30 Q50 45 50 65" className="hf-limb" style={{ strokeWidth: 18 }} />
+          <circle cx="50" cy="20" r="10" fill="url(#figGrad)" />
+          {/* Arms */}
           <g>
-            <path d={anim === 'hf-push' || anim === 'hf-row' ? "M40 35 Q20 40 12 58" : anim === 'hf-press' ? "M42 35 Q28 18 22 8" : "M42 35 Q28 35 18 52"} className="hf-limb" opacity="0.85" />
-            <path d={anim === 'hf-push' || anim === 'hf-row' ? "M60 35 Q80 40 88 58" : anim === 'hf-press' ? "M58 35 Q72 18 78 8" : "M58 35 Q72 35 82 52"} className="hf-limb" opacity="0.85" />
+            <path d={anim === 'hf-push' ? "M42 35 Q20 40 10 60" : anim === 'hf-press' ? "M42 35 Q30 20 20 5" : "M42 35 Q30 35 20 55"} className="hf-limb" opacity="0.8" />
+            <path d={anim === 'hf-push' ? "M58 35 Q80 40 90 60" : anim === 'hf-press' ? "M58 35 Q70 20 80 5" : "M58 35 Q70 35 80 55"} className="hf-limb" opacity="0.8" />
           </g>
+          {/* Legs */}
           <g>
-            <path d={anim === 'hf-squat' || anim === 'hf-lunge' ? "M45 65 Q28 78 22 96" : "M45 65 Q38 82 36 98"} className="hf-limb" opacity="0.95" />
-            <path d={anim === 'hf-squat' || anim === 'hf-lunge' ? "M55 65 Q72 78 78 96" : "M55 65 Q62 82 64 98"} className="hf-limb" opacity="0.95" />
+            <path d={anim === 'hf-squat' ? "M45 65 Q25 75 20 98" : "M45 65 Q40 85 38 98"} className="hf-limb" opacity="0.9" />
+            <path d={anim === 'hf-squat' ? "M55 65 Q75 75 80 98" : "M55 65 Q60 85 62 98"} className="hf-limb" opacity="0.9" />
           </g>
         </g>
-        <ellipse cx="50" cy="98" rx="24" ry="5" fill="black" style={{ animation: 'hf-shadow 2s cubic-bezier(0.45,0,0.55,1) infinite' }} />
+        <ellipse cx="50" cy="98" rx="22" ry="4" fill="black" opacity="0.1" style={{ animation: 'hf-pulse 2s infinite' }} />
       </svg>
-      <div style={{ marginTop: 'var(--sp-4)', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: color, animation: 'hf-pulse 0.8s ease-in-out infinite' }} />
-        <div style={{ fontSize: '10px', color: 'var(--clr-text-3)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.2em' }}>{anim.replace('hf-', '')} engine engaged</div>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(transparent, var(--clr-accent-soft), transparent)', opacity: 0.1, animation: 'hf-scan 4s linear infinite', pointerEvents: 'none' }} />
+      <div style={{ marginTop: 'var(--sp-4)', fontSize: '10px', color: 'var(--clr-accent)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.25em', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+        <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--clr-accent)', animation: 'hf-pulse 1s infinite' }} />
+        Holographic Scan: {anim.replace('hf-', '').toUpperCase()}
       </div>
     </div>
   )
@@ -226,7 +229,7 @@ export function Workout() {
   return (
     <div className="view-enter">
       <div className="page-header"><p className="page-header__greeting">TRAINING</p><h1 className="page-header__title">Workouts</h1></div>
-      <div className="tabs">{(['log', 'templates', 'history', 'library'] as Tab[]).map(t => (<button key={t} className={`tab${tab === t ? ' tab--active' : ''}`} onClick={() => setTab(t)}>{t === 'log' ? 'Log Workout' : t === 'templates' ? 'Templates' : t === 'history' ? 'History' : 'Exercise Library'}</button>))}</div>
+      <div className="tabs">{(['log', 'templates', 'history', 'library', 'analytics'] as Tab[]).map(t => (<button key={t} className={`tab${tab === t ? ' tab--active' : ''}`} onClick={() => setTab(t)}>{t === 'log' ? 'Log Workout' : t === 'templates' ? 'Templates' : t === 'history' ? 'History' : t === 'library' ? 'Exercise Library' : 'Analytics'}</button>))}</div>
       {selected && (
         <div style={{ padding: 'var(--sp-5)', borderRadius: 'var(--r-xl)', border: '1px solid var(--clr-border)', background: 'var(--clr-surface)', marginBottom: 'var(--sp-6)', boxShadow: 'var(--sh-lg)', animation: 'view-enter 0.3s var(--ease-out)' }}>
           <div style={{ display: 'flex', gap: 'var(--sp-2)', marginBottom: 'var(--sp-5)', background: 'var(--clr-surface-2)', padding: '4px', borderRadius: 'var(--r-md)' }}>
@@ -247,6 +250,63 @@ export function Workout() {
       {tab === 'templates' && <TemplatesTab showToast={showToast} />}
       {tab === 'history' && <HistoryTab setSelected={setSelected} />}
       {tab === 'library' && <LibraryTab setSelected={setSelected} />}
+      {tab === 'analytics' && <AnalyticsTab logs={store.get(KEYS.WORKOUTS, [])} />}
+    </div>
+  )
+}
+
+function AnalyticsTab({ logs }: { logs: WorkoutEntry[] }) {
+  if (logs.length === 0) return <div className="empty-state"><div className="empty-state__icon">📊</div><p className="empty-state__text">Log some workouts to see your training analytics!</p></div>
+  
+  const muscles: Record<string, number> = {}
+  logs.forEach(l => { 
+    const m = (l.type || 'other').toLowerCase()
+    muscles[m] = (muscles[m] || 0) + 1 
+  })
+  const total = logs.length
+  const sorted = Object.entries(muscles).sort((a, b) => b[1] - a[1])
+
+  return (
+    <div className="view-enter" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-6)', paddingTop: 'var(--sp-2)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--sp-5)' }}>
+        <div style={{ padding: 'var(--sp-6)', borderRadius: 'var(--r-lg)', background: 'var(--clr-surface)', border: '1px solid var(--clr-border)', boxShadow: 'var(--sh-sm)' }}>
+          <h3 className="section-title">Focus Distribution</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
+            {sorted.map(([name, count]) => (
+              <div key={name}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--fs-xs)', fontWeight: 800, textTransform: 'uppercase', marginBottom: 6 }}>
+                  <span style={{ color: 'var(--clr-text-2)' }}>{name}</span>
+                  <span style={{ color: 'var(--clr-accent)' }}>{Math.round((count / total) * 100)}%</span>
+                </div>
+                <div style={{ height: 10, background: 'var(--clr-surface-2)', borderRadius: 5, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${(count / total) * 100}%`, background: 'var(--clr-accent)', borderRadius: 5, transition: 'width 1s ease' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{ padding: 'var(--sp-6)', borderRadius: 'var(--r-lg)', background: 'var(--clr-surface)', border: '1px solid var(--clr-border)', boxShadow: 'var(--sh-sm)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+          <div style={{ fontSize: '3rem', marginBottom: 'var(--sp-3)' }}>🔥</div>
+          <div style={{ fontFamily: 'var(--ff-display)', fontSize: 'var(--fs-xl)', fontWeight: 800, marginBottom: 'var(--sp-1)' }}>{logs.length} Exercises</div>
+          <div style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text-3)' }}>Total volume tracked across all time.</div>
+        </div>
+      </div>
+      
+      <div style={{ padding: 'var(--sp-6)', borderRadius: 'var(--r-lg)', background: 'var(--clr-surface)', border: '1px solid var(--clr-border)', boxShadow: 'var(--sh-sm)' }}>
+        <h3 className="section-title">Recent Intensity</h3>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 'var(--sp-1)', height: 100, paddingTop: 'var(--sp-4)' }}>
+          {logs.slice(-20).map((l, i) => {
+            const h = (l.sets ?? 1) * 10 + 20
+            return (
+              <div key={i} style={{ flex: 1, height: `${h}%`, background: 'var(--clr-accent-soft)', border: '1px solid var(--clr-accent)', borderRadius: '2px 2px 0 0', minWidth: 4 }} title={l.exercise} />
+            )
+          })}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'var(--sp-2)', fontSize: '10px', color: 'var(--clr-text-3)', fontWeight: 700 }}>
+          <span>PAST SESSIONS</span>
+          <span>CURRENT</span>
+        </div>
+      </div>
     </div>
   )
 }

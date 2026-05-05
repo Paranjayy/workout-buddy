@@ -208,7 +208,7 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="stats-row">
+      <div className="stats-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--sp-4)', marginBottom: 'var(--sp-7)' }}>
         {[
           { label: "Today's Workouts", value: todayWorkouts.length, sub: 'exercises logged', mod: 'accent' },
           { label: 'Calories', value: totalCal.toLocaleString(), sub: `of ${(profile.calorieGoal ?? 2000).toLocaleString()} goal`, mod: 'amber' },
@@ -221,6 +221,14 @@ export function Dashboard() {
             <div className="stat-block__sub">{s.sub}</div>
           </div>
         ))}
+      </div>
+
+      <div style={{ padding: 'var(--sp-6)', borderRadius: 'var(--r-xl)', background: 'var(--clr-surface)', border: '1px solid var(--clr-border)', marginBottom: 'var(--sp-7)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: 0, right: 0, width: '150px', height: '150px', background: 'var(--clr-accent-soft)', filter: 'blur(60px)', borderRadius: '50%' }} />
+        <h2 className="section-title">Daily Mindset</h2>
+        <p style={{ fontFamily: 'var(--ff-display)', fontSize: 'var(--fs-xl)', fontStyle: 'italic', color: 'var(--clr-text)', maxWidth: '600px', margin: 0 }}>
+          "The pain of discipline is far less than the pain of regret."
+        </p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--sp-3)', marginBottom: 'var(--sp-6)' }}>
