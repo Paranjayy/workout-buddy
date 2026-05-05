@@ -119,6 +119,13 @@ export function Settings() {
           </Field>
         </div>
 
+        <div style={{ marginTop: 'var(--sp-4)', padding: 'var(--sp-4)', borderRadius: 'var(--r-md)', background: 'var(--clr-surface-2)', fontSize: 'var(--fs-xs)' }}>
+          <div style={{ fontWeight: 700, marginBottom: 'var(--sp-1)' }}>💡 Pro Tip: Body Fat Estimation</div>
+          <p style={{ margin: 0, color: 'var(--clr-text-3)' }}>
+            We use the US Navy Method. Ensure measurements are taken at the narrowest point of the neck and the widest point of the waist/hips.
+          </p>
+        </div>
+
         <h2 className="section-title" style={{ marginTop: 'var(--sp-7)' }}>Nutrition Goals</h2>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--sp-4)' }}>
           <Field label="Daily Calories" id="cal"><input className="form-input" id="cal" type="number" value={profile.calorieGoal} onChange={e => update('calorieGoal', +e.target.value || 2000)} /></Field>

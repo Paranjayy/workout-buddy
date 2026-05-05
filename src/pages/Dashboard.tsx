@@ -39,7 +39,6 @@ function ActivityHeatmap() {
       <h2 className="section-title">Activity — Last 90 Days</h2>
       <div style={{ overflowX: 'auto', paddingBottom: 'var(--sp-2)', WebkitOverflowScrolling: 'touch' }}>
         <div style={{ display: 'flex', gap: 'var(--sp-2)', alignItems: 'flex-start', minWidth: 'max-content' }}>
-          {/* Weekday labels column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: gap, paddingTop: 0, marginTop: 2 }}>
             {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
               <div key={i} style={{
@@ -51,7 +50,6 @@ function ActivityHeatmap() {
               }}>{d}</div>
             ))}
           </div>
-          {/* Heatmap grid */}
           <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} style={{ display: 'block' }}>
             {weeks.map((week, wi) =>
               week.map((day, di) => {
@@ -85,7 +83,6 @@ function ActivityHeatmap() {
   )
 }
 
-
 function calcStreak(): number {
   const workouts = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, [])
   if (!workouts.length) return 0
@@ -101,7 +98,6 @@ function calcStreak(): number {
   return streak
 }
 
-// Small animated SVG icon for dashboard activity list
 function DashMiniIcon({ type, name }: { type: string; name: string }) {
   const n = name.toLowerCase()
   const color = type === 'cardio' ? 'var(--clr-rose)' : type === 'yoga' ? 'var(--clr-sky)' : type === 'bodyweight' ? 'var(--clr-amber)' : type === 'sports' ? 'var(--clr-sky)' : 'var(--clr-accent)'
@@ -160,7 +156,6 @@ export function Dashboard() {
   const lp = profile.dob ? lifeProgress(profile.dob, profile.lifeExpectancy ?? 80) : null
   const streak = useMemo(calcStreak, [])
 
-  // Week stats
   const now = new Date()
   const wkNum = weekNumber()
   const wkTotal = weeksInYear()
@@ -169,26 +164,22 @@ export function Dashboard() {
   weekStart.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1))
   const weekWorkouts = allWorkouts.filter(w => w.date >= weekStart.toISOString().slice(0, 10))
 
-  // Estimated cal burn from workout types
   const calBurnEst = weekWorkouts.reduce((sum, w) => {
     const mins = w.duration ?? (w.sets ?? 3) * 2.5
     const rate = w.type === 'cardio' ? 10 : w.type === 'sports' ? 9 : w.type === 'yoga' ? 4 : 6
     return sum + Math.round(mins * rate)
   }, 0)
 
-  // Volume load this week (sets × reps × weight for strength)
   const weekVolume = weekWorkouts.reduce((sum, w) => {
     if (w.weight && w.reps && w.sets) return sum + w.sets * w.reps * w.weight
     return sum
   }, 0)
 
-  // Best workout day (most exercises on a single day)
   const dayCount: Record<string, number> = {}
   allWorkouts.forEach(w => { dayCount[w.date] = (dayCount[w.date] ?? 0) + 1 })
   const bestDay = Object.entries(dayCount).sort((a, b) => b[1] - a[1])[0]
   const bestDayLabel = bestDay ? new Date(bestDay[0]).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : '—'
 
-  // Progress sub-labels
   const dayLabel = `${new Date().toLocaleDateString('en-US', { weekday: 'long' })} · ${dayOfYearLabel()}`
   const weekLabel = `Wk ${wkNum} of ${wkTotal} · ${dLeft}d left`
   const monthLabel = new Date().toLocaleDateString('en-US', { month: 'long' })
@@ -232,7 +223,6 @@ export function Dashboard() {
         ))}
       </div>
 
-      {/* This Week strip */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--sp-3)', marginBottom: 'var(--sp-6)' }}>
         {[
           { icon: '📅', label: `Week ${wkNum}`, sub: `${weekWorkouts.length} sessions this week`, color: 'var(--clr-accent)' },
@@ -248,6 +238,26 @@ export function Dashboard() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div style={{ marginBottom: 'var(--sp-6)', padding: 'var(--sp-5)', borderRadius: 'var(--r-xl)', background: 'var(--clr-surface)', border: '1px solid var(--clr-border)', boxShadow: 'var(--sh-sm)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: -20, right: -20, fontSize: '4rem', opacity: 0.05, transform: 'rotate(15deg)' }}>💪</div>
+        <div style={{ fontSize: 'var(--fs-xs)', fontWeight: 800, color: 'var(--clr-accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 'var(--sp-2)' }}>Daily Fuel</div>
+        <p style={{ fontSize: 'var(--fs-base)', fontFamily: 'var(--ff-display)', fontWeight: 600, color: 'var(--clr-text)', margin: 0, lineHeight: 1.4 }}>
+          {useMemo(() => {
+            const quotes = [
+              "The only bad workout is the one that didn't happen.",
+              "Motivation is what gets you started. Habit is what keeps you going.",
+              "Your body can stand almost anything. It's your mind that you have to convince.",
+              "Strength does not come from winning. Your struggles develop your strengths.",
+              "Discipline is doing what needs to be done, even if you don't want to do it.",
+              "Success starts with self-discipline.",
+              "Don't stop when you're tired. Stop when you're done.",
+              "A one-hour workout is only 4% of your day. No excuses."
+            ]
+            return quotes[Math.floor(Math.random() * quotes.length)]
+          }, [])}
+        </p>
       </div>
 
       <div className="progress-section">
@@ -284,7 +294,6 @@ export function Dashboard() {
       <ActivityHeatmap />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--sp-6)', marginBottom: 'var(--sp-7)' }}>
-        {/* Personal Records Board */}
         <div>
           <h2 className="section-title">🏆 Personal Records</h2>
           {Object.entries(store.get<Record<string, number>>(KEYS.PERSONAL_RECORDS, {})).length === 0 ? (
@@ -310,7 +319,6 @@ export function Dashboard() {
           )}
         </div>
 
-        {/* Smart Recommendations */}
         <div>
           <h2 className="section-title">✨ Smart Coach</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
@@ -318,29 +326,24 @@ export function Dashboard() {
               const recs: React.ReactNode[] = []
               const now = new Date()
               
-              // 1. Leg day check
               const lastLegDay = allWorkouts.find(w => w.exercise.toLowerCase().includes('squat') || w.exercise.toLowerCase().includes('leg'))
               const daysSinceLegs = lastLegDay ? Math.floor((now.getTime() - new Date(lastLegDay.date).getTime()) / 86400000) : 99
               if (daysSinceLegs > 4) {
                 recs.push(<Recommendation key="legs" icon="🦵" title="Leg Day Overdue" text={`It's been ${daysSinceLegs > 90 ? 'a while' : daysSinceLegs + ' days'} since your last leg session.`} color="var(--clr-rose)" />)
               }
 
-              // 2. Hydration check
               if (waterToday < 4 && now.getHours() > 14) {
                 recs.push(<Recommendation key="water" icon="💧" title="Hydration Alert" text="You're below 50% of your water goal for this time of day." color="var(--clr-sky)" />)
               }
 
-              // 3. Consistency check
               if (streak < 3) {
                 recs.push(<Recommendation key="streak" icon="🔥" title="Ignite the Streak" text="Train today to build momentum. Consistency is king." color="var(--clr-amber)" />)
               }
 
-              // 4. Calorie check
               if (totalCal < (profile.calorieGoal ?? 2000) * 0.4 && now.getHours() > 17) {
                 recs.push(<Recommendation key="cals" icon="🍱" title="Fuel Up" text="Your calorie intake is quite low for the evening. Don't skip meals!" color="var(--clr-accent)" />)
               }
 
-              // 5. Habit check
               const habits = store.get<any[]>(KEYS.HABITS, [])
               const tKey = todayKey()
               const unloggedHabit = habits.find(h => !h.logs[tKey])
