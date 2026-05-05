@@ -208,7 +208,7 @@ export function Dashboard() {
         </div>
       </div>
 
-      <div className="stats-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--sp-4)', marginBottom: 'var(--sp-7)' }}>
+      <div className="stats-row">
         {[
           { label: "Today's Workouts", value: todayWorkouts.length, sub: 'exercises logged', mod: 'accent' },
           { label: 'Calories', value: totalCal.toLocaleString(), sub: `of ${(profile.calorieGoal ?? 2000).toLocaleString()} goal`, mod: 'amber' },

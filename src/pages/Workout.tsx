@@ -109,100 +109,25 @@ function WgerImage({ name }: { name: string }) {
   )
 }
 
-function MiniExerciseIcon({ type, name }: { type: string; name: string }) {
-  const n = name.toLowerCase()
-  const color = type === 'cardio' ? 'var(--clr-rose)' : type === 'yoga' ? 'var(--clr-sky)' : type === 'bodyweight' ? 'var(--clr-amber)' : 'var(--clr-accent)'
-  const anim = n.includes('run') || n.includes('walk') ? 'v-run' : n.includes('push') || n.includes('bench') || n.includes('press') ? 'v-push' : n.includes('squat') || n.includes('lunge') ? 'v-squat' : n.includes('curl') || n.includes('raise') ? 'v-curl' : n.includes('pull') || n.includes('row') ? 'v-pull' : n.includes('jump') || n.includes('burpee') ? 'v-jump' : 'v-def'
+function MiniExerciseIcon({ type }: { type: string }) {
+  const cat = type.toLowerCase()
   return (
-    <svg width="32" height="32" viewBox="0 0 40 40" style={{ overflow: 'hidden' }}>
-      <style>{`
-        @keyframes v-run{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
-        @keyframes v-push{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-        @keyframes v-squat{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.8) translateY(4px)}}
-        @keyframes v-curl{0%,100%{transform:rotate(0)}50%{transform:rotate(-20deg)}}
-        @keyframes v-pull{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-        @keyframes v-jump{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-        @keyframes v-def{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-        .v-fig{animation:${anim} 1.5s ease-in-out infinite;transform-origin:center}
-      `}</style>
-      <g className="v-fig">
-        <rect x="16" y="10" width="8" height="16" rx="4" fill={color} opacity="0.9" />
-        <circle cx="20" cy="6" r="4" fill={color} />
-        <rect x="12" y="18" width="4" height="12" rx="2" fill={color} opacity="0.6" transform="rotate(15 14 18)" />
-        <rect x="24" y="18" width="4" height="12" rx="2" fill={color} opacity="0.6" transform="rotate(-15 26 18)" />
-      </g>
-    </svg>
+    <div style={{ fontSize: '1.25rem', display: 'grid', placeItems: 'center', width: '100%', height: '100%' }}>
+      {cat === 'cardio' ? '🏃' : cat === 'yoga' ? '🧘' : cat === 'bodyweight' ? '💪' : cat === 'sports' ? '⚽' : '🏋️'}
+    </div>
   )
 }
 
 function ExerciseVisual({ type, name }: { type: string; name: string }) {
-  const n = name.toLowerCase(); const color = type === 'cardio' ? 'var(--clr-rose)' : type === 'yoga' ? 'var(--clr-sky)' : type === 'bodyweight' ? 'var(--clr-amber)' : 'var(--clr-accent)'
-  const getAnim = () => {
-    if (n.includes('run') || n.includes('walk') || n.includes('cycle') || n.includes('sprint')) return 'hf-run'
-    if (n.includes('push') || n.includes('bench') || n.includes('dip')) return 'hf-push'
-    if (n.includes('squat') || n.includes('leg press') || n.includes('hack')) return 'hf-squat'
-    if (n.includes('deadlift') || n.includes('swing') || n.includes('hinge') || n.includes('good morning')) return 'hf-hinge'
-    if (n.includes('press') || n.includes('overhead') || n.includes('military')) return 'hf-press'
-    if (n.includes('pull') || n.includes('row') || n.includes('lat') || n.includes('chin')) return 'hf-row'
-    if (n.includes('curl') || n.includes('hammer')) return 'hf-curl'
-    if (n.includes('fly') || n.includes('lateral') || n.includes('raise')) return 'hf-fly'
-    if (n.includes('lunge') || n.includes('step') || n.includes('split')) return 'hf-lunge'
-    if (n.includes('plank') || n.includes('hold') || n.includes('static')) return 'hf-core'
-    if (n.includes('jump') || n.includes('burpee') || n.includes('box')) return 'hf-jump'
-    if (type === 'yoga' || n.includes('yoga') || n.includes('stretch')) return 'hf-yoga'
-    return 'hf-def'
-  }
-  const anim = getAnim()
+  const n = name.toLowerCase()
+  const emoji = type === 'cardio' ? '🏃' : type === 'yoga' ? '🧘' : type === 'bodyweight' ? '💪' : type === 'sports' ? '⚽' : '🏋️'
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--sp-4)', background: 'var(--clr-bg)', padding: 'var(--sp-8)', borderRadius: 'var(--r-xl)', boxShadow: 'inset 0 2px 20px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden', border: '1px solid var(--clr-border)' }}>
-      <div style={{ position: 'absolute', top: '50%', left: '50%', width: 280, height: 280, background: color, filter: 'blur(100px)', opacity: 0.15, transform: 'translate(-50%, -50%)', borderRadius: '50%', animation: 'hf-pulse 3s ease-in-out infinite' }} />
-      <div style={{ position: 'absolute', inset: 0, opacity: 0.05, backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-      <svg width="200" height="200" viewBox="0 0 100 100" style={{ overflow: 'visible', zIndex: 1 }}>
-        <defs>
-          <linearGradient id="figGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style={{ stopColor: color, stopOpacity: 1 }} /><stop offset="100%" style={{ stopColor: color, stopOpacity: 0.6 }} /></linearGradient>
-          <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter>
-        </defs>
-        <style>{`
-          @keyframes hf-pulse { 0%, 100% { opacity: 0.1; transform: translate(-50%, -50%) scale(0.9); } 50% { opacity: 0.25; transform: translate(-50%, -50%) scale(1.15); } }
-          @keyframes hf-run { 0%, 100% { transform: rotate(-15deg) translateX(-10px); } 50% { transform: rotate(15deg) translateX(10px); } }
-          @keyframes hf-push { 0%, 100% { transform: translateY(-10px) scaleY(1); } 50% { transform: translateY(25px) scaleY(0.9); } }
-          @keyframes hf-squat { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(0.5) translateY(30px); } }
-          @keyframes hf-hinge { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(45deg); } }
-          @keyframes hf-press { 0%, 100% { transform: translateY(20px); } 50% { transform: translateY(-20px); } }
-          @keyframes hf-row { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(15px); } }
-          @keyframes hf-curl { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-60deg); } }
-          @keyframes hf-fly { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.4); } }
-          @keyframes hf-lunge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(20px) translateX(8px); } }
-          @keyframes hf-core { 0%, 100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } }
-          @keyframes hf-jump { 0%, 100% { transform: translateY(10px) scaleY(1); } 50% { transform: translateY(-50px) scaleY(1.1); } }
-          @keyframes hf-yoga { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
-          @keyframes hf-def { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-          @keyframes hf-scan { 0% { top: -100% } 100% { top: 200% } }
-          .hf-fig { animation: ${anim} 2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; transform-origin: center 85%; filter: url(#glow); }
-          .hf-limb { stroke: url(#figGrad); stroke-width: 14; stroke-linecap: round; fill: none; transition: all 0.5s ease; }
-        `}</style>
-        <g className="hf-fig">
-          {/* Main Body Skeleton */}
-          <path d="M50 30 Q50 45 50 65" className="hf-limb" style={{ strokeWidth: 18 }} />
-          <circle cx="50" cy="20" r="10" fill="url(#figGrad)" />
-          {/* Arms */}
-          <g>
-            <path d={anim === 'hf-push' ? "M42 35 Q20 40 10 60" : anim === 'hf-press' ? "M42 35 Q30 20 20 5" : "M42 35 Q30 35 20 55"} className="hf-limb" opacity="0.8" />
-            <path d={anim === 'hf-push' ? "M58 35 Q80 40 90 60" : anim === 'hf-press' ? "M58 35 Q70 20 80 5" : "M58 35 Q70 35 80 55"} className="hf-limb" opacity="0.8" />
-          </g>
-          {/* Legs */}
-          <g>
-            <path d={anim === 'hf-squat' ? "M45 65 Q25 75 20 98" : "M45 65 Q40 85 38 98"} className="hf-limb" opacity="0.9" />
-            <path d={anim === 'hf-squat' ? "M55 65 Q75 75 80 98" : "M55 65 Q60 85 62 98"} className="hf-limb" opacity="0.9" />
-          </g>
-        </g>
-        <ellipse cx="50" cy="98" rx="22" ry="4" fill="black" opacity="0.1" style={{ animation: 'hf-pulse 2s infinite' }} />
-      </svg>
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(transparent, var(--clr-accent-soft), transparent)', opacity: 0.1, animation: 'hf-scan 4s linear infinite', pointerEvents: 'none' }} />
-      <div style={{ marginTop: 'var(--sp-4)', fontSize: '10px', color: 'var(--clr-accent)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.25em', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--clr-accent)', animation: 'hf-pulse 1s infinite' }} />
-        Holographic Scan: {anim.replace('hf-', '').toUpperCase()}
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--sp-4)', background: 'var(--clr-bg)', padding: 'var(--sp-8)', borderRadius: 'var(--r-xl)', border: '1px solid var(--clr-border)', position: 'relative', overflow: 'hidden', minHeight: 220 }}>
+       <div style={{ fontSize: '5rem', animation: 'hf-pulse 2s ease-in-out infinite' }}>{emoji}</div>
+       <div style={{ marginTop: 'var(--sp-4)', fontSize: '10px', color: 'var(--clr-text-3)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.2em' }}>Visualizing {name}</div>
+       <style>{`
+         @keyframes hf-pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
+       `}</style>
     </div>
   )
 }
@@ -382,7 +307,7 @@ function LogTab({ showToast, selected, setSelected }: { showToast: (m: string) =
         {showRestTimer && <RestTimer onDismiss={() => setShowRestTimer(false)} />}
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--sp-4)' }}><h3 className="section-title" style={{ margin: 0 }}>Today's Log</h3>{todayLog.length > 0 && (<button className="btn btn--ghost btn--sm ripple" onClick={generateShareCard} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', color: 'var(--clr-accent)', padding: 'var(--sp-2) var(--sp-3)', borderRadius: 'var(--r-md)' }}><span style={{ fontSize: '1.25rem' }}>📸</span><span style={{ fontWeight: 700, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Share Achievement</span></button>)}</div>
-        {todayLog.length === 0 ? (<div className="empty-state"><div className="empty-state__icon">🏋️</div><p className="empty-state__text">No exercises logged today. Search above or use quick add.</p></div>) : (<div className="workout-list">{todayLog.map(w => (<div key={w.id} className="workout-entry" onClick={() => { const ex = getAllExercises().find(e => e.name === w.exercise); if (ex) setSelected(ex) }} style={{ cursor: 'pointer' }}><div className={`workout-entry__icon workout-entry__icon--${w.type}`} style={{ overflow: 'hidden', background: 'transparent', padding: 0 }}><MiniExerciseIcon type={w.type} name={w.exercise} /></div><div><div className="workout-entry__name">{w.exercise}</div><div className="workout-entry__detail">{w.detail}</div></div><div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}><span>{w.time}</span><button onClick={(e) => { e.stopPropagation(); if (!confirm('Delete?')) return; const all = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, []); store.set(KEYS.WORKOUTS, all.filter(x => x.id !== w.id)); forceUpdate(n => n + 1) }} style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}>×</button></div></div>))}</div>)}
+        {todayLog.length === 0 ? (<div className="empty-state"><div className="empty-state__icon">🏋️</div><p className="empty-state__text">No exercises logged today. Search above or use quick add.</p></div>) : (<div className="workout-list">{todayLog.map(w => (<div key={w.id} className="workout-entry" onClick={() => { const ex = getAllExercises().find(e => e.name === w.exercise); if (ex) setSelected(ex) }} style={{ cursor: 'pointer' }}><div className={`workout-entry__icon workout-entry__icon--${w.type}`} style={{ overflow: 'hidden', background: 'transparent', padding: 0 }}><MiniExerciseIcon type={w.type} /></div><div><div className="workout-entry__name">{w.exercise}</div><div className="workout-entry__detail">{w.detail}</div></div><div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}><span>{w.time}</span><button onClick={(e) => { e.stopPropagation(); if (!confirm('Delete?')) return; const all = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, []); store.set(KEYS.WORKOUTS, all.filter(x => x.id !== w.id)); forceUpdate(n => n + 1) }} style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}>×</button></div></div>))}</div>)}
       </div>
     </>
   )
@@ -406,7 +331,7 @@ function HistoryTab({ setSelected }: { setSelected: (e: any) => void }) {
   return (
     <div key={key} style={{ paddingTop: 'var(--sp-5)' }}>
       {dates.map(d => (
-        <div key={d} style={{ marginBottom: 'var(--sp-6)' }}><h3 className="section-title">{formatDate(d)}</h3><div className="workout-list">{byDate[d].map(w => (<div key={w.id} className="workout-entry" onClick={() => { const ex = getAllExercises().find(e => e.name === w.exercise); if (ex) setSelected(ex) }} style={{ cursor: 'pointer' }}><div className={`workout-entry__icon workout-entry__icon--${w.type}`} style={{ overflow: 'hidden', background: 'transparent', padding: 0 }}><MiniExerciseIcon type={w.type} name={w.exercise} /></div><div><div className="workout-entry__name">{w.exercise}</div><div className="workout-entry__detail">{w.detail}</div></div><div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}><span>{w.time}</span><button onClick={(e) => { e.stopPropagation(); deleteEntry(w.id) }} style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}>×</button></div></div>))}</div></div>
+        <div key={d} style={{ marginBottom: 'var(--sp-6)' }}><h3 className="section-title">{formatDate(d)}</h3><div className="workout-list">{byDate[d].map(w => (<div key={w.id} className="workout-entry" onClick={() => { const ex = getAllExercises().find(e => e.name === w.exercise); if (ex) setSelected(ex) }} style={{ cursor: 'pointer' }}><div className={`workout-entry__icon workout-entry__icon--${w.type}`} style={{ overflow: 'hidden', background: 'transparent', padding: 0 }}><MiniExerciseIcon type={w.type} /></div><div><div className="workout-entry__name">{w.exercise}</div><div className="workout-entry__detail">{w.detail}</div></div><div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}><span>{w.time}</span><button onClick={(e) => { e.stopPropagation(); deleteEntry(w.id) }} style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}>×</button></div></div>))}</div></div>
       ))}
     </div>
   )
@@ -416,7 +341,7 @@ function LibraryTab({ setSelected }: { setSelected: (e: any) => void }) {
   return (
     <div style={{ paddingTop: 'var(--sp-5)' }}>
       {(Object.keys(EXERCISES) as (keyof typeof EXERCISES)[]).map(cat => (
-        <div key={cat} style={{ marginBottom: 'var(--sp-6)' }}><h3 className="section-title" style={{ textTransform: 'capitalize' }}>{cat === 'bodyweight' ? '💪 Bodyweight' : cat === 'strength' ? '🏋️ Strength' : cat === 'cardio' ? '🏃 Cardio' : cat === 'sports' ? '⚽ Sports' : '🧘 Yoga'}</h3><div className="workout-list">{EXERCISES[cat].map(e => (<div key={e.id} className="workout-entry" onClick={() => setSelected(e)} style={{ cursor: 'pointer' }}><div className={`workout-entry__icon workout-entry__icon--${cat}`} style={{ overflow: 'hidden', background: 'transparent', padding: 0 }}><MiniExerciseIcon type={cat} name={e.name} /></div><div><div className="workout-entry__name">{e.name}</div><div className="workout-entry__detail">{e.muscle ?? ''} {e.equipment ? `· ${e.equipment}` : ''}</div></div><div className="workout-entry__meta">{e.isTime ? 'Timed' : 'Sets/Reps'}</div></div>))}</div></div>
+        <div key={cat} style={{ marginBottom: 'var(--sp-6)' }}><h3 className="section-title" style={{ textTransform: 'capitalize' }}>{cat === 'bodyweight' ? '💪 Bodyweight' : cat === 'strength' ? '🏋️ Strength' : cat === 'cardio' ? '🏃 Cardio' : cat === 'sports' ? '⚽ Sports' : '🧘 Yoga'}</h3><div className="workout-list">{EXERCISES[cat].map(e => (<div key={e.id} className="workout-entry" onClick={() => setSelected(e)} style={{ cursor: 'pointer' }}><div className={`workout-entry__icon workout-entry__icon--${cat}`} style={{ overflow: 'hidden', background: 'transparent', padding: 0 }}><MiniExerciseIcon type={cat} /></div><div><div className="workout-entry__name">{e.name}</div><div className="workout-entry__detail">{e.muscle ?? ''} {e.equipment ? `· ${e.equipment}` : ''}</div></div><div className="workout-entry__meta">{e.isTime ? 'Timed' : 'Sets/Reps'}</div></div>))}</div></div>
       ))}
     </div>
   )

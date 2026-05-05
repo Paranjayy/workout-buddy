@@ -81,16 +81,7 @@ export function Sidebar() {
       {/* Desktop sidebar */}
       <aside className="sidebar">
         <div className="sidebar__brand">
-          <svg viewBox="0 0 32 32" className="sidebar__logo" style={{ width: 32, height: 32, flexShrink: 0 }}>
-            <defs>
-              <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style={{ stopColor: 'var(--clr-accent)', stopOpacity: 1 }} />
-                <stop offset="100%" style={{ stopColor: 'var(--clr-accent-d)', stopOpacity: 1 }} />
-              </linearGradient>
-            </defs>
-            <circle cx="16" cy="16" r="14" fill="url(#logoGrad)" />
-            <path d="M10 20 L14 12 L18 18 L22 10" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <img src="/icon.png" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, objectFit: 'cover', width: 32, height: 32 }} />
           <span className="sidebar__title">Workout Buddy</span>
         </div>
         <nav className="sidebar__nav" aria-label="Main navigation">
