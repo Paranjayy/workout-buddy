@@ -81,7 +81,7 @@ export function Sidebar() {
       {/* Desktop sidebar */}
       <aside className="sidebar">
         <div className="sidebar__brand">
-          <img src="/icon.png" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, objectFit: 'cover', width: 32, height: 32 }} />
+          <img src="/favicon.svg" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, width: 32, height: 32 }} />
           <span className="sidebar__title">Workout Buddy</span>
         </div>
         <nav className="sidebar__nav" aria-label="Main navigation">
@@ -143,7 +143,7 @@ function SidebarFooter() {
         <span>Settings</span>
       </NavLink>
       <div style={{ marginTop: 'var(--sp-4)', padding: '0 var(--sp-4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--clr-text-3)', letterSpacing: '0.05em' }}>v2.3.1 stable</span>
+        <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--clr-text-3)', letterSpacing: '0.05em' }}>v2.5.0-GOD</span>
         <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--clr-success)', boxShadow: '0 0 8px var(--clr-success)' }} />
       </div>
     </div>

@@ -250,15 +250,15 @@ export function Dashboard() {
         </p>
       </div>
 
-      <div style={{ display: 'flex', gap: 'var(--sp-2)', marginBottom: 'var(--sp-7)', overflowX: 'auto', paddingBottom: '4px' }}>
+      <div style={{ display: 'flex', gap: 'var(--sp-2)', marginBottom: 'var(--sp-7)', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' }}>
         {[
-          { label: 'BMI', value: profile.weight && profile.height ? (profile.weight / (profile.height / 100) ** 2).toFixed(1) : '—' },
-          { label: 'TDEE', value: profile.weight ? '2,450 kcal' : '—' },
-          { label: 'Sleep', value: '7.5 hrs' },
-          { label: 'Active', value: '42 min' },
+          { label: 'BMI', value: (profile?.weight && profile?.height) ? (profile.weight / (profile.height / 100) ** 2).toFixed(1) : '—' },
+          { label: 'TDEE', value: profile?.weight ? `${Math.round(profile.weight * 30)} kcal` : '—' },
+          { label: 'Status', value: allWorkouts.length > 50 ? 'Elite' : 'Active' },
+          { label: 'Points', value: (allWorkouts.length * 10).toLocaleString() },
           { label: 'Focus', value: '88%' },
         ].map(s => (
-          <div key={s.label} style={{ flexShrink: 0, padding: 'var(--sp-2) var(--sp-4)', borderRadius: '100px', background: 'var(--clr-surface-2)', border: '1px solid var(--clr-border)', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+          <div key={s.label} style={{ flexShrink: 0, padding: 'var(--sp-2) var(--sp-4)', borderRadius: '100px', background: 'var(--clr-surface-2)', border: '1px solid var(--clr-border)', display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', whiteSpace: 'nowrap' }}>
             <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--clr-text-3)' }}>{s.label}</span>
             <span style={{ fontSize: 'var(--fs-xs)', fontWeight: 700, color: 'var(--clr-accent)' }}>{s.value}</span>
           </div>
