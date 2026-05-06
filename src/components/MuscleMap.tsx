@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 
 const MUSCLE_PATHS: Record<string, string> = {
   // Front
@@ -25,6 +25,7 @@ interface MuscleMapProps {
 }
 
 export function MuscleMap({ targetMuscle = '', intensity = 1 }: MuscleMapProps) {
+  const [hovered, setHovered] = useState<string | null>(null)
   const m = targetMuscle.toLowerCase()
   const activeMuscles: string[] = []
   
@@ -39,24 +40,34 @@ export function MuscleMap({ targetMuscle = '', intensity = 1 }: MuscleMapProps) 
   else if (m.includes('cardio') || m.includes('run') || m.includes('jump')) activeMuscles.push('quads', 'calves', 'hamstrings', 'glutes')
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 'var(--sp-4)' }}>
-      <svg width="120" height="180" viewBox="20 0 60 120" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}>
-        <path d={BODY_OUTLINE} fill="var(--clr-surface-2)" stroke="var(--clr-border)" strokeWidth="1" strokeLinejoin="round" />
-        {Object.entries(MUSCLE_PATHS).map(([key, d]) => {
-          const isActive = activeMuscles.includes(key)
-          return (
-            <path 
-              key={key} 
-              d={d} 
-              fill={isActive ? 'var(--clr-accent)' : 'var(--clr-surface)'} 
-              stroke={isActive ? 'var(--clr-accent-d)' : 'var(--clr-border)'}
-              strokeWidth="0.5"
-              opacity={isActive ? Math.min(1, 0.4 + (intensity * 0.6)) : 0.4}
-              style={{ transition: 'all 0.3s ease' }}
-            />
-          )
-        })}
-      </svg>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--sp-4)' }}>
+      <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--clr-accent)', height: '14px' }}>
+        {hovered ? hovered.toUpperCase() : (targetMuscle ? 'PRIMARY TARGET' : 'INTERACTIVE ANATOMY')}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 'var(--sp-8)' }}>
+        <svg width="120" height="180" viewBox="20 0 60 120" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}>
+          <path d={BODY_OUTLINE} fill="var(--clr-surface-2)" stroke="var(--clr-border)" strokeWidth="1" strokeLinejoin="round" />
+          {Object.entries(MUSCLE_PATHS).map(([key, d]) => {
+            const isActive = activeMuscles.includes(key)
+            const isHovered = hovered === key
+            return (
+              <path 
+                key={key} 
+                d={d} 
+                fill={isHovered ? 'var(--clr-accent-d)' : isActive ? 'var(--clr-accent)' : 'var(--clr-surface)'} 
+                stroke={isActive || isHovered ? 'var(--clr-accent-d)' : 'var(--clr-border)'}
+                strokeWidth={isHovered ? "1" : "0.5"}
+                opacity={isHovered ? 1 : isActive ? Math.min(1, 0.4 + (intensity * 0.6)) : 0.4}
+                style={{ transition: 'all 0.2s ease', cursor: 'help' }}
+                onMouseEnter={() => setHovered(key)}
+                onMouseLeave={() => setHovered(null)}
+              >
+                <title>{key.charAt(0).toUpperCase() + key.slice(1)}</title>
+              </path>
+            )
+          })}
+        </svg>
+      </div>
     </div>
   )
 }

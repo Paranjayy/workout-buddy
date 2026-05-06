@@ -5,7 +5,9 @@ import { GooeyButton } from '../components/GooeyButton'
 import type { Profile } from '../types'
 
 const defaults: Profile = {
-  name: '', dob: '', height: null, lifeExpectancy: 80,
+  name: '', dob: '', height: null,
+  weight: null,
+  lifeExpectancy: 85,
   calorieGoal: 2000, proteinGoal: 120, carbGoal: 250, fatGoal: 65,
   targetWeight: null, muscleGoal: null, gender: null, age: null, activityLevel: 1.55,
   waist: null, neck: null, hip: null,

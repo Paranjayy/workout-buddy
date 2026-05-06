@@ -4,6 +4,7 @@ export interface Profile {
   name: string
   dob: string
   height: number | null
+  weight: number | null
   lifeExpectancy: number
   calorieGoal: number
   proteinGoal: number

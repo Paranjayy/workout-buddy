@@ -1,0 +1,10 @@
+
+> workout-buddy@1.0.0 build
+> tsc --noEmit && vite build
+
+src/pages/Dashboard.tsx(255,42): error TS2551: Property 'weight' does not exist on type 'Profile'. Did you mean 'height'?
+src/pages/Dashboard.tsx(255,78): error TS2551: Property 'weight' does not exist on type 'Profile'. Did you mean 'height'?
+src/pages/Dashboard.tsx(256,43): error TS2551: Property 'weight' does not exist on type 'Profile'. Did you mean 'height'?
+src/pages/Workout.tsx(355,269): error TS2322: Type '(type?: "today" | "weekly") => void' is not assignable to type 'MouseEventHandler<HTMLButtonElement>'.
+  Types of parameters 'type' and 'event' are incompatible.
+    Type 'MouseEvent<HTMLButtonElement, MouseEvent>' is not assignable to type '"today" | "weekly" | undefined'.

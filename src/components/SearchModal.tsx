@@ -61,14 +61,14 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
     // Exercises
     getAllExercises().forEach(e => {
-      if (e.name.toLowerCase().includes(q)) {
+      if (e.name.toLowerCase().includes(q) || (e.muscle ?? '').toLowerCase().includes(q)) {
         results.push({
           id: e.id,
           type: 'exercise',
           title: e.name,
-          subtitle: `${e.type.charAt(0).toUpperCase() + e.type.slice(1)} · ${e.equipment || 'Bodyweight'}`,
+          subtitle: `${e.type.charAt(0).toUpperCase() + e.type.slice(1)} · ${e.muscle || 'Full Body'}`,
           icon: '💪',
-          action: () => { navigate('/workout'); onClose() }
+          action: () => { store.set('_selected_exercise_direct', e); navigate('/workout'); onClose() }
         })
       }
     })
@@ -78,7 +78,7 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
       if (f.name.toLowerCase().includes(q)) {
         results.push({
           id: `food-${f.name}`,
-          type: 'template', // Use template style for foods
+          type: 'page',
           title: f.name,
           subtitle: `${f.cal} kcal · ${f.protein}p · ${f.region}`,
           icon: '🥗',
@@ -93,26 +93,11 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
       if (h.name.toLowerCase().includes(q)) {
         results.push({
           id: `habit-${h.id}`,
-          type: 'template',
+          type: 'page',
           title: h.name,
           subtitle: 'Habit Tracker',
           icon: h.emoji || '✨',
           action: () => { navigate('/habits'); onClose() }
-        })
-      }
-    })
-
-    // Past Workouts (History)
-    const history = store.get<any[]>(KEYS.WORKOUTS, [])
-    history.slice(-50).forEach(w => {
-      if (w.exercise.toLowerCase().includes(q)) {
-        results.push({
-          id: `hist-${w.id}`,
-          type: 'template',
-          title: w.exercise,
-          subtitle: `Logged on ${w.date} · ${w.detail}`,
-          icon: '🕒',
-          action: () => { navigate('/workout'); onClose() }
         })
       }
     })
@@ -127,6 +112,21 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
           subtitle: t.description,
           icon: '📋',
           action: () => { store.set('_active_template', t); navigate('/workout'); onClose() }
+        })
+      }
+    })
+
+    // Settings
+    const settings = ['Profile', 'Body Goals', 'Theme', 'Units', 'Export Data', 'Import Data', 'Reset App']
+    settings.forEach(s => {
+      if (s.toLowerCase().includes(q)) {
+        results.push({
+          id: `setting-${s}`,
+          type: 'page',
+          title: s,
+          subtitle: 'Settings & Privacy',
+          icon: '⚙️',
+          action: () => { navigate('/settings'); onClose() }
         })
       }
     })

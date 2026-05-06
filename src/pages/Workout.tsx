@@ -260,19 +260,59 @@ function LogTab({ showToast, selected, setSelected }: { showToast: (m: string) =
   const results = query.length > 0 ? allExercises.filter(e => e.name.toLowerCase().includes(query.toLowerCase()) || (e.muscle ?? '').toLowerCase().includes(query.toLowerCase())).slice(0, 8) : []
   const todayLog = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, []).filter(w => w.date === todayKey())
 
-  const generateShareCard = () => {
-    const canvas = document.createElement('canvas'); canvas.width = 600; canvas.height = 800; const ctx = canvas.getContext('2d'); if (!ctx) return
-    ctx.fillStyle = '#f8f9f5'; ctx.fillRect(0, 0, 600, 800)
-    const grad = ctx.createLinearGradient(0, 0, 600, 400); grad.addColorStop(0, '#50a19b'); grad.addColorStop(1, '#72b1ac'); ctx.fillStyle = grad; ctx.fillRect(0, 0, 600, 320)
-    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 54px Fraunces, serif'; ctx.fillText('WORKOUT DONE', 40, 110)
-    ctx.font = '22px Instrument Sans, sans-serif'; ctx.fillText(new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase(), 40, 150)
-    ctx.fillStyle = '#ffffff'; ctx.shadowColor = 'rgba(0,0,0,0.1)'; ctx.shadowBlur = 40; const x = 40, y = 220, w = 520, h = 520, radius = 24
-    ctx.beginPath(); ctx.moveTo(x + radius, y); ctx.lineTo(x + w - radius, y); ctx.quadraticCurveTo(x + w, y, x + w, y + radius); ctx.lineTo(x + w, y + h - radius); ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h); ctx.lineTo(x + radius, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - radius); ctx.lineTo(x, y + radius); ctx.quadraticCurveTo(x, y, x + radius, y); ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0
-    ctx.fillStyle = '#1e1e1e'; ctx.font = 'bold 36px Fraunces, serif'; ctx.fillText('Session Summary', 80, 300)
-    todayLog.slice(0, 6).forEach((w, i) => { const rowY = 370 + (i * 65); ctx.fillStyle = '#1e1e1e'; ctx.font = '700 22px Instrument Sans, sans-serif'; ctx.fillText(w.exercise, 80, rowY); ctx.fillStyle = '#6e6e6e'; ctx.font = '16px Instrument Sans, sans-serif'; ctx.fillText(w.detail, 80, rowY + 25) })
-    if (todayLog.length > 6) { ctx.fillStyle = '#a0a0a0'; ctx.font = 'italic 18px Instrument Sans, sans-serif'; ctx.fillText(`+ ${todayLog.length - 6} more exercises`, 80, 710) }
-    ctx.fillStyle = '#50a19b'; ctx.font = 'bold 28px Instrument Sans, sans-serif'; ctx.fillText('Workout Buddy', 40, 775)
-    const link = document.createElement('a'); link.download = `workout-buddy-${todayKey()}.png`; link.href = canvas.toDataURL('image/png'); link.click(); showToast('Achievement card generated! 📸')
+  const generateShareCard = (type: 'today' | 'weekly' = 'today') => {
+    const canvas = document.createElement('canvas'); canvas.width = 1080; canvas.height = 1350; const ctx = canvas.getContext('2d'); if (!ctx) return
+    
+    // Background - Premium Gradient
+    const bg = ctx.createLinearGradient(0, 0, 0, 1350)
+    bg.addColorStop(0, '#1a1a1a'); bg.addColorStop(1, '#0a0a0a'); ctx.fillStyle = bg; ctx.fillRect(0, 0, 1080, 1350)
+    
+    // Aesthetic Accent Circle
+    ctx.beginPath(); ctx.arc(1080, 0, 600, 0, Math.PI * 2); ctx.fillStyle = 'rgba(80, 161, 155, 0.15)'; ctx.fill()
+    ctx.filter = 'blur(100px)'; ctx.fillRect(0, 0, 400, 400); ctx.filter = 'none'
+
+    // Brand Logo
+    ctx.fillStyle = '#50a19b'; ctx.font = 'bold 36px Instrument Sans, sans-serif'; ctx.fillText('WORKOUT BUDDY', 80, 100)
+    
+    if (type === 'today') {
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 96px Fraunces, serif'; ctx.fillText('SESSION COMPLETE', 80, 240)
+      ctx.fillStyle = '#a0a0a0'; ctx.font = '500 32px Instrument Sans, sans-serif'; ctx.fillText(new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase(), 80, 290)
+      
+      // Data Cards
+      const cardY = 400
+      todayLog.slice(0, 7).forEach((w, i) => {
+        const rowY = cardY + (i * 120)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'; roundRect(ctx, 80, rowY, 920, 100, 20); ctx.fill()
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 32px Instrument Sans, sans-serif'; ctx.fillText(w.exercise, 120, rowY + 60)
+        ctx.fillStyle = '#50a19b'; ctx.font = '600 24px Instrument Sans, sans-serif'; ctx.textAlign = 'right'; ctx.fillText(w.detail, 960, rowY + 60); ctx.textAlign = 'left'
+      })
+      
+      if (todayLog.length > 7) {
+        ctx.fillStyle = '#6e6e6e'; ctx.font = 'italic 28px Instrument Sans, sans-serif'; ctx.fillText(`+ ${todayLog.length - 7} more exercises logged today`, 80, 1250)
+      }
+    } else {
+      // Weekly Recap
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 96px Fraunces, serif'; ctx.fillText('WEEKLY RECAP', 80, 240)
+      ctx.fillStyle = '#50a19b'; ctx.font = '500 32px Instrument Sans, sans-serif'; ctx.fillText(`WEEK ${formatDate(new Date().toISOString()).toUpperCase()}`, 80, 290)
+      
+      const sessions = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, []).filter(w => {
+        const d = new Date(w.date); const now = new Date(); return (now.getTime() - d.getTime()) / 86400000 < 7
+      })
+      const uniqueDays = [...new Set(sessions.map(s => s.date))].length
+      
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 120px Fraunces, serif'; ctx.fillText(uniqueDays.toString(), 80, 500)
+      ctx.fillStyle = '#a0a0a0'; ctx.font = '600 32px Instrument Sans, sans-serif'; ctx.fillText('SESSIONS COMPLETED', 80, 550)
+      
+      // Volume Chart Simulated
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'; roundRect(ctx, 80, 650, 920, 400, 30); ctx.fill()
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 36px Instrument Sans, sans-serif'; ctx.fillText('Intensity Trend', 130, 720)
+    }
+
+    const link = document.createElement('a'); link.download = `workout-buddy-achievement.png`; link.href = canvas.toDataURL('image/png'); link.click(); showToast('Premium achievement card generated! 📸')
+  }
+
+  function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+    ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath()
   }
 
   const save = () => {
@@ -312,7 +352,7 @@ function LogTab({ showToast, selected, setSelected }: { showToast: (m: string) =
         <div style={{ marginBottom: 'var(--sp-5)' }}><h3 className="section-title" style={{ marginBottom: 'var(--sp-3)' }}>Quick Add</h3><div style={{ display: 'flex', gap: 'var(--sp-3)', flexWrap: 'wrap' }}>{['Push-ups', 'Squat', 'Running', 'Plank', 'Bench Press', 'Pull-ups'].map(name => (<button key={name} className="btn btn--ghost btn--sm" onClick={() => quickAdd(name)}>{name}</button>))}</div></div>
         {showRestTimer && <RestTimer onDismiss={() => setShowRestTimer(false)} />}
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--sp-4)' }}><h3 className="section-title" style={{ margin: 0 }}>Today's Log</h3>{todayLog.length > 0 && (<button className="btn btn--ghost btn--sm ripple" onClick={generateShareCard} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', color: 'var(--clr-accent)', padding: 'var(--sp-2) var(--sp-3)', borderRadius: 'var(--r-md)' }}><span style={{ fontSize: '1.25rem' }}>📸</span><span style={{ fontWeight: 700, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Share Achievement</span></button>)}</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--sp-4)' }}><h3 className="section-title" style={{ margin: 0 }}>Today's Log</h3>{todayLog.length > 0 && (<button className="btn btn--ghost btn--sm ripple" onClick={() => generateShareCard('today')} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', color: 'var(--clr-accent)', padding: 'var(--sp-2) var(--sp-3)', borderRadius: 'var(--r-md)' }}><span style={{ fontSize: '1.25rem' }}>📸</span><span style={{ fontWeight: 700, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Share Achievement</span></button>)}</div>
         {todayLog.length === 0 ? (<div className="empty-state"><div className="empty-state__icon">🏋️</div><p className="empty-state__text">No exercises logged today. Search above or use quick add.</p></div>) : (<div className="workout-list">{todayLog.map(w => (<div key={w.id} className="workout-entry" onClick={() => { const ex = getAllExercises().find(e => e.name === w.exercise); if (ex) setSelected(ex) }} style={{ cursor: 'pointer' }}><div className={`workout-entry__icon workout-entry__icon--${w.type}`} style={{ overflow: 'hidden', background: 'transparent', padding: 0 }}><MiniExerciseIcon type={w.type} /></div><div><div className="workout-entry__name">{w.exercise}</div><div className="workout-entry__detail">{w.detail}</div></div><div className="workout-entry__meta" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}><span>{w.time}</span><button onClick={(e) => { e.stopPropagation(); if (!confirm('Delete?')) return; const all = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, []); store.set(KEYS.WORKOUTS, all.filter(x => x.id !== w.id)); forceUpdate(n => n + 1) }} style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', cursor: 'pointer', fontSize: '14px', padding: '4px' }}>×</button></div></div>))}</div>)}
       </div>
     </>

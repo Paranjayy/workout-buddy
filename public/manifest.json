@@ -1,17 +1,43 @@
 {
-  "name": "Workout Buddy",
-  "short_name": "WB",
-  "description": "Fitness coach, nutrition tracker, and life progress dashboard",
+  "name": "Workout Buddy — Master Your Life",
+  "short_name": "Workout Buddy",
+  "description": "Premium fitness coach, nutrition intelligence, and life progress dashboard. 100% private and offline.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f7f4ef",
-  "theme_color": "#3d7a5a",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#50a19b",
   "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
     {
       "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    }
+  ],
+  "categories": ["fitness", "lifestyle", "health"],
+  "shortcuts": [
+    {
+      "name": "Log Workout",
+      "url": "/workout",
+      "icons": [{ "src": "/icon.png", "sizes": "1024x1024" }]
+    },
+    {
+      "name": "Quick Timer",
+      "url": "/timer",
+      "icons": [{ "src": "/icon.png", "sizes": "1024x1024" }]
     }
   ]
 }
