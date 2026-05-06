@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 
 /** Simple toast hook — call showToast(msg) anywhere */
 export function useToast() {
@@ -21,7 +21,7 @@ export function useToast() {
     toastRef.current = el
   }, [])
 
-  const showToast = (msg: string) => {
+  const showToast = useCallback((msg: string) => {
     const el = toastRef.current
     if (!el) return
     el.textContent = msg
@@ -33,7 +33,7 @@ export function useToast() {
         el.style.opacity = '0'
       }
     }, 2200)
-  }
+  }, [])
 
   return { showToast }
 }
