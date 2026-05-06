@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { haptics } from '../utils/haptics'
 import { ProgressRing } from '../components/ProgressRing'
 import { store, KEYS } from '../utils/storage'
 import { getGreeting, todayKey, yearProgress, monthProgress, weekProgress, dayProgress, lifeProgress, weekNumber, weeksInYear, daysLeftInWeek, dayOfYearLabel } from '../utils/time'
 import { TEMPLATES } from '../data/templates'
+import { getAllExercises } from '../data/exercises'
 import type { WorkoutEntry, MealEntry, Profile } from '../types'
 
 function ActivityHeatmap() {
@@ -186,22 +188,39 @@ export function Dashboard() {
   const yearLabel = `${new Date().getFullYear()} · ${365 - Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000)}d left`
 
   const handleTemplateClick = (id: string) => {
+    haptics.light()
     const t = TEMPLATES.find(x => x.id === id)
     if (!t) return
     store.set('_active_template', t)
     navigate('/workout')
   }
 
+  const handleSurpriseMe = () => {
+    haptics.medium()
+    const all = getAllExercises()
+    const random = all[Math.floor(Math.random() * all.length)]
+    store.set('_selected_exercise_direct', random)
+    navigate('/workout')
+  }
+
   return (
     <div className="view-enter">
       <div className="page-header">
-        <p className="page-header__greeting">{getGreeting()}</p>
-        <h1 className="page-header__title" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
-          Hey {profile.name || 'there'} 👋
-          {allWorkouts.length > 50 && (
-            <span style={{ fontSize: '10px', background: 'var(--clr-accent)', color: 'white', padding: '2px 8px', borderRadius: '100px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Elite Status</span>
-          )}
-        </h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <p className="page-header__greeting">{getGreeting()}</p>
+            <h1 className="page-header__title" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+              Hey {profile.name || 'there'} 👋
+              {allWorkouts.length > 50 && (
+                <span style={{ fontSize: '10px', background: 'var(--clr-accent)', color: 'white', padding: '2px 8px', borderRadius: '100px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Elite Status</span>
+              )}
+            </h1>
+          </div>
+          <button onClick={handleSurpriseMe} className="btn btn--ghost ripple" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', padding: 'var(--sp-2) var(--sp-3)', borderRadius: 'var(--r-md)', border: '1px solid var(--clr-border)' }}>
+            <span style={{ fontSize: '1.25rem' }}>🎲</span>
+            <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Surprise Me</span>
+          </button>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', fontSize: '10px', color: 'var(--clr-text-3)', fontWeight: 600, marginTop: 'var(--sp-1)' }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--clr-success)' }}></span>
           OFFLINE ENCRYPTED STORAGE · 0% CLOUD LEAKAGE

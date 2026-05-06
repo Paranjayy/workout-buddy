@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { haptics } from '../utils/haptics'
 import { getAllExercises, EXERCISES } from '../data/exercises'
 import { TEMPLATES, getTemplatesByCategory } from '../data/templates'
 import { store, KEYS } from '../utils/storage'
@@ -149,12 +150,17 @@ export function Workout() {
       })
       showToast(`${t.name} loaded — ${t.exercises.length} exercises ✓`)
     }
+    const direct = store.get<any>('_selected_exercise_direct', null)
+    if (direct) {
+      setSelected(direct)
+      store.set('_selected_exercise_direct', null)
+    }
   }, [showToast])
 
   return (
     <div className="view-enter">
       <div className="page-header"><p className="page-header__greeting">TRAINING</p><h1 className="page-header__title">Workouts</h1></div>
-      <div className="tabs">{(['log', 'templates', 'history', 'library', 'analytics'] as Tab[]).map(t => (<button key={t} className={`tab${tab === t ? ' tab--active' : ''}`} onClick={() => setTab(t)}>{t === 'log' ? 'Log Workout' : t === 'templates' ? 'Templates' : t === 'history' ? 'History' : t === 'library' ? 'Exercise Library' : 'Analytics'}</button>))}</div>
+      <div className="tabs">{(['log', 'templates', 'history', 'library', 'analytics'] as Tab[]).map(t => (<button key={t} className={`tab${tab === t ? ' tab--active' : ''}`} onClick={() => { haptics.light(); setTab(t) }}>{t === 'log' ? 'Log Workout' : t === 'templates' ? 'Templates' : t === 'history' ? 'History' : t === 'library' ? 'Exercise Library' : 'Analytics'}</button>))}</div>
       {selected && (
         <div style={{ padding: 'var(--sp-5)', borderRadius: 'var(--r-xl)', border: '1px solid var(--clr-border)', background: 'var(--clr-surface)', marginBottom: 'var(--sp-6)', boxShadow: 'var(--sh-lg)', animation: 'view-enter 0.3s var(--ease-out)' }}>
           <div style={{ display: 'flex', gap: 'var(--sp-2)', marginBottom: 'var(--sp-5)', background: 'var(--clr-surface-2)', padding: '4px', borderRadius: 'var(--r-md)' }}>
@@ -276,7 +282,7 @@ function LogTab({ showToast, selected, setSelected }: { showToast: (m: string) =
     store.push<WorkoutEntry>(KEYS.WORKOUTS, {
       id: uid(), date: todayKey(), exercise: selected.name, type: selected.type, sets, reps: selected.isTime ? null : reps, weight: selected.isTime ? null : weight, duration: selected.isTime ? duration : null, detail: selected.isTime ? `${sets} rounds · ${duration} min` : `${sets}×${reps} @ ${weight}kg`, time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
     })
-    setSelected(null); setQuery(''); forceUpdate(n => n + 1); setShowRestTimer(true); showToast(isPR ? `🏆 New PR! ${selected.name} @ ${weight}kg` : `${selected.name} logged ✓`)
+    setSelected(null); setQuery(''); forceUpdate(n => n + 1); setShowRestTimer(true); haptics.success(); showToast(isPR ? `🏆 New PR! ${selected.name} @ ${weight}kg` : `${selected.name} logged ✓`)
     if (isPR) { const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/success-fanfare-trumpets-610.wav'); audio.volume = 0.3; audio.play().catch(() => {}); launchConfetti() }
   }
 

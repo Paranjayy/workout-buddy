@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { haptics } from '../utils/haptics'
 import type { NavView } from '../types'
 
 interface NavItem {
@@ -25,6 +26,7 @@ export function MobileNav({ activeView }: { activeView: string }) {
             key={item.id} 
             to={item.path} 
             className={`mobile-nav__item ${isActive ? 'mobile-nav__item--active' : ''}`}
+            onClick={() => haptics.light()}
           >
             <div className="mobile-nav__icon">
               <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
