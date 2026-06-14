@@ -76,14 +76,24 @@ const NAV = [
 // 5 tabs shown in mobile bottom bar (most important)
 const MOBILE_NAV = ['/', '/workout', '/calories', '/timer', '/habits']
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean
+  onClose?: () => void
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="sidebar">
-        <div className="sidebar__brand">
-          <img src="/icon.png" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, width: 32, height: 32 }} />
-          <span className="sidebar__title">Workout Buddy</span>
+      <aside className={`sidebar ${isOpen ? 'sidebar--open' : ''}`}>
+        <div className="sidebar__brand" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)' }}>
+            <img src="/icon.png" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, width: 32, height: 32 }} />
+            <span className="sidebar__title">Workout Buddy</span>
+          </div>
+          {onClose && (
+            <button onClick={onClose} className="mobile-only" style={{ background: 'none', border: 'none', color: 'var(--clr-text-3)', fontSize: '1.5rem', cursor: 'pointer', display: 'none' }}>×</button>
+          )}
         </div>
         <nav className="sidebar__nav" aria-label="Main navigation">
           {NAV.map(item => (
@@ -93,7 +103,10 @@ export function Sidebar() {
               end={item.to === '/'}
               className={({ isActive }) => `nav-item${isActive ? ' nav-item--active' : ''}`}
               id={`nav-${item.to.slice(1) || 'dashboard'}`}
-              onClick={() => haptics.light()}
+              onClick={() => {
+                haptics.light();
+                onClose?.();
+              }}
             >
               {item.icon}
               <span>{item.label}</span>
