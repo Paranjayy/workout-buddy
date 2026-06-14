@@ -440,3 +440,104 @@ a { color: inherit; text-decoration: none }
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid oklch(100% 0 0 / 0.1);
 }
+
+/* ── Playlist grid ─────────────────────────────────────────── */
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+}
+.playlist-card {
+  border-radius: var(--r-lg);
+  border: 1px solid var(--clr-border);
+  overflow: hidden;
+  transition: transform var(--dur-md) var(--ease-out), box-shadow var(--dur-md) var(--ease-out);
+  display: block;
+}
+.playlist-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px oklch(22% 0.02 60 / 0.08) }
+.playlist-card__cover {
+  font-size: 2.5rem;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-5);
+  background: var(--clr-surface-2);
+  height: 100px;
+}
+.playlist-card__body  { padding: var(--sp-3) var(--sp-4); background: var(--clr-surface) }
+.playlist-card__title { font-weight: 600; font-size: var(--fs-sm); margin-bottom: var(--sp-1) }
+.playlist-card__meta  { font-size: var(--fs-xs); color: var(--clr-text-3) }
+
+/* ── Calendar grid ─────────────────────────────────────────── */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-6);
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.cal-day:hover { background: var(--clr-surface-2); }
+.cal-day--today { background: var(--clr-accent-l); color: var(--clr-accent-d); font-weight: 700; }
+.cal-day--selected { border: 1.5px solid var(--clr-accent); background: var(--clr-surface-2); font-weight: 600; }
+.cal-day--has-workout { position: relative; }
+.cal-day--has-workout::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--clr-accent);
+}
+.cal-day-header {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--clr-text-3);
+  text-align: center;
+  padding: var(--sp-2) 0;
+}
+
+/* ── Time Awareness / Progress rings ─────────────────────── */
+.progress-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-7);
+}
+.progress-ring-card {
+  padding: var(--sp-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--clr-border);
+  background: var(--clr-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--sh-sm);
+  transition: transform var(--dur-md) var(--ease-out), box-shadow var(--dur-md) var(--ease-out);
+}
+.progress-ring-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-md);
+}
+.progress-ring-card__label {
+  font-family: var(--ff-display);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  margin-top: var(--sp-3);
+  margin-bottom: 2px;
+}
+.progress-ring-card__detail {
+  font-size: 10px;
+  color: var(--clr-text-3);
+  font-weight: 500;
+}
+
