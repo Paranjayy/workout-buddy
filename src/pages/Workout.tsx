@@ -133,6 +133,27 @@ function ExerciseVisual({ type, name }: { type: string; name: string }) {
   )
 }
 
+const VIDEO_MAP: Record<string, string> = {
+  'bench press': 'rT7DgSZ3W08',
+  'squat': 'U5zrloYWKyw',
+  'deadlift': 'ytGaGIn3SjY',
+  'overhead press': '2yjwHeFToD0',
+  'barbell row': 'RQU8wLiHYBg',
+  'dumbbell curl': 'yTwoRMCG7Es',
+  'push-ups': 'IODxDxX7oi4',
+  'pull-ups': 'eGo4IYlbE5g',
+  'plank': 'pSHjTRCQxIw',
+  'burpees': 'dZgVxmf6jkA',
+  'lunges': 'QOVaHwm-Q6U',
+  'running': 'kQ5wQ5npIL4',
+  'cycling': '4R3Z0OJn7m0',
+  'jump rope': 'u3zgHI8ODNY',
+  'russian twist': 'wkD8rjkodUI',
+  'leg press': 'IZxyjW7MPJQ',
+  'lateral raise': '3VcKaX_yL4U',
+  'dips': '2z8JmcrW-As'
+}
+
 export function Workout() {
   const [tab, setTab] = useState<Tab>('log'); const { showToast } = useToast()
   const [selected, setSelected] = useState<any>(null); const [visualMode, setVisualMode] = useState<'hologram' | 'illustration' | 'motion' | 'youtube'>('hologram')
@@ -173,7 +194,27 @@ export function Workout() {
           {visualMode === 'hologram' && <ExerciseVisual type={selected.type} name={selected.name} />}
           {visualMode === 'illustration' && <WgerImage name={selected.name} />}
           {visualMode === 'motion' && (<div style={{ background: 'var(--clr-surface-2)', padding: 'var(--sp-4)', borderRadius: 'var(--r-lg)', textAlign: 'center' }}><div style={{ fontSize: 'var(--fs-xs)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--clr-text-3)', marginBottom: 'var(--sp-4)' }}>Target Muscle Map</div><MuscleMap targetMuscle={selected.muscle || selected.type} /></div>)}
-          {visualMode === 'youtube' && (<div style={{ padding: 'var(--sp-6)', background: 'var(--clr-surface-2)', borderRadius: 'var(--r-lg)', textAlign: 'center' }}><div style={{ fontSize: '2rem', marginBottom: 'var(--sp-3)' }}>📺</div><h4 style={{ fontSize: 'var(--fs-sm)', marginBottom: 'var(--sp-3)' }}>Search "{selected.name}" on YouTube</h4><a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(selected.name + ' exercise form')}`} target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--sm" style={{ textDecoration: 'none', display: 'inline-block' }}>Open YouTube Search</a></div>)}
+          {visualMode === 'youtube' && (() => {
+            const vidId = VIDEO_MAP[selected.name.toLowerCase()]
+            if (vidId) {
+              return (
+                <div style={{ borderRadius: 'var(--r-lg)', overflow: 'hidden', aspectRatio: '16/9', width: '100%', marginBottom: 'var(--sp-4)', background: 'var(--clr-surface-2)' }}>
+                  <iframe
+                    width="100%" height="100%" frameBorder="0"
+                    allow="autoplay; encrypted-media" allowFullScreen
+                    src={`https://www.youtube.com/embed/${vidId}?autoplay=1`}
+                  />
+                </div>
+              )
+            }
+            return (
+              <div style={{ padding: 'var(--sp-6)', background: 'var(--clr-surface-2)', borderRadius: 'var(--r-lg)', textAlign: 'center' }}>
+                <div style={{ fontSize: '2rem', marginBottom: 'var(--sp-3)' }}>📺</div>
+                <h4 style={{ fontSize: 'var(--fs-sm)', marginBottom: 'var(--sp-3)' }}>Search "{selected.name}" on YouTube</h4>
+                <a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(selected.name + ' exercise form')}`} target="_blank" rel="noopener noreferrer" className="btn btn--primary btn--sm" style={{ textDecoration: 'none', display: 'inline-block' }}>Open YouTube Search</a>
+              </div>
+            )
+          })()}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'var(--sp-4)' }}><h3 className="section-title" style={{ margin: 0 }}>{selected.name}</h3><button className="btn btn--ghost btn--sm" onClick={() => setSelected(null)}>Close</button></div>
         </div>
       )}
