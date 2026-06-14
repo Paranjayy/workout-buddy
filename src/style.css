@@ -184,7 +184,7 @@ a { color: inherit; text-decoration: none }
   font-family: var(--ff-display);
   font-size: clamp(var(--fs-2xl), 5vw, var(--fs-3xl));
   font-weight: 900;
-  line-height: 1;
+  line-height: 1.15;
   letter-spacing: -0.04em;
 }
 
@@ -289,7 +289,68 @@ a { color: inherit; text-decoration: none }
 }
 .btn--ghost:hover { background: var(--clr-border); transform: translateY(-1px) }
 
-/* ── Form Inputs ───────────────────────────────────────────── */
+/* ── Tabs ──────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-6);
+  border-bottom: 1px solid var(--clr-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: var(--sp-3) var(--sp-5);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--clr-text-3);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.tab:hover { color: var(--clr-text) }
+.tab--active { color: var(--clr-accent-d); border-bottom-color: var(--clr-accent); font-weight: 700 }
+
+/* ── Forms & Form Inputs ────────────────────────────────────── */
+.form-group { margin-bottom: var(--sp-5) }
+.form-label {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--clr-text-2);
+  margin-bottom: var(--sp-2);
+}
+.form-input {
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--r-md);
+  background: var(--clr-surface);
+  color: var(--clr-text);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  outline: none;
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.form-input:focus {
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 0 3px oklch(52% 0.12 155 / 0.12);
+}
+.form-select {
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--r-md);
+  background: var(--clr-surface);
+  color: var(--clr-text);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
 .search-bar__input {
   width: 100%;
   padding: var(--sp-4) var(--sp-6);
