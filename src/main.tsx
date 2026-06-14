@@ -12,24 +12,44 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>
 )
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => {
-        // Check for updates periodically
-        setInterval(() => {
-          reg.update().catch(() => {});
-        }, 60 * 60 * 1000); // every hour
-      })
-      .catch(() => {})
-  })
+// Force purge old service worker and caches once to recover from blank screen
+if (localStorage.getItem('sw_purged_v2.5') !== 'true') {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (const registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+  if ('caches' in window) {
+    caches.keys().then((names) => {
+      for (const name of names) {
+        caches.delete(name);
+      }
+    });
+  }
+  localStorage.setItem('sw_purged_v2.5', 'true');
+  setTimeout(() => {
+    window.location.reload();
+  }, 500);
+} else {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => {
+          setInterval(() => {
+            reg.update().catch(() => {});
+          }, 60 * 60 * 1000);
+        })
+        .catch(() => {})
+    })
 
-  // Reload page when new service worker takes over control
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!refreshing) {
-      refreshing = true;
-      window.location.reload();
-    }
-  });
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
+  }
 }

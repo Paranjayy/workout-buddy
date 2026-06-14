@@ -29,6 +29,11 @@
 
 ## 🔜 Next Up (v2.1)
 
+### 📹 Workout Video & Animation Aids
+- Video demonstrations or animated GIFs for correct exercise form
+- Interactive visual instructions/aids for all 87+ exercises
+- Integration inside the workout logger modal and exercise details
+
 ### 📅 Calendar Integration
 - Google Calendar OAuth for availability awareness
 - Auto-suggest workout windows based on free time
