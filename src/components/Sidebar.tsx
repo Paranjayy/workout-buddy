@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useTheme } from '../hooks/useTheme'
+import { haptics } from '../utils/haptics'
 
 const NAV = [
   { to: '/', label: 'Dashboard', icon: (
@@ -81,7 +82,7 @@ export function Sidebar() {
       {/* Desktop sidebar */}
       <aside className="sidebar">
         <div className="sidebar__brand">
-          <img src="/favicon.svg" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, width: 32, height: 32 }} />
+          <img src="/icon.png" alt="Workout Buddy" className="sidebar__logo" style={{ borderRadius: 8, width: 32, height: 32 }} />
           <span className="sidebar__title">Workout Buddy</span>
         </div>
         <nav className="sidebar__nav" aria-label="Main navigation">
@@ -92,6 +93,7 @@ export function Sidebar() {
               end={item.to === '/'}
               className={({ isActive }) => `nav-item${isActive ? ' nav-item--active' : ''}`}
               id={`nav-${item.to.slice(1) || 'dashboard'}`}
+              onClick={() => haptics.light()}
             >
               {item.icon}
               <span>{item.label}</span>
@@ -109,6 +111,7 @@ export function Sidebar() {
             to={item.to}
             end={item.to === '/'}
             className={({ isActive }) => `mobile-nav__item${isActive ? ' mobile-nav__item--active' : ''}`}
+            onClick={() => haptics.medium()}
           >
             <span className="mobile-nav__icon">{item.icon}</span>
             <span className="mobile-nav__label">{item.label}</span>

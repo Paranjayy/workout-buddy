@@ -1,13 +1,25 @@
 import { useNavigate } from 'react-router-dom'
 import { ProgressRing } from '../components/ProgressRing'
+import { WorkoutHeatmap } from '../components/WorkoutHeatmap'
 import { store, KEYS } from '../utils/storage'
 import { lifeProgress, yearProgress, monthProgress, weekProgress, dayProgress, quarterProgress } from '../utils/time'
-import type { Profile } from '../types'
+import type { Profile, WorkoutEntry } from '../types'
 
 export function Progress() {
   const navigate = useNavigate()
   const profile = store.get<Profile>(KEYS.PROFILE, {} as Profile)
+  const workouts = store.get<WorkoutEntry[]>(KEYS.WORKOUTS, [])
   const lp = profile.dob ? lifeProgress(profile.dob, profile.lifeExpectancy ?? 80) : null
+
+  // Calculate volume trends for the last 7 workouts
+  const volumeData = workouts
+    .slice(-7)
+    .map(w => ({ 
+      label: w.exercise.substring(0, 4), 
+      val: (w.sets || 0) * (w.reps || 0) * (w.weight || 1) 
+    }))
+
+  const maxVolume = Math.max(...volumeData.map(d => d.val), 1)
 
   const rings = [
     { pct: dayProgress(), color: 'oklch(55% 0.18 155)', label: 'Day', detail: `${new Date().getHours()}h of 24h` },
@@ -24,7 +36,7 @@ export function Progress() {
         <h1 className="page-header__title">Life Progress</h1>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 'var(--sp-5)', marginBottom: 'var(--sp-7)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 'var(--sp-5)', marginBottom: 'var(--sp-8)' }}>
         {rings.map(r => (
           <div key={r.label} className="progress-ring-card">
             <ProgressRing percent={r.pct} color={r.color} size={110} />
@@ -32,6 +44,30 @@ export function Progress() {
             <span className="progress-ring-card__detail">{r.detail}</span>
           </div>
         ))}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--sp-6)', marginBottom: 'var(--sp-8)' }}>
+        <WorkoutHeatmap />
+        
+        <div style={{ padding: 'var(--sp-6)', background: 'var(--clr-surface)', border: '1px solid var(--clr-border)', borderRadius: 'var(--r-xl)' }}>
+          <h3 className="section-title" style={{ fontSize: 'var(--fs-xs)', opacity: 0.6, marginBottom: 'var(--sp-5)' }}>
+            VOLUME PROGRESSION (RECENT)
+          </h3>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 'var(--sp-3)', height: 120, paddingBottom: 'var(--sp-2)' }}>
+            {volumeData.map((d, i) => (
+              <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                <div style={{ 
+                  width: '100%', 
+                  height: `${(d.val / maxVolume) * 100}%`, 
+                  background: 'linear-gradient(to top, var(--clr-primary), var(--clr-primary-light))',
+                  borderRadius: '4px 4px 0 0',
+                  minHeight: 4
+                }} />
+                <span style={{ fontSize: '10px', color: 'var(--clr-text-3)', fontWeight: 600 }}>{d.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {lp ? (
