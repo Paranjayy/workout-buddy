@@ -151,7 +151,28 @@ const VIDEO_MAP: Record<string, string> = {
   'russian twist': 'wkD8rjkodUI',
   'leg press': 'IZxyjW7MPJQ',
   'lateral raise': '3VcKaX_yL4U',
-  'dips': '2z8JmcrW-As'
+  'dips': '2z8JmcrW-As',
+  'tricep pushdown': '2-LAMCpzLyU',
+  'lat pulldown': 'CAwf7n6Luuc',
+  'dumbbell fly': 'eGjt4lk6g34',
+  'romanian deadlift': 'JCXUYuzwCoM',
+  'calf raises': 'gwLzBJYoWlI',
+  'leg curl': '1Tq3QdIYGaw',
+  'shrugs': 'g6qbkJnJfI8',
+  'chest dips': 'WEEPBeZ9G1U',
+  'hip thrust': 'SEdqd1n0FDg',
+  'crunches': 'NGRKOBFSLt8',
+  'mountain climbers': 'cnyTQDSE874',
+  'bodyweight squats': 'mGvzVjuY8SY',
+  'chin-ups': '_71Z4G8K1Jg',
+  'diamond push-ups': 'p8ZiaGs_V2c',
+  'walking': 'aR7G5-kL6io',
+  'jumping jacks': 'iSSAk4XCs5A',
+  'sun salutation': 'z214m0tG-F8',
+  'vinyasa flow': 'bO678vjB5uU',
+  'kettlebell swing': 'ysXZeA5wGpk',
+  'kettlebell goblet squat': 'm3aZ616S80U',
+  'medicine ball slam': 's3T_Z6kPukc',
 }
 
 export function Workout() {
@@ -169,6 +190,8 @@ export function Workout() {
           time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
         })
       })
+      const currentCount = store.get<number>(KEYS.TEMPLATES_USED_COUNT, 0)
+      store.set(KEYS.TEMPLATES_USED_COUNT, currentCount + 1)
       showToast(`${t.name} loaded — ${t.exercises.length} exercises ✓`)
     }
     const direct = store.get<any>('_selected_exercise_direct', null)
